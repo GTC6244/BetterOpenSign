@@ -55,6 +55,7 @@ import {
   getInitials,
   isValidBase64
 } from "../../utils";
+import PhoneSign from "./PhoneSign";
 import Draw from "./tab/Draw";
 import DefaultSignature from "./tab/DefaultSignature";
 import UploadImage from "./tab/UploadImage";
@@ -104,6 +105,8 @@ function WidgetsValueModal(props) {
   const [penColor, setPenColor] = useState("");
   const [isOptional, setIsOptional] = useState(true);
   const [isTab, setIsTab] = useState("");
+  // Experiment #2: "Sign on phone" (BetterSign) modal visibility.
+  const [showPhoneSign, setShowPhoneSign] = useState(false);
   const [textWidth, setTextWidth] = useState(0);
   const [textHeight, setTextHeight] = useState(0);
   const [isSignTypes, setIsSignTypes] = useState(true);
@@ -410,6 +413,61 @@ function WidgetsValueModal(props) {
       setXyPosition(getImage);
     }
     setIsAutoSign(false);
+  };
+
+  // Experiment #2: apply a signature image returned by the BetterSign phone
+  // handshake. Mirrors handleSaveSignature's write path (onSaveSign + setXyPosition)
+  // but the image comes from the phone instead of the draw/type pad.
+  const applyPhoneSignature = (signImg) => {
+    if (!signImg) return;
+    const widgetsType = currWidgetsDetails?.type;
+    const imgWH = { width: "", height: "" };
+    if (uniqueId) {
+      setXyPosition((prevState) =>
+        prevState.map((signer) => {
+          if (signer.Id !== uniqueId) return signer;
+          const placeholderIndex = signer.placeHolder.findIndex((x) =>
+            x.pos?.some((p) => p.key === currWidgetsDetails?.key)
+          );
+          const updatedPlaceholders = onSaveSign(
+            "image",
+            signer.placeHolder,
+            placeholderIndex,
+            currWidgetsDetails?.key,
+            signImg,
+            imgWH,
+            false,
+            null,
+            false,
+            widgetsType,
+            fontSelect,
+            penColor
+          );
+          return { ...signer, placeHolder: updatedPlaceholders };
+        })
+      );
+    } else {
+      const index = props?.xyPosition?.findIndex(
+        (p) => p.pageNumber === (currWidgetsDetails?.pageNumber || pageNumber)
+      );
+      const getUpdatePosition = onSaveSign(
+        "image",
+        props?.xyPosition,
+        index,
+        currWidgetsDetails?.key,
+        signImg,
+        imgWH,
+        false,
+        null,
+        false,
+        widgetsType,
+        fontSelect,
+        penColor
+      );
+      setXyPosition(getUpdatePosition);
+    }
+    // Close the field modal the same way a normal save does.
+    dispatch(setIsShowModal({}));
   };
 
   //function is used to save draw type or initial type signature
@@ -1359,6 +1417,30 @@ function WidgetsValueModal(props) {
                 <div className="h-full mt-3">
                   {Tabs.find((t) => t.id === isTab)?.render()}
                 </div>
+                {["signature", "initials"].includes(type) && (
+                  <div className="mx-3 my-2">
+                    <button
+                      type="button"
+                      onClick={() => setShowPhoneSign(true)}
+                      className="op-btn op-btn-outline op-btn-sm w-full"
+                    >
+                      📱 Sign on phone (BetterSign)
+                    </button>
+                    <PhoneSign
+                      isOpen={showPhoneSign}
+                      onClose={() => setShowPhoneSign(false)}
+                      fieldKey={currWidgetsDetails?.key}
+                      docId={currWidgetsDetails?.key}
+                      docTitle={
+                        typeof document !== "undefined" ? document.title : ""
+                      }
+                      onSigned={(img) => {
+                        setShowPhoneSign(false);
+                        applyPhoneSignature(img);
+                      }}
+                    />
+                  </div>
+                )}
               </>
             ) : (
               <div className="mx-3 mb-6 mt-3">

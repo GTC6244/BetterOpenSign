@@ -25,3 +25,7 @@ yarn-error.log*
 apps/OpenSign/public/mfbuild/*
 microfrontends/SignDocuments/build/*
 apps/OpenSignServer/files/files/*
+
+# Deployment secrets (do not commit)
+DEPLOYMENT-SECRETS.local.txt
+.gstack/

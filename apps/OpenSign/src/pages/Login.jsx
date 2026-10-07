@@ -21,6 +21,7 @@ import {
 import Loader from "../primitives/Loader";
 import { useTranslation } from "react-i18next";
 import SelectLanguage from "../components/pdf/SelectLanguage";
+import BetterSignLogin from "../components/BetterSignLogin";
 
 function Login() {
   const appName =
@@ -46,6 +47,8 @@ function Login() {
   const [isModal, setIsModal] = useState(false);
   const [image, setImage] = useState();
   const [errMsg, setErrMsg] = useState();
+  // Experiment #2 (v2): "Log in with BetterSign" modal.
+  const [showBsLogin, setShowBsLogin] = useState(false);
   useEffect(() => {
     handleUserExist();
     // eslint-disable-next-line
@@ -516,8 +519,24 @@ function Login() {
                       >
                         {state.loading ? t("loading") : t("login")}
                       </button>
+                      <button
+                        type="button"
+                        className="op-btn op-btn-outline"
+                        disabled={state.loading}
+                        onClick={() => setShowBsLogin(true)}
+                      >
+                        📱 Log in with BetterSign
+                      </button>
                     </div>
                   </form>
+                  <BetterSignLogin
+                    isOpen={showBsLogin}
+                    onClose={() => setShowBsLogin(false)}
+                    onLoggedIn={(sessionToken) => {
+                      setShowBsLogin(false);
+                      thirdpartyLoginfn(sessionToken);
+                    }}
+                  />
                 </div>
                 {width >= 768 && (
                   <div className="place-self-center">
