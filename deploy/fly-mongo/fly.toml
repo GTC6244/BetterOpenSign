@@ -1,0 +1,16 @@
+app = "docsign-bettersign-mongo"
+primary_region = "sjc"
+
+[build]
+  image = "mongo:7"
+
+[processes]
+  app = "mongod --bind_ip_all --ipv6 --auth"
+
+[mounts]
+  source = "mongo_data"
+  destination = "/data/db"
+
+[[vm]]
+  size = "shared-cpu-1x"
+  memory = "512mb"

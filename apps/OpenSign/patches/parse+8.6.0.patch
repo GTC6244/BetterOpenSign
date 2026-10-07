@@ -1,0 +1,18 @@
+diff --git a/node_modules/parse/lib/browser/RESTController.js b/node_modules/parse/lib/browser/RESTController.js
+index c0ed99f..af1f945 100644
+--- a/node_modules/parse/lib/browser/RESTController.js
++++ b/node_modules/parse/lib/browser/RESTController.js
+@@ -172,12 +172,12 @@ const RESTController = {
+             }
+           });
+           if (options && typeof options.progress === 'function' && response.body) {
+-            const reader = response.body.getReader();
+             const length = +response.headers.get('Content-Length') || 0;
+             if (length === 0) {
+               options.progress(null, null, null);
+               result = await response.json();
+             } else {
++              const reader = response.body.getReader();
+               let recieved = 0;
+               const chunks = [];
+               while (true) {

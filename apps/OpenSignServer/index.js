@@ -111,6 +111,17 @@ export const config = {
   logLevel: ['error'],
   maxLimit: 500,
   maxUploadSize: '100mb',
+  // OpenSign's frontend saves Parse.File objects without an explicit session token and
+  // does not hydrate Parse.User.current(), so uploads arrive unauthenticated. Parse Server's
+  // secure defaults (enableForPublic:false) therefore reject them with code 130
+  // ("File upload by public is disabled"). Enabling public uploads matches OpenSign's hosted
+  // configuration and is required for the "add document" flow to work. Set
+  // FILE_UPLOAD_PUBLIC=false to lock this down (uploads will then require an authenticated path).
+  fileUpload: {
+    enableForPublic: process.env.FILE_UPLOAD_PUBLIC !== 'false',
+    enableForAnonymousUser: true,
+    enableForAuthenticatedUser: true,
+  },
   masterKey: process.env.MASTER_KEY, //Add your master key here. Keep it secret!
   masterKeyIps: ['0.0.0.0/0', '::/0'], // '::1'
   serverURL: cloudServerUrl, // Don't forget to change to https if needed
@@ -168,6 +179,26 @@ export const config = {
 
 export const app = express();
 app.use(cors());
+// Expose Content-Length to cross-origin callers (good practice; the frontend and this API
+// are on different origins). Parse JS SDK 8.x reads Content-Length to decide how to parse
+// upload/download responses. NOTE: this alone does NOT fix the "body stream is locked"
+// upload error — browsers still may not surface Content-Length cross-origin. The real fix
+// is the frontend patch at apps/OpenSign/patches/parse+8.6.0.patch (see DEPLOYMENT.md §6).
+app.use(function (req, res, next) {
+  const origSetHeader = res.setHeader.bind(res);
+  res.setHeader = function (name, value) {
+    if (String(name).toLowerCase() === 'access-control-expose-headers') {
+      if (Array.isArray(value)) {
+        if (!value.some(v => String(v).toLowerCase() === 'content-length')) value = value.concat('Content-Length');
+      } else if (!String(value).toLowerCase().includes('content-length')) {
+        value = value ? value + ', Content-Length' : 'Content-Length';
+      }
+    }
+    return origSetHeader(name, value);
+  };
+  res.setHeader('Access-Control-Expose-Headers', 'Content-Length');
+  next();
+});
 app.use(express.json({ limit: '100mb' }));
 app.use(express.urlencoded({ limit: '100mb', extended: true }));
 app.use(function (req, res, next) {

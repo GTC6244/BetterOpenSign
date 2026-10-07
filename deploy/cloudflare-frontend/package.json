@@ -1,0 +1,8 @@
+{
+  "name": "docsign",
+  "private": true,
+  "type": "module",
+  "devDependencies": {
+    "wrangler": "latest"
+  }
+}
