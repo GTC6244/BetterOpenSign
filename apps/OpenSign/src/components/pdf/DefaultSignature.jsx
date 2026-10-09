@@ -1,6 +1,12 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import Tabs from "@mui/material/Tabs";
+import Tab from "@mui/material/Tab";
+import Card from "@mui/material/Card";
+import Button from "@mui/material/Button";
 function DefaultSignature(props) {
   const { t } = useTranslation();
   const defaultSignImg = useSelector((state) => state.widget.defaultSignImg);
@@ -40,54 +46,100 @@ function DefaultSignature(props) {
   };
 
   return (
-    <div data-tut="reactourThird">
-      <div className="mx-2 pr-2 pt-2 pb-1 text-[15px] text-base-content font-semibold border-b-[1px] border-base-300">
-        <p className="text-base-content">{t("signature")}</p>
-      </div>
-      <div className="flex justify-center items-center mt-2">
-        <div role="tablist" className="op-tabs op-tabs-bordered">
+    <Box data-tut="reactourThird">
+      <Box
+        sx={{
+          mx: 1,
+          pr: 1,
+          pt: 1,
+          pb: 0.5,
+          fontSize: "15px",
+          fontWeight: 600,
+          color: "text.primary",
+          borderBottom: "1px solid",
+          borderColor: "divider"
+        }}
+      >
+        <Typography
+          component="p"
+          sx={{ color: "text.primary", fontSize: "15px", fontWeight: 600 }}
+        >
+          {t("signature")}
+        </Typography>
+      </Box>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          mt: 1
+        }}
+      >
+        <Tabs
+          value={activeTab}
+          onChange={(e, val) => setActiveTab(val)}
+          variant="fullWidth"
+          sx={{ minHeight: 0 }}
+        >
           {tabName.map((tabData, ind) => (
-            <div
-              onClick={() => setActiveTab(ind)}
+            <Tab
               key={ind}
-              role="tab"
-              className={`${
-                activeTab === ind ? "op-tab-active" : ""
-              } op-tab flex items-center pb-10 md:pb-0`}
-            >
-              <span className="ml-1 text-[7px] font-medium md:font-normal md:text-[12px]">
-                {t(`${tabData}`)}
-              </span>
-            </div>
+              label={t(`${tabData}`)}
+              sx={{
+                minHeight: 0,
+                textTransform: "none",
+                fontSize: { xs: "7px", md: "12px" }
+              }}
+            />
           ))}
-        </div>
-      </div>
-      <div className="flex flex-col items-center mt-[10px] font-semibold relative">
-        <div className="op-card shadow-md h-[111px] w-[90%] p-2">
+        </Tabs>
+      </Box>
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          mt: "10px",
+          fontWeight: 600,
+          position: "relative"
+        }}
+      >
+        <Card sx={{ boxShadow: 3, height: "111px", width: "90%", p: 1 }}>
           {activeTab === 0 ? (
-            <img
+            <Box
+              component="img"
               alt="signature"
-              className="w-full h-full object-contain"
+              sx={{ width: "100%", height: "100%", objectFit: "contain" }}
               src={defaultSignImg}
             />
           ) : (
             activeTab === 1 &&
             (myInitial ? (
-              <img
+              <Box
+                component="img"
                 alt="signature"
-                className="w-full h-full object-contain"
+                sx={{ width: "100%", height: "100%", objectFit: "contain" }}
                 src={myInitial}
               />
             ) : (
-              <div className="flex justify-center items-center h-full">
-                <span>{t("initial-alert")}</span>
-              </div>
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  height: "100%"
+                }}
+              >
+                <Box component="span">{t("initial-alert")}</Box>
+              </Box>
             ))
           )}
-        </div>
-        <button
+        </Card>
+        <Button
           type="button"
-          className="op-btn op-btn-primary op-btn-sm mt-[10px]"
+          variant="contained"
+          size="small"
+          sx={{ mt: "10px" }}
           onClick={() =>
             confirmToaddDefaultSign(
               activeTab === 0 ? "signature" : activeTab === 1 && "initials"
@@ -102,14 +154,29 @@ function DefaultSignature(props) {
           }
         >
           {t("auto-sign-all")}
-        </button>
+        </Button>
         {!props.isDefault && (
-          <div className="absolute bg-black/70 text-white w-full h-full flex items-center justify-center text-[11px] cursor-default">
-            <span className="-rotate-45">{t("option-disabled-by-owner")}</span>
-          </div>
+          <Box
+            sx={{
+              position: "absolute",
+              bgcolor: "rgba(0,0,0,0.7)",
+              color: "common.white",
+              width: "100%",
+              height: "100%",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              fontSize: "11px",
+              cursor: "default"
+            }}
+          >
+            <Box component="span" sx={{ transform: "rotate(-45deg)" }}>
+              {t("option-disabled-by-owner")}
+            </Box>
+          </Box>
         )}
-      </div>
-    </div>
+      </Box>
+    </Box>
   );
 }
 

@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import Box from "@mui/material/Box";
 
 const Cell = ({
   isEnabled,
@@ -15,8 +16,18 @@ const Cell = ({
   fontColor,
   hint
 }) => (
-  <div
-    className={`${isEnabled ? "bg-white border-gray-400" : "select-none-cls pointer-events-none border-gray-500"} flex items-center justify-center border-[1px]`}
+  <Box
+    className={isEnabled ? undefined : "select-none-cls"}
+    sx={{
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      border: "1px solid",
+      borderColor: isEnabled ? "outline.main" : "outline.variant",
+      ...(isEnabled
+        ? { bgcolor: "common.white" }
+        : { pointerEvents: "none" })
+    }}
     style={{ flex: `0 0 ${100 / count}%`, height: h }}
   >
     <input
@@ -33,7 +44,7 @@ const Cell = ({
       placeholder={hint}
       style={{ fontFamily: "Arial, sans-serif", fontSize, color: fontColor }}
     />
-  </div>
+  </Box>
 );
 
 export default function CellsWidget({
@@ -96,17 +107,32 @@ export default function CellsWidget({
   const hints = Array.from({ length: cellCount }).map((_, i) => hint[i] || "");
 
   return (
-    <div
-      className="relative flex w-full h-full overflow-visible"
+    <Box
+      sx={{
+        position: "relative",
+        display: "flex",
+        width: "100%",
+        height: "100%",
+        overflow: "visible"
+      }}
       style={{ height }}
     >
       {resizable && (
-        <div
-          className="cell-size-handle absolute left-1/2 -translate-x-1/2 -bottom-4 rotate-180 cursor-ew-resize touch-none"
+        <Box
+          className="cell-size-handle"
+          sx={{
+            position: "absolute",
+            left: "50%",
+            bottom: "-16px",
+            transform: "translateX(-50%) rotate(180deg)",
+            cursor: "ew-resize",
+            touchAction: "none",
+            color: "primary.main"
+          }}
           onPointerDown={onTopHandlePointerDown}
         >
           <svg
-            className="w-4 h-4 text-blue-600"
+            className="w-4 h-4"
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 20 20"
             fill="currentColor"
@@ -118,7 +144,7 @@ export default function CellsWidget({
               clipRule="evenodd"
             />
           </svg>
-        </div>
+        </Box>
       )}
       {cells.map((val, i) => (
         <Cell
@@ -138,6 +164,6 @@ export default function CellsWidget({
           hint={hints[i]}
         />
       ))}
-    </div>
+    </Box>
   );
 }

@@ -9,6 +9,10 @@ import Loader from "../../primitives/Loader";
 import ModalUi from "../../primitives/ModalUi";
 import { useTranslation } from "react-i18next";
 import Parse from "parse";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Chip from "@mui/material/Chip";
+import Typography from "@mui/material/Typography";
 
 function EmailComponent({
   isEmail,
@@ -98,77 +102,147 @@ function EmailComponent({
       {isEmail && (
         <ModalUi isOpen showHeader={false}>
           {isLoading && (
-            <div className="absolute w-full h-full flex flex-col justify-center items-center z-[20] bg-[#e6f2f2]/70">
+            <Box
+              sx={{
+                position: "absolute",
+                width: "100%",
+                height: "100%",
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+                alignItems: "center",
+                zIndex: 20,
+                bgcolor: "rgba(230,242,242,0.7)"
+              }}
+            >
               <Loader />
-              <span className="text-[12px] text-base-content">
+              <Box component="span" sx={{ fontSize: "0.75rem", color: "text.primary" }}>
                 {t("loader")}
-              </span>
-            </div>
+              </Box>
+            </Box>
           )}
           {isDownloading === "pdf" && (
-            <div className="fixed z-[200] inset-0 flex justify-center items-center bg-black bg-opacity-30">
+            <Box
+              sx={{
+                position: "fixed",
+                zIndex: 200,
+                inset: 0,
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                bgcolor: "rgba(0,0,0,0.3)"
+              }}
+            >
               <Loader />
-            </div>
+            </Box>
           )}
-          <div className="flex justify-between items-center py-[10px] px-[20px] border-b-[1px] border-base-content">
-            <span className="text-base-content font-bold text-sm md:text-lg">
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              py: 1.25,
+              px: 2.5,
+              borderBottom: "1px solid",
+              borderColor: "text.primary"
+            }}
+          >
+            <Box
+              component="span"
+              sx={{
+                color: "text.primary",
+                fontWeight: 700,
+                fontSize: { xs: "0.875rem", md: "1.125rem" }
+              }}
+            >
               {t("successfully-signed")}
-            </span>
-            <div className="flex flex-row">
+            </Box>
+            <Box sx={{ display: "flex", flexDirection: "row" }}>
               {!isAndroid && (
-                <button
+                <Button
+                  size="small"
+                  variant="contained"
+                  color="inherit"
+                  startIcon={
+                    <i className="fa-light fa-print" aria-hidden="true"></i>
+                  }
                   onClick={(e) =>
                     handleToPrint(e, setIsDownloading, pdfDetails)
                   }
-                  className="op-btn op-btn-neutral op-btn-sm text-xs md:text-[15px]"
+                  sx={{ fontSize: { xs: "0.75rem", md: "15px" } }}
                 >
-                  <i className="fa-light fa-print" aria-hidden="true"></i>
                   {t("print")}
-                </button>
+                </Button>
               )}
-              <button
-                className="op-btn op-btn-primary op-btn-sm text-xs md:text-[15px] ml-2"
+              <Button
+                size="small"
+                variant="contained"
+                startIcon={
+                  <i className="fa-light fa-download" aria-hidden="true"></i>
+                }
                 onClick={() => {
                   handleClose();
                   setIsDownloadModal(true);
                 }}
+                sx={{ fontSize: { xs: "0.75rem", md: "15px" }, ml: 1 }}
               >
-                <i className="fa-light fa-download" aria-hidden="true"></i>
                 {t("download")}
-              </button>
-            </div>
-          </div>
-          <div className="h-full p-[20px]">
-            <p className="font-medium text-[15px] mb-[5px] text-base-content align-baseline">
+              </Button>
+            </Box>
+          </Box>
+          <Box sx={{ height: "100%", p: 2.5 }}>
+            <Typography
+              sx={{
+                fontWeight: 500,
+                fontSize: "15px",
+                mb: 0.625,
+                color: "text.primary",
+                verticalAlign: "baseline"
+              }}
+            >
               {t("email-mssg")}
-            </p>
+            </Typography>
             {emailList.length > 0 ? (
-              <div className="p-0 border-[1px] op-border-primary w-full rounded-md text-[15px] overflow-hidden">
-                <div className="flex flex-row flex-wrap">
+              <Box
+                sx={{
+                  p: 0,
+                  border: "1px solid",
+                  borderColor: "primary.main",
+                  width: "100%",
+                  borderRadius: 1,
+                  fontSize: "15px",
+                  overflow: "hidden"
+                }}
+              >
+                <Box sx={{ display: "flex", flexDirection: "row", flexWrap: "wrap" }}>
                   {emailList.map((data, ind) => {
                     return (
-                      <div
-                        className="flex flex-row items-center op-bg-primary mx-[2px] mt-[2px] rounded-md py-[5px] px-[10px]"
+                      <Chip
                         key={ind}
-                      >
-                        <span className="text-base-100 text-[13px]">
-                          {data}
-                        </span>
-                        <span
-                          className="text-base-100 text-[13px] font-semibold ml-[7px] cursor-pointer"
-                          onClick={() => removeChip(ind)}
-                        >
-                          <i className="fa-light fa-xmark"></i>
-                        </span>
-                      </div>
+                        label={data}
+                        onDelete={() => removeChip(ind)}
+                        color="primary"
+                        size="small"
+                        sx={{ mx: "2px", mt: "2px", borderRadius: 1 }}
+                      />
                     );
                   })}
-                </div>
+                </Box>
                 {emailList.length <= 9 && (
-                  <input
+                  <Box
+                    component="input"
                     type="email"
                     value={emailValue}
-                    className="p-[10px] rounded-md w-full text-[15px] bg-transparent outline-none"
+                    sx={{
+                      p: 1.25,
+                      borderRadius: 1,
+                      width: "100%",
+                      fontSize: "15px",
+                      bgcolor: "transparent",
+                      outline: "none",
+                      border: "none",
+                      color: "text.primary"
+                    }}
                     onChange={handleEmailValue}
                     onKeyDown={handleEnterPress}
                     onBlur={() => emailValue && handleEnterPress("add")}
@@ -179,13 +253,25 @@ function EmailComponent({
                     required
                   />
                 )}
-              </div>
+              </Box>
             ) : (
               <div>
-                <input
+                <Box
+                  component="input"
                   type="email"
                   value={emailValue}
-                  className="p-[10px] pb-[20px] text-base-content rounded-md w-full text-[15px] outline-none bg-transparent border-[1px] op-border-primary"
+                  sx={{
+                    p: 1.25,
+                    pb: 2.5,
+                    color: "text.primary",
+                    borderRadius: 1,
+                    width: "100%",
+                    fontSize: "15px",
+                    outline: "none",
+                    bgcolor: "transparent",
+                    border: "1px solid",
+                    borderColor: "primary.main"
+                  }}
                   onChange={handleEmailValue}
                   onKeyDown={handleEnterPress}
                   placeholder={t("enter-email-placeholder")}
@@ -199,27 +285,30 @@ function EmailComponent({
               </div>
             )}
             {emailErr && (
-              <p className="text-xs text-[red] ml-1.5 mt-0.5">
+              <Typography sx={{ fontSize: "0.75rem", color: "error.main", ml: 0.75, mt: 0.25 }}>
                 {t("email-error-1")}
-              </p>
+              </Typography>
             )}
-            <div className="mt-2">
-              <button
+            <Box sx={{ mt: 1 }}>
+              <Button
                 type="button"
-                className="op-btn op-btn-secondary"
+                variant="contained"
+                color="secondary"
                 onClick={() => emailList.length > 0 && sendEmail()}
               >
                 {t("send")}
-              </button>
-              <button
+              </Button>
+              <Button
                 type="button"
-                className="op-btn op-btn-ghost text-base-content ml-2"
+                variant="text"
+                color="inherit"
+                sx={{ ml: 1 }}
                 onClick={() => handleClose()}
               >
                 {t("close")}
-              </button>
-            </div>
-          </div>
+              </Button>
+            </Box>
+          </Box>
         </ModalUi>
       )}
     </div>

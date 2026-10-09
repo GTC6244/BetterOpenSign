@@ -1,6 +1,10 @@
 import React from "react";
 import ModalUi from "../primitives/ModalUi";
 import { useTranslation } from "react-i18next";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import Divider from "@mui/material/Divider";
+import Button from "@mui/material/Button";
 
 function RotateAlert(props) {
   const { t } = useTranslation();
@@ -10,28 +14,29 @@ function RotateAlert(props) {
       title={t("Rotation-alert")}
       handleClose={() => props.setShowRotateAlert({ status: false, degree: 0 })}
     >
-      <div className="p-[20px] h-full">
-        <p>{t("rotate-alert-mssg")}</p>
-        <div className="h-[1px]  w-full my-[15px] bg-[#9f9f9f]"></div>
-        <div className="flex gap-1">
-          <button
+      <Box sx={{ p: "20px", height: "100%" }}>
+        <Typography>{t("rotate-alert-mssg")}</Typography>
+        <Divider sx={{ my: "15px" }} />
+        <Box sx={{ display: "flex", gap: 1 }}>
+          <Button
             onClick={() => props.handleRemoveWidgets()}
             type="button"
-            className="op-btn op-btn-primary"
+            variant="contained"
           >
             {t("yes")}
-          </button>
-          <button
+          </Button>
+          <Button
             onClick={() =>
               props.setShowRotateAlert({ status: false, degree: 0 })
             }
             type="button"
-            className="op-btn op-btn-ghost text-base-content shadow-md"
+            variant="outlined"
+            color="inherit"
           >
             {t("no")}
-          </button>
-        </div>
-      </div>
+          </Button>
+        </Box>
+      </Box>
     </ModalUi>
   );
 }

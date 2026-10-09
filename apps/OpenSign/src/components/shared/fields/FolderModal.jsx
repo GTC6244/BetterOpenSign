@@ -3,6 +3,12 @@ import Parse from "parse";
 import CreateFolder from "./CreateFolder";
 import ModalUi from "../../../primitives/ModalUi";
 import { useTranslation } from "react-i18next";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import Button from "@mui/material/Button";
+import Divider from "@mui/material/Divider";
+import SaveIcon from "@mui/icons-material/Save";
+import AddBoxIcon from "@mui/icons-material/AddBox";
 
 const FolderModal = (props) => {
   const { t } = useTranslation();
@@ -146,80 +152,120 @@ const FolderModal = (props) => {
     handleBack();
   };
   return (
-    <div className="text-xs mt-2">
+    <Box sx={{ fontSize: "0.75rem", mt: 1 }}>
       <ModalUi
         title={t("select-folder")}
         isOpen={props.isOpenModal}
         handleClose={handleCancel}
       >
-        <div className="w-full min-w-[300px] md:min-w-[500px] max-w-[500px] px-3">
-          <div className="pt-1 text-[#ac4848] text-[14px] font-[500]">
-            <span
-              className="cursor-pointer"
+        <Box
+          sx={{
+            width: "100%",
+            minWidth: { xs: 300, md: 500 },
+            maxWidth: 500,
+            px: 1.5
+          }}
+        >
+          <Box
+            sx={{
+              pt: 0.5,
+              color: "secondary.main",
+              fontSize: "14px",
+              fontWeight: 500
+            }}
+          >
+            <Box
+              component="span"
+              sx={{ cursor: "pointer" }}
               title={`${drivename} Drive`}
               onClick={(e) => removeTabListItem(e)}
             >
               {t("OpenSign-drive", { appName: drivename })} /{" "}
-            </span>
+            </Box>
             {tabList &&
               tabList.map((tab, i) => (
                 <React.Fragment key={`${tab.objectId}-${i}`}>
-                  <span
-                    className="cursor-pointer"
+                  <Box
+                    component="span"
+                    sx={{ cursor: "pointer" }}
                     title={tab.Name}
                     onClick={(e) => removeTabListItem(e, i)}
                   >
                     {tab.Name}
-                  </span>
+                  </Box>
                   {" / "}
                 </React.Fragment>
               ))}
-            <hr className="bg-[#8a8a8a] mt-[0.750rem]" />
-          </div>
-          <div className={`${!isAdd ? "mb-3" : ""} mt-2`}>
+            <Divider sx={{ mt: "0.750rem" }} />
+          </Box>
+          <Box sx={{ mb: !isAdd ? 1.5 : 0, mt: 1 }}>
             {!isAdd && (
-              <div className="max-h-[210px] overflow-auto">
+              <Box sx={{ maxHeight: 210, overflow: "auto" }}>
                 {folderList.length > 0
                   ? folderList.map((folder) => (
-                      <div
+                      <Box
                         key={folder.objectId}
-                        className={`${
-                          folder.Type === "Folder"
-                            ? "cursor-pointer"
-                            : "cursor-default"
-                        } border-b-[1px] border-[#8a8a8a] py-2 mb-0.5"`}
+                        sx={{
+                          cursor:
+                            folder.Type === "Folder" ? "pointer" : "default",
+                          borderBottom: "1px solid",
+                          borderColor: "outline.variant",
+                          py: 1,
+                          mb: 0.25
+                        }}
                         onClick={() =>
                           folder.Type === "Folder" && handleSelect(folder)
                         }
                       >
-                        <div className="flex items-center gap-2">
+                        <Box
+                          sx={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: 1
+                          }}
+                        >
                           {folder.Type === "Folder" ? (
-                            <svg
+                            <Box
+                              component="svg"
                               xmlns="http://www.w3.org/2000/svg"
                               viewBox="0 0 512 512"
-                              className="w-[1.4rem] h-[1.4rem] fill-current"
+                              sx={{ width: "1.4rem", height: "1.4rem", fill: "currentColor" }}
                             >
                               <path d="M64 480H448c35.3 0 64-28.7 64-64V160c0-35.3-28.7-64-64-64H288c-10.1 0-19.6-4.7-25.6-12.8L243.2 57.6C231.1 41.5 212.1 32 192 32H64C28.7 32 0 60.7 0 96V416c0 35.3 28.7 64 64 64z" />
-                            </svg>
+                            </Box>
                           ) : (
-                            <svg
+                            <Box
+                              component="svg"
                               xmlns="http://www.w3.org/2000/svg"
                               viewBox="0 0 384 512"
-                              className="w-[1.4rem] h-[1.4rem] fill-current op-text-primary"
+                              sx={{
+                                width: "1.4rem",
+                                height: "1.4rem",
+                                fill: "currentColor",
+                                color: "primary.main"
+                              }}
                             >
                               <path d="M374.629 150.627L233.371 9.373C227.371 3.371 219.23 0 210.746 0H64C28.652 0 0 28.652 0 64V448C0 483.345 28.652 512 64 512H320C355.348 512 384 483.345 384 448V173.254C384 164.767 380.629 156.629 374.629 150.627ZM224 22.629L361.375 160H248C234.781 160 224 149.234 224 136V22.629ZM368 448C368 474.467 346.469 496 320 496H64C37.531 496 16 474.467 16 448V64C16 37.533 37.531 16 64 16H208V136C208 158.062 225.938 176 248 176H368V448ZM96 264C96 268.406 99.594 272 104 272H280C284.406 272 288 268.406 288 264S284.406 256 280 256H104C99.594 256 96 259.594 96 264ZM280 320H104C99.594 320 96 323.594 96 328S99.594 336 104 336H280C284.406 336 288 332.406 288 328S284.406 320 280 320ZM280 384H104C99.594 384 96 387.594 96 392S99.594 400 104 400H280C284.406 400 288 396.406 288 392S284.406 384 280 384Z" />
-                            </svg>
+                            </Box>
                           )}
-                          <span className="font-semibold">{folder.Name}</span>
-                        </div>
-                      </div>
+                          <Box component="span" sx={{ fontWeight: 600 }}>
+                            {folder.Name}
+                          </Box>
+                        </Box>
+                      </Box>
                     ))
                   : !isLoader && (
-                      <div className="text-base-content text-center my-2">
+                      <Box
+                        sx={{
+                          color: "text.primary",
+                          textAlign: "center",
+                          my: 1
+                        }}
+                      >
                         {t("no-data")}
-                      </div>
+                      </Box>
                     )}
-              </div>
+              </Box>
             )}
             {isAdd && (
               <CreateFolder
@@ -230,35 +276,48 @@ const FolderModal = (props) => {
               />
             )}
             {isLoader && (
-              <div className="flex justify-center my-4">
+              <Box
+                sx={{ display: "flex", justifyContent: "center", my: 2 }}
+              >
                 <i className="fa-light fa-spinner fa-spin-pulse text-[30px]"></i>
-              </div>
+              </Box>
             )}
-          </div>
-        </div>
-        <hr />
+          </Box>
+        </Box>
+        <Divider />
         {!isAdd && (
-          <div className="flex justify-between items-center py-[.75rem] px-[1.25rem]">
-            <div
-              className="op-btn op-btn-primary op-btn-sm"
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              py: "0.75rem",
+              px: "1.25rem"
+            }}
+          >
+            <Button
+              variant="contained"
+              size="small"
               title={t("save-here")}
               onClick={handleSubmit}
+              startIcon={<SaveIcon />}
             >
-              <i className="fa-light fa-save" aria-hidden="true"></i>
               {t("save-here")}
-            </div>
-            <div
-              className="op-btn op-btn-seconday op-btn-sm"
+            </Button>
+            <Button
+              variant="outlined"
+              color="secondary"
+              size="small"
               title={t("add-folder")}
               onClick={handleCreate}
+              startIcon={<AddBoxIcon />}
             >
-              <i className="fa-light fa-square-plus" aria-hidden="true"></i>
-              <span className="">{t("add-folder")}</span>
-            </div>
-          </div>
+              {t("add-folder")}
+            </Button>
+          </Box>
         )}
       </ModalUi>
-    </div>
+    </Box>
   );
 };
 

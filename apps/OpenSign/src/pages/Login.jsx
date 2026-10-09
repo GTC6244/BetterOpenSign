@@ -22,6 +22,16 @@ import Loader from "../primitives/Loader";
 import { useTranslation } from "react-i18next";
 import SelectLanguage from "../components/pdf/SelectLanguage";
 import BetterSignLogin from "../components/BetterSignLogin";
+import Box from "@mui/material/Box";
+import Paper from "@mui/material/Paper";
+import Button from "@mui/material/Button";
+import TextField from "@mui/material/TextField";
+import Typography from "@mui/material/Typography";
+import Link from "@mui/material/Link";
+import IconButton from "@mui/material/IconButton";
+import InputAdornment from "@mui/material/InputAdornment";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
 
 function Login() {
   const appName =
@@ -411,18 +421,38 @@ function Login() {
   };
 
   return errMsg ? (
-    <div className="h-screen flex justify-center text-center items-center p-4 text-gray-500 text-base">
+    <Box
+      sx={{
+        height: "100vh",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        textAlign: "center",
+        p: 2,
+        color: "text.secondary",
+        fontSize: "1rem"
+      }}
+    >
       {errMsg}
-    </div>
+    </Box>
   ) : (
     <>
       {state.loading && (
-        <div
+        <Box
           aria-live="assertive"
-          className="fixed w-full h-full flex justify-center items-center bg-black bg-opacity-30 z-50"
+          sx={{
+            position: "fixed",
+            width: "100%",
+            height: "100%",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            bgcolor: "rgba(0,0,0,0.3)",
+            zIndex: 50
+          }}
         >
           <Loader />
-        </div>
+        </Box>
       )}
       {appInfo && appInfo.appId ? (
         <>
@@ -431,8 +461,25 @@ function Login() {
             role="region"
             className="pb-1 md:pb-4 pt-10 md:px-10 lg:px-16 h-full"
           >
-            <div className="md:p-4 lg:p-10 p-4 bg-base-100 text-base-content op-card">
-              <div className="w-[250px] h-[66px] inline-block overflow-hidden">
+            <Paper
+              elevation={0}
+              sx={{
+                p: { xs: 2, md: 2, lg: 5 },
+                bgcolor: "background.paper",
+                color: "text.primary",
+                borderRadius: 3,
+                border: 1,
+                borderColor: "divider"
+              }}
+            >
+              <Box
+                sx={{
+                  width: 250,
+                  height: 66,
+                  display: "inline-block",
+                  overflow: "hidden"
+                }}
+              >
                 {image && (
                   <img
                     src={image}
@@ -440,94 +487,143 @@ function Login() {
                     alt="applogo"
                   />
                 )}
-              </div>
+              </Box>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-x-2">
                 <div>
                   <form onSubmit={handleLoginBtn} aria-label="Login Form">
-                    <h1 className="text-[30px] mt-6">{t("welcome")}</h1>
-                    <fieldset>
-                      <legend className="text-[12px] text-[#878787]">
+                    <Typography variant="h4" sx={{ mt: 3 }}>
+                      {t("welcome")}
+                    </Typography>
+                    <Box
+                      component="fieldset"
+                      sx={{ border: "none", p: 0, m: 0 }}
+                    >
+                      <Typography
+                        component="legend"
+                        variant="caption"
+                        sx={{ color: "text.secondary" }}
+                      >
                         {t("Login-to-your-account")}
-                      </legend>
-                      <div className="w-full px-6 py-3 my-1 op-card bg-base-100 shadow-md outline outline-1 outline-slate-300/50">
-                        <label className="block text-xs" htmlFor="email">
+                      </Typography>
+                      <Paper
+                        elevation={2}
+                        sx={{
+                          width: "100%",
+                          px: 3,
+                          py: 1.5,
+                          my: 1,
+                          borderRadius: 3,
+                          border: 1,
+                          borderColor: "divider"
+                        }}
+                      >
+                        <Typography
+                          component="label"
+                          htmlFor="email"
+                          variant="caption"
+                          sx={{ display: "block" }}
+                        >
                           {t("email")}
-                        </label>
-                        <input
+                        </Typography>
+                        <TextField
                           id="email"
                           type="email"
-                          className="op-input op-input-bordered op-input-sm focus:outline-none hover:border-base-content w-full text-xs"
                           name="email"
+                          fullWidth
+                          size="small"
                           autoComplete="username"
                           value={state.email}
                           onChange={handleChange}
-                          required
-                          onInvalid={(e) =>
-                            e.target.setCustomValidity(t("input-required"))
-                          }
-                          onInput={(e) => e.target.setCustomValidity("")}
+                          slotProps={{
+                            htmlInput: {
+                              required: true,
+                              onInvalid: (e) =>
+                                e.target.setCustomValidity(t("input-required")),
+                              onInput: (e) => e.target.setCustomValidity("")
+                            }
+                          }}
                         />
-                        <hr className="my-1 border-none" />
-                            <label className="block text-xs" htmlFor="password">
-                              {t("password")}
-                            </label>
-                            <div className="relative">
-                              <input
-                                id="password"
-                                type={
-                                  state.passwordVisible ? "text" : "password"
-                                }
-                                className="op-input op-input-bordered op-input-sm focus:outline-none hover:border-base-content w-full text-xs"
-                                name="password"
-                                value={state.password}
-                                autoComplete="current-password"
-                                onChange={handleChange}
-                                onInvalid={(e) =>
-                                  e.target.setCustomValidity(
-                                    t("input-required")
-                                  )
-                                }
-                                onInput={(e) => e.target.setCustomValidity("")}
-                                required
-                              />
-                              <span
-                                className="absolute cursor-pointer top-[50%] right-[10px] -translate-y-[50%] text-base-content"
-                                onClick={togglePasswordVisibility}
-                              >
-                                {state.passwordVisible ? (
-                                  <i className="fa-light fa-eye-slash text-xs pb-1" /> // Close eye icon
-                                ) : (
-                                  <i className="fa-light fa-eye text-xs pb-1 " /> // Open eye icon
-                                )}
-                              </span>
-                            </div>
-                          <div className="relative mt-1">
-                            <NavLink
-                              to="/forgetpassword"
-                              className="text-[13px] op-link op-link-primary underline-offset-1 focus:outline-none ml-1"
-                            >
-                              {t("forgot-password")}?
-                            </NavLink>
-                          </div>
-                      </div>
-                    </fieldset>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-center text-xs font-bold mt-2">
-                      <button
+                        <Box sx={{ my: 1 }} />
+                        <Typography
+                          component="label"
+                          htmlFor="password"
+                          variant="caption"
+                          sx={{ display: "block" }}
+                        >
+                          {t("password")}
+                        </Typography>
+                        <TextField
+                          id="password"
+                          type={state.passwordVisible ? "text" : "password"}
+                          name="password"
+                          fullWidth
+                          size="small"
+                          autoComplete="current-password"
+                          value={state.password}
+                          onChange={handleChange}
+                          slotProps={{
+                            htmlInput: {
+                              required: true,
+                              onInvalid: (e) =>
+                                e.target.setCustomValidity(t("input-required")),
+                              onInput: (e) => e.target.setCustomValidity("")
+                            },
+                            input: {
+                              endAdornment: (
+                                <InputAdornment position="end">
+                                  <IconButton
+                                    aria-label="toggle password visibility"
+                                    onClick={togglePasswordVisibility}
+                                    edge="end"
+                                    size="small"
+                                  >
+                                    {state.passwordVisible ? (
+                                      <VisibilityOff fontSize="small" />
+                                    ) : (
+                                      <Visibility fontSize="small" />
+                                    )}
+                                  </IconButton>
+                                </InputAdornment>
+                              )
+                            }
+                          }}
+                        />
+                        <Box sx={{ mt: 1 }}>
+                          <Link
+                            component={NavLink}
+                            to="/forgetpassword"
+                            underline="hover"
+                            sx={{ fontSize: 13, ml: 0.5 }}
+                          >
+                            {t("forgot-password")}?
+                          </Link>
+                        </Box>
+                      </Paper>
+                    </Box>
+                    <Box
+                      sx={{
+                        display: "grid",
+                        gridTemplateColumns: { xs: "1fr", md: "1fr 1fr" },
+                        gap: 1,
+                        mt: 1
+                      }}
+                    >
+                      <Button
                         type="submit"
-                        className="op-btn op-btn-primary"
+                        variant="contained"
                         disabled={state.loading}
                       >
                         {state.loading ? t("loading") : t("login")}
-                      </button>
-                      <button
+                      </Button>
+                      <Button
                         type="button"
-                        className="op-btn op-btn-outline"
+                        variant="outlined"
                         disabled={state.loading}
                         onClick={() => setShowBsLogin(true)}
                       >
                         📱 Log in with BetterSign
-                      </button>
-                    </div>
+                      </Button>
+                    </Box>
                   </form>
                   <BetterSignLogin
                     isOpen={showBsLogin}
@@ -550,7 +646,7 @@ function Login() {
                   </div>
                 )}
               </div>
-            </div>
+            </Paper>
             <SelectLanguage />
             {state.alertMsg && (
               <Alert type={state.alertType}>{state.alertMsg}</Alert>
@@ -561,20 +657,24 @@ function Login() {
             title={t("additional-info")}
             showClose={false}
           >
-            <form className="px-4 py-3 text-base-content">
-              <div className="mb-3">
-                <label
+            <Box component="form" sx={{ px: 2, py: 1.5 }}>
+              <Box sx={{ mb: 1.5 }}>
+                <Typography
+                  component="label"
                   htmlFor="Company"
-                  style={{ display: "flex" }}
-                  className="block text-xs font-semibold"
+                  variant="caption"
+                  sx={{ display: "flex", fontWeight: 600 }}
                 >
                   {t("company")}{" "}
-                  <span className="text-[red] text-[13px]">*</span>
-                </label>
-                <input
+                  <Box component="span" sx={{ color: "error.main", ml: 0.25 }}>
+                    *
+                  </Box>
+                </Typography>
+                <TextField
                   type="text"
-                  className="op-input op-input-bordered op-input-sm focus:outline-none hover:border-base-content w-full text-xs"
                   id="Company"
+                  fullWidth
+                  size="small"
                   value={userDetails.Company}
                   onChange={(e) =>
                     setUserDetails({
@@ -582,26 +682,33 @@ function Login() {
                       Company: e.target.value
                     })
                   }
-                  onInvalid={(e) =>
-                    e.target.setCustomValidity(t("input-required"))
-                  }
-                  onInput={(e) => e.target.setCustomValidity("")}
-                  required
+                  slotProps={{
+                    htmlInput: {
+                      required: true,
+                      onInvalid: (e) =>
+                        e.target.setCustomValidity(t("input-required")),
+                      onInput: (e) => e.target.setCustomValidity("")
+                    }
+                  }}
                 />
-              </div>
-              <div className="mb-3">
-                <label
+              </Box>
+              <Box sx={{ mb: 1.5 }}>
+                <Typography
+                  component="label"
                   htmlFor="JobTitle"
-                  style={{ display: "flex" }}
-                  className="block text-xs font-semibold"
+                  variant="caption"
+                  sx={{ display: "flex", fontWeight: 600 }}
                 >
                   {t("job-title")}
-                  <span className="text-[red] text-[13px]">*</span>
-                </label>
-                <input
+                  <Box component="span" sx={{ color: "error.main", ml: 0.25 }}>
+                    *
+                  </Box>
+                </Typography>
+                <TextField
                   type="text"
-                  className="op-input op-input-bordered op-input-sm focus:outline-none hover:border-base-content w-full text-xs"
                   id="JobTitle"
+                  fullWidth
+                  size="small"
                   value={userDetails.Destination}
                   onChange={(e) =>
                     setUserDetails({
@@ -609,39 +716,46 @@ function Login() {
                       Destination: e.target.value
                     })
                   }
-                  onInvalid={(e) =>
-                    e.target.setCustomValidity(t("input-required"))
-                  }
-                  onInput={(e) => e.target.setCustomValidity("")}
-                  required
+                  slotProps={{
+                    htmlInput: {
+                      required: true,
+                      onInvalid: (e) =>
+                        e.target.setCustomValidity(t("input-required")),
+                      onInput: (e) => e.target.setCustomValidity("")
+                    }
+                  }}
                 />
-              </div>
-              <div className="mt-4 gap-2 flex flex-row">
-                <button
+              </Box>
+              <Box sx={{ mt: 2, gap: 1, display: "flex", flexDirection: "row" }}>
+                <Button
                   type="button"
-                  className="op-btn op-btn-primary"
+                  variant="contained"
                   onClick={(e) => handleSubmitbtn(e)}
                 >
                   {t("login")}
-                </button>
-                <button
-                  type="button"
-                  className="op-btn op-btn-ghost text-base-content"
-                  onClick={logOutUser}
-                >
+                </Button>
+                <Button type="button" variant="text" onClick={logOutUser}>
                   {t("cancel")}
-                </button>
-              </div>
-            </form>
+                </Button>
+              </Box>
+            </Box>
           </ModalUi>
         </>
       ) : (
-        <div
+        <Box
           aria-live="assertive"
-          className="fixed w-full h-full flex justify-center items-center z-50"
+          sx={{
+            position: "fixed",
+            width: "100%",
+            height: "100%",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            zIndex: 50
+          }}
         >
           <Loader />
-        </div>
+        </Box>
       )}
     </>
   );

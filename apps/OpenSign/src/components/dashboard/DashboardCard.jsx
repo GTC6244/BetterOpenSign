@@ -6,6 +6,9 @@ import { useNavigate } from "react-router";
 import Tooltip from "../../primitives/Tooltip";
 import { useTranslation } from "react-i18next";
 import { withSessionValidation } from "../../utils";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import CircularProgress from "@mui/material/CircularProgress";
 
 const DashboardCard = (props) => {
   const navigate = useNavigate();
@@ -311,41 +314,61 @@ const DashboardCard = (props) => {
     }
   }
 
+  const isClickable = !!(props.Data && props.Data.Redirect_type);
   return (
-    <div
+    <Box
       onClick={() => openReport()}
-      className={`${
-        props.Data && props.Data.Redirect_type
-          ? "cursor-pointer"
-          : "cursor-default"
-      }`}
+      sx={{ cursor: isClickable ? "pointer" : "default" }}
     >
-      <div className="flex items-center justify-start gap-5 text-white">
-        <span className="rounded-full bg-base-300 bg-opacity-20 w-[60px] h-[60px] self-start flex justify-center items-center">
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "flex-start",
+          gap: 2.5,
+          color: "common.white"
+        }}
+      >
+        <Box
+          sx={{
+            borderRadius: "50%",
+            bgcolor: "rgba(255,255,255,0.2)",
+            width: 60,
+            height: 60,
+            alignSelf: "flex-start",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center"
+          }}
+        >
           <i
             className={`${
               props.Icon ? props.Icon : "fa-light fa-info"
             } text-[25px] lg:text-[30px]`}
           ></i>
-        </span>
+        </Box>
 
-        <div className="font-medium">
-          <div className="text-base lg:text-lg">
+        <Box sx={{ fontWeight: 500 }}>
+          <Typography sx={{ fontSize: { xs: "1rem", lg: "1.125rem" } }}>
             {t(`dashboard-card.${props.Label}`)}
-          </div>
-          <div className="text-2xl font-light">
-            {loading ? <div className="loader-01"></div> : setFormat(response)}
-          </div>
-        </div>
-      </div>
-      <div className="text-xs absolute top-3 right-2">
+          </Typography>
+          <Typography sx={{ fontSize: "1.5rem", fontWeight: 300 }}>
+            {loading ? (
+              <CircularProgress size={24} sx={{ color: "common.white" }} />
+            ) : (
+              setFormat(response)
+            )}
+          </Typography>
+        </Box>
+      </Box>
+      <Box sx={{ fontSize: "0.75rem", position: "absolute", top: 12, right: 8 }}>
         <Tooltip
           id={props.Label}
           iconColor={"white"}
           message={t(`tour-mssg.${props.Label}`)}
         />
-      </div>
-    </div>
+      </Box>
+    </Box>
   );
 };
 

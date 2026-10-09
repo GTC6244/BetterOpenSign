@@ -8,6 +8,8 @@ import {
   years
 } from "../constant/Utils";
 import { useTranslation } from "react-i18next";
+import Box from "@mui/material/Box";
+import Link from "@mui/material/Link";
 
 const DatePicker = ({
   selectDate,
@@ -24,27 +26,53 @@ const DatePicker = ({
   const { t } = useTranslation();
 
   const CustomInput = forwardRef(({ value, onClick }, ref) => (
-    <div
-      className="w-full border-gray-400 rounded-[50px] border-[1px] px-3 text-xs py-2 focus:outline-none hover:border-base-content flex items-center justify-between"
+    <Box
       onClick={onClick}
       ref={ref}
+      sx={{
+        width: "100%",
+        border: "1px solid",
+        borderColor: "outline.main",
+        borderRadius: "50px",
+        px: 1.5,
+        py: 1,
+        fontSize: "0.75rem",
+        cursor: "pointer",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+        "&:hover": { borderColor: "text.primary" }
+      }}
     >
-      <span className={`${dateClassName} truncate`}>{value}</span>
+      <Box
+        component="span"
+        className={dateClassName}
+        sx={{
+          overflow: "hidden",
+          textOverflow: "ellipsis",
+          whiteSpace: "nowrap"
+        }}
+      >
+        {value}
+      </Box>
       <i className={`fa-light fa-calendar`}></i>
-    </div>
+    </Box>
   ));
   CustomInput.displayName = "CustomInput";
 
   return (
     <>
       {showLabel && (
-        <span className="flex-shrink-0">{label || t("default-date")}: </span>
+        <Box component="span" sx={{ flexShrink: 0 }}>
+          {label || t("default-date")}:{" "}
+        </Box>
       )}
       <ReactDatePicker
         renderCustomHeader={({ date, changeYear, changeMonth }) => (
-          <div className="flex justify-start md:ml-2">
-            <select
-              className="bg-transparent outline-none"
+          <Box sx={{ display: "flex", justifyContent: "flex-start", ml: { md: 1 } }}>
+            <Box
+              component="select"
+              sx={{ bgcolor: "transparent", outline: "none", color: "text.primary" }}
               value={months[getMonth(date)]}
               onChange={({ target: { value } }) =>
                 changeMonth(months.indexOf(value))
@@ -55,9 +83,10 @@ const DatePicker = ({
                   {option}
                 </option>
               ))}
-            </select>
-            <select
-              className="bg-transparent outline-none"
+            </Box>
+            <Box
+              component="select"
+              sx={{ bgcolor: "transparent", outline: "none", color: "text.primary" }}
               value={getYear(date)}
               onChange={({ target: { value } }) => changeYear(value)}
             >
@@ -66,8 +95,8 @@ const DatePicker = ({
                   {option}
                 </option>
               ))}
-            </select>
-          </div>
+            </Box>
+          </Box>
         )}
         wrapperClassName="w-full"
         closeOnScroll={true}
@@ -81,12 +110,16 @@ const DatePicker = ({
         portalId="root-portal"
       />
       {showClear && handleClear && (
-        <span
+        <Link
+          component="button"
+          type="button"
           onClick={() => handleClear()}
-          className="underline text-blue-500 cursor-pointer ml-2"
+          color="info"
+          underline="always"
+          sx={{ cursor: "pointer", ml: 1 }}
         >
           {t("clear")}
-        </span>
+        </Link>
       )}
     </>
   );

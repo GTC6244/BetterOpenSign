@@ -1,6 +1,7 @@
 import { useState, useEffect, Suspense } from "react";
 import { lazyWithRetry } from "../../utils";
 import { useTranslation } from "react-i18next";
+import Box from "@mui/material/Box";
 const DashboardButton = lazyWithRetry(() => import("./DashboardButton"));
 const DashboardCard = lazyWithRetry(() => import("./DashboardCard"));
 const DashboardReport = lazyWithRetry(() => import("./DashboardReport"));
@@ -32,17 +33,35 @@ const GetDashboard = (props) => {
     switch (col.widget.type) {
       case "Card":
         return (
-          <div
-            className={`${
+          <Box
+            className={
               col?.widget?.bgColor ? col.widget.bgColor : "bg-[#2ed8b6]"
-            } op-card w-full h-[140px] px-3 pt-4 mb-3 shadow-md`}
+            }
             data-tut={col.widget.data.tourSection}
+            sx={{
+              position: "relative",
+              width: "100%",
+              height: 140,
+              px: 1.5,
+              pt: 2,
+              mb: 1.5,
+              borderRadius: 2,
+              boxShadow: 3
+            }}
           >
             <Suspense
               fallback={
-                <div className="h-[150px] w-full flex justify-center items-center">
+                <Box
+                  sx={{
+                    height: 150,
+                    width: "100%",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center"
+                  }}
+                >
                   {t("loading")}
-                </div>
+                </Box>
               }
             >
               <DashboardCard
@@ -53,17 +72,17 @@ const GetDashboard = (props) => {
                 FilterData={col.widget.filter}
               />
             </Suspense>
-          </div>
+          </Box>
         );
       case "report": {
         return (
           <div data-tut={col.widget.data.tourSection}>
             <Suspense fallback={<div>please wait</div>}>
-              <div className="mb-3 md:mb-0">
+              <Box sx={{ mb: { xs: 1.5, md: 0 } }}>
                 <DashboardReport
                   Record={col.widget}
                 />
-              </div>
+              </Box>
             </Suspense>
           </div>
         );
@@ -76,10 +95,20 @@ const GetDashboard = (props) => {
     switch (col.widget.type) {
       case "Card":
         return (
-          <div
-            className={`${
+          <Box
+            className={
               col?.widget?.bgColor ? col.widget.bgColor : "bg-[#2ed8b6]"
-            } op-card w-full h-[140px] px-3 pt-4 mb-3 shadow-md"`}
+            }
+            sx={{
+              position: "relative",
+              width: "100%",
+              height: 140,
+              px: 1.5,
+              pt: 2,
+              mb: 1.5,
+              borderRadius: 2,
+              boxShadow: 3
+            }}
           >
             <Suspense fallback={<div>please wait</div>}>
               <DashboardCard
@@ -90,16 +119,16 @@ const GetDashboard = (props) => {
                 FilterData={col.widget.filter}
               />
             </Suspense>
-          </div>
+          </Box>
         );
       case "report": {
         return (
           <Suspense fallback={<div>please wait</div>}>
-            <div className="mb-3 md:mb-0">
+            <Box sx={{ mb: { xs: 1.5, md: 0 } }}>
               <DashboardReport
                 Record={col.widget}
               />
-            </div>
+            </Box>
           </Suspense>
         );
       }
@@ -108,11 +137,15 @@ const GetDashboard = (props) => {
     }
   };
   return (
-    <div>
-      <div className="mb-3">
-        <div
+    <Box>
+      <Box sx={{ mb: 1.5 }}>
+        <Box
           data-tut={"tourbutton"}
-          className="flex flex-col md:flex-row gap-4"
+          sx={{
+            display: "flex",
+            flexDirection: { xs: "column", md: "row" },
+            gap: 2
+          }}
         >
           {buttonList.map((btn) => (
             <Button
@@ -123,8 +156,8 @@ const GetDashboard = (props) => {
               icon={btn.icon}
             />
           ))}
-        </div>
-      </div>
+        </Box>
+      </Box>
       <div className="grid grid-cols-12 w-full gap-x-4">
         {props?.dashboard?.columns?.map((col, i) =>
           col.widget.data && col.widget.data.tourSection ? (
@@ -138,7 +171,7 @@ const GetDashboard = (props) => {
           )
         )}
       </div>
-    </div>
+    </Box>
   );
 };
 

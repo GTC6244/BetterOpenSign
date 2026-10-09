@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Tooltip } from "react-tooltip";
+import Box from "@mui/material/Box";
 
 //This file is for both Text and textInput widgets
 export default function TextInput(props) {
@@ -21,7 +22,7 @@ export default function TextInput(props) {
     }
   }, [props?.widgetValue]);
   return (
-    <div style={{ position: "relative", width: "100%" }}>
+    <Box sx={{ position: "relative", width: "100%" }}>
       {isMultiline ? (
         <textarea
           onBlur={props?.handleInputBlur}
@@ -77,6 +78,6 @@ export default function TextInput(props) {
           </Tooltip>
         </>
       )}
-    </div>
+    </Box>
   );
 }

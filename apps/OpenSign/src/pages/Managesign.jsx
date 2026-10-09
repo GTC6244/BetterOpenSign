@@ -13,6 +13,10 @@ import Alert from "../primitives/Alert";
 import Loader from "../primitives/Loader";
 import { useTranslation } from "react-i18next";
 import { sanitizeFileName, withSessionValidation } from "../utils";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Link from "@mui/material/Link";
+import Typography from "@mui/material/Typography";
 
 const COLOR_CLASS = {
   blue: "text-blue-600",
@@ -324,23 +328,66 @@ const ManageSign = () => {
     }
   };
   return (
-    <div className="relative h-full bg-base-100 text-base-content flex shadow-md rounded-box overflow-auto">
+    <Box
+      sx={{
+        position: "relative",
+        height: "100%",
+        bgcolor: "background.paper",
+        color: "text.primary",
+        display: "flex",
+        boxShadow: 3,
+        borderRadius: 3,
+        overflow: "auto"
+      }}
+    >
       {isLoader && (
-        <div className="absolute bg-black bg-opacity-30 z-50 w-full h-full flex justify-center items-center">
+        <Box
+          sx={{
+            position: "absolute",
+            bgcolor: "rgba(0,0,0,0.3)",
+            zIndex: 50,
+            width: "100%",
+            height: "100%",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center"
+          }}
+        >
           <Loader />
-        </div>
+        </Box>
       )}
       {isAlert?.message && <Alert type={isAlert.type}>{isAlert.message}</Alert>}
-      <div className="relative w-full">
-        <div className="ml-[5px] my-[20px] md:m-[20px]">
-          <div className="text-[20px] font-semibold m-[10px] md:m-0 mb-2">
+      <Box sx={{ position: "relative", width: "100%" }}>
+        <Box sx={{ ml: "5px", my: "20px", m: { md: "20px" } }}>
+          <Typography
+            sx={{
+              fontSize: "20px",
+              fontWeight: 600,
+              m: { xs: "10px", md: 0 },
+              mb: 1
+            }}
+          >
             {t("my-signature")}
-          </div>
-          <div className="flex flex-col md:flex-row gap-2 md:gap-5">
-            <div className="relative">
-              <span className="font-medium select-none flex mb-[10px]">
+          </Typography>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: { xs: "column", md: "row" },
+              gap: { xs: 1, md: 2.5 }
+            }}
+          >
+            <Box sx={{ position: "relative" }}>
+              <Box
+                component="span"
+                sx={{
+                  fontWeight: 500,
+                  userSelect: "none",
+                  display: "flex",
+                  mb: "10px"
+                }}
+              >
                 {t("signature")}
-              </span>
+              </Box>
               <input
                 type="file"
                 onChange={onImageChange}
@@ -389,36 +436,65 @@ const ManageSign = () => {
                       </div>
                     )}
                   </div>
-                  <div className="flex flex-row gap-2 text-sm pr-2">
-                    <div
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexDirection: "row",
+                      gap: 1,
+                      fontSize: "0.875rem",
+                      pr: 1
+                    }}
+                  >
+                    <Link
+                      component="button"
                       type="button"
-                      className="op-link"
+                      underline="hover"
+                      color="primary"
                       onClick={() => handleUploadBtn()}
                     >
                       {t("upload")}
-                    </div>
-                    <div
+                    </Link>
+                    <Link
+                      component="button"
                       type="button"
-                      className="op-link"
+                      underline="hover"
+                      color="primary"
                       onClick={() => handleClear()}
                     >
                       {t("clear")}
-                    </div>
-                  </div>
+                    </Link>
+                  </Box>
                 </div>
                 {warning && (
-                  <span className="customwarning signWarning text-[12px] w-[220px] md:w-[300px]">
-                    <i className="fa-light fa-exclamation-circle text-[#fab005] text-[15px] mr-[4px]"></i>
+                  <Box
+                    component="span"
+                    className="customwarning signWarning"
+                    sx={{ fontSize: "12px", width: { xs: 220, md: 300 } }}
+                  >
+                    <Box
+                      component="i"
+                      className="fa-light fa-exclamation-circle"
+                      sx={{ color: "warning.main", fontSize: "15px", mr: "4px" }}
+                    />
                     {t("upload-signature/Image")}
-                  </span>
+                  </Box>
                 )}
               </div>
-            </div>
+            </Box>
 
-            <div>
-              <span className="font-medium select-none flex mb-[10px] pl-[10px]">
+            <Box>
+              <Box
+                component="span"
+                sx={{
+                  fontWeight: 500,
+                  userSelect: "none",
+                  display: "flex",
+                  mb: "10px",
+                  pl: "10px"
+                }}
+              >
                 {t("initials")}
-              </span>
+              </Box>
               <input
                 type="file"
                 onChange={onImgInitialsChange}
@@ -466,31 +542,51 @@ const ManageSign = () => {
                       </div>
                     )}
                   </div>
-                  <div className="flex flex-row gap-1.5 text-sm">
-                    <div
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexDirection: "row",
+                      gap: 0.75,
+                      fontSize: "0.875rem"
+                    }}
+                  >
+                    <Link
+                      component="button"
                       type="button"
-                      className="op-link"
+                      underline="hover"
+                      color="primary"
                       onClick={() => handleUploadInitials()}
                     >
                       {t("upload")}
-                    </div>
-                    <div>
-                      <div
+                    </Link>
+                    <Box>
+                      <Link
+                        component="button"
                         type="button"
-                        className="op-link"
+                        underline="hover"
+                        color="primary"
                         onClick={() => handleClearInitials()}
                       >
                         {t("clear")}
-                      </div>
-                    </div>
-                  </div>
+                      </Link>
+                    </Box>
+                  </Box>
                 </div>
               </div>
-            </div>
-            <div>
-              <span className="font-medium select-none flex mb-[10px] pl-[10px]">
+            </Box>
+            <Box>
+              <Box
+                component="span"
+                sx={{
+                  fontWeight: 500,
+                  userSelect: "none",
+                  display: "flex",
+                  mb: "10px",
+                  pl: "10px"
+                }}
+              >
                 Stamp
-              </span>
+              </Box>
 
               <div
                 onClick={() => stampRef.current.click()}
@@ -512,35 +608,39 @@ const ManageSign = () => {
                       hidden
                       ref={stampRef}
                     />
-                    <i className="fa-light text-base-content fa-cloud-upload-alt text-[28px]"></i>
-                    <div className="text-[15px] text-base-content">
+                    <Box
+                      component="i"
+                      className="fa-light fa-cloud-upload-alt"
+                      sx={{ color: "text.primary", fontSize: "28px" }}
+                    />
+                    <Typography sx={{ fontSize: "15px" }}>
                       {t("upload")}
-                    </div>
+                    </Typography>
                   </>
                 )}
               </div>
-              <div className="flex justify-end pr-3">
-                <div
+              <Box sx={{ display: "flex", justifyContent: "flex-end", pr: 1.5 }}>
+                <Link
+                  component="button"
                   type="button"
-                  className="op-link text-sm"
+                  underline="hover"
+                  color="primary"
+                  sx={{ fontSize: "0.875rem" }}
                   onClick={() => handleClearStamp()}
                 >
                   {t("clear")}
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="pt-3 ml-2 md:ml-0">
-            <button
-              className="op-btn op-btn-primary"
-              onClick={(e) => handleSubmit(e)}
-            >
+                </Link>
+              </Box>
+            </Box>
+          </Box>
+          <Box sx={{ pt: 1.5, ml: { xs: 1, md: 0 } }}>
+            <Button variant="contained" onClick={(e) => handleSubmit(e)}>
               {t("save")}
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
+            </Button>
+          </Box>
+        </Box>
+      </Box>
+    </Box>
   );
 };
 

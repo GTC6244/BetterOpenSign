@@ -8,6 +8,13 @@ import {
 import { useTranslation } from "react-i18next";
 import { setPrefillImg } from "../../redux/reducers/widgetSlice";
 import { useDispatch, useSelector } from "react-redux";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import TextField from "@mui/material/TextField";
+import Radio from "@mui/material/Radio";
+import RadioGroup from "@mui/material/RadioGroup";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Divider from "@mui/material/Divider";
 
 function PlaceholderCopy(props) {
   const { prefillImg } = useSelector((state) => state.widget);
@@ -430,31 +437,37 @@ function PlaceholderCopy(props) {
       title={t("copy-title")}
       handleClose={() => handleUniqueId()}
     >
-      <div className="h-full p-[20px] text-base-content">
-        {copyType.map((data) => (
-          <div key={data.id} className="flex flex-col">
-            <label className="text-[16px] font-medium items-center">
-              <input
-                className="mr-[8px] op-radio op-radio-xs"
-                type="radio"
-                value={data.id}
-                onChange={() => setSelectCopyType(data.id)}
-                checked={selectCopyType === data.id}
-              />
-              {t(`copy-type.${data.type}`)}
-            </label>
-          </div>
-        ))}
+      <Box sx={{ height: "100%", p: "20px", color: "text.primary" }}>
+        <RadioGroup
+          value={selectCopyType}
+          onChange={(e) => setSelectCopyType(Number(e.target.value))}
+        >
+          {copyType.map((data) => (
+            <FormControlLabel
+              key={data.id}
+              value={data.id}
+              control={<Radio size="small" />}
+              label={t(`copy-type.${data.type}`)}
+              sx={{
+                "& .MuiFormControlLabel-label": {
+                  fontSize: "16px",
+                  fontWeight: 500
+                }
+              }}
+            />
+          ))}
+        </RadioGroup>
 
         {/* ✅ PAGE RANGE UI */}
         {selectCopyType === 5 && (
-          <div className="flex items-center gap-2 mt-4">
-            <span>From</span>
-            <input
+          <Box
+            sx={{ display: "flex", alignItems: "center", gap: 1, mt: 2 }}
+          >
+            <Box component="span">From</Box>
+            <TextField
               type="number"
+              size="small"
               value={fromPage}
-              min={1}
-              max={props.allPages}
               onKeyDown={(e) => {
                 // block invalid characters
                 if (["e", "E", "+", "-", "."].includes(e.key)) {
@@ -479,15 +492,15 @@ function PlaceholderCopy(props) {
 
                 setFromPage(numericValue);
               }}
-              className="w-16 border px-2 py-1 rounded"
+              slotProps={{ htmlInput: { min: 1, max: props.allPages } }}
+              sx={{ width: 80 }}
             />
 
-            <span>To</span>
-            <input
+            <Box component="span">To</Box>
+            <TextField
               type="number"
+              size="small"
               value={toPage}
-              min={1}
-              max={props.allPages}
               onKeyDown={(e) => {
                 if (["e", "E", "+", "-", "."].includes(e.key)) {
                   e.preventDefault();
@@ -509,34 +522,37 @@ function PlaceholderCopy(props) {
 
                 setToPage(numericValue);
               }}
-              className="w-16 border px-2 py-1 rounded"
+              slotProps={{ htmlInput: { min: 1, max: props.allPages } }}
+              sx={{ width: 80 }}
             />
 
-            <span>out of {props.allPages} pages</span>
-          </div>
+            <Box component="span">out of {props.allPages} pages</Box>
+          </Box>
         )}
 
-        <div className="flex flex-row bg-[#9f9f9f] w-full my-[15px]" />
+        <Divider sx={{ my: "15px" }} />
 
-        <button
+        <Button
           onClick={() => {
             handleApplyCopy();
             handleUniqueId();
           }}
           type="button"
           disabled={!selectCopyType}
-          className="op-btn op-btn-primary"
+          variant="contained"
         >
           {t("apply")}
-        </button>
-        <button
+        </Button>
+        <Button
           type="button"
-          className="op-btn op-btn-ghost text-base-content ml-2"
+          variant="text"
+          color="inherit"
+          sx={{ ml: 2 }}
           onClick={() => handleUniqueId()}
         >
           {t("cancel")}
-        </button>
-      </div>
+        </Button>
+      </Box>
     </ModalUi>
   );
 }

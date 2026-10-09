@@ -3,6 +3,10 @@ import Loader from "../../primitives/Loader";
 import { useTranslation } from "react-i18next";
 import Parse from "parse";
 import { withSessionValidation } from "../../utils";
+import Box from "@mui/material/Box";
+import TextField from "@mui/material/TextField";
+import Button from "@mui/material/Button";
+import Stack from "@mui/material/Stack";
 
 const EditContactForm = (props) => {
   const { t } = useTranslation();
@@ -69,100 +73,97 @@ const EditContactForm = (props) => {
     }
   });
   return (
-    <div className="h-full p-[20px]">
+    <Box sx={{ height: "100%", p: "20px" }}>
       {isLoader && (
-        <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-30">
+        <Box
+          sx={{
+            position: "fixed",
+            inset: 0,
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            bgcolor: "rgba(0,0,0,0.3)"
+          }}
+        >
           <Loader />
-        </div>
+        </Box>
       )}
-      <div className="w-full mx-auto p-2 text-base-content">
+      <Box sx={{ width: "100%", mx: "auto", p: 1, color: "text.primary" }}>
         <form onSubmit={handleSubmit}>
-          <div className="mb-3">
-            <label htmlFor="name" className="block text-xs font-semibold">
-              {t("name")}
-              <span className="text-[red] text-[13px]"> *</span>
-            </label>
-            <input
-              type="text"
-              id="name"
-              name="Name"
-              value={formData.Name}
-              onChange={(e) => handleChange(e)}
-              onInput={(e) => e.target.setCustomValidity("")}
-              onInvalid={(e) => e.target.setCustomValidity(t("input-required"))}
-              className="op-input op-input-bordered op-input-sm focus:outline-none hover:border-base-content w-full text-xs"
-              placeholder={t("enter-name")}
-              required
-            />
-          </div>
-          <div className="mb-3">
-            <label htmlFor="email" className="block text-xs font-semibold">
-              {t("email")}
-              <span className="text-[red] text-[13px]"> *</span>
-            </label>
-            <input
-              type="email"
-              id="email"
-              name="Email"
-              value={formData.Email}
-              onChange={(e) => handleChange(e)}
-              onInput={(e) => e.target.setCustomValidity("")}
-              onInvalid={(e) => e.target.setCustomValidity(t("input-required"))}
-              className="op-input op-input-bordered op-input-sm focus:outline-none hover:border-base-content w-full text-xs"
-              placeholder={t("enter-email")}
-              required
-            />
-          </div>
-          <div className="mb-3">
-            <label htmlFor="phone" className="block text-xs font-semibold">
-              {t("phone")}
-            </label>
-            <input
-              type="text"
-              id="phone"
-              name="Phone"
-              value={formData.Phone}
-              onChange={(e) => handleChange(e)}
-              className="op-input op-input-bordered op-input-sm focus:outline-none hover:border-base-content w-full text-xs"
-              placeholder={t("phone-optional")}
-            />
-          </div>
-          <div className="mb-3">
-            <label htmlFor="Company" className="block text-xs font-semibold">
-              {t("company")}
-            </label>
-            <input
-              type="text"
-              id="Company"
-              name="Company"
-              value={formData.Company}
-              onChange={(e) => handleChange(e)}
-              className="op-input op-input-bordered op-input-sm focus:outline-none hover:border-base-content w-full text-xs"
-              placeholder={t("phone-optional")}
-            />
-          </div>
-          <div className="mb-3">
-            <label htmlFor="JobTitle" className="block text-xs font-semibold">
-              {t("job-title")}
-            </label>
-            <input
-              type="text"
-              id="JobTitle"
-              name="JobTitle"
-              value={formData.JobTitle}
-              onChange={(e) => handleChange(e)}
-              className="op-input op-input-bordered op-input-sm focus:outline-none hover:border-base-content w-full text-xs"
-              placeholder={t("phone-optional")}
-            />
-          </div>
-          <div className="mt-4 flex gap-x-2 justify-start">
-            <button type="submit" className="op-btn op-btn-primary">
+          <TextField
+            fullWidth
+            size="small"
+            margin="dense"
+            type="text"
+            id="name"
+            name="Name"
+            label={t("name")}
+            required
+            value={formData.Name}
+            onChange={(e) => handleChange(e)}
+            onInput={(e) => e.target.setCustomValidity("")}
+            onInvalid={(e) => e.target.setCustomValidity(t("input-required"))}
+            placeholder={t("enter-name")}
+          />
+          <TextField
+            fullWidth
+            size="small"
+            margin="dense"
+            type="email"
+            id="email"
+            name="Email"
+            label={t("email")}
+            required
+            value={formData.Email}
+            onChange={(e) => handleChange(e)}
+            onInput={(e) => e.target.setCustomValidity("")}
+            onInvalid={(e) => e.target.setCustomValidity(t("input-required"))}
+            placeholder={t("enter-email")}
+          />
+          <TextField
+            fullWidth
+            size="small"
+            margin="dense"
+            type="text"
+            id="phone"
+            name="Phone"
+            label={t("phone")}
+            value={formData.Phone}
+            onChange={(e) => handleChange(e)}
+            placeholder={t("phone-optional")}
+          />
+          <TextField
+            fullWidth
+            size="small"
+            margin="dense"
+            type="text"
+            id="Company"
+            name="Company"
+            label={t("company")}
+            value={formData.Company}
+            onChange={(e) => handleChange(e)}
+            placeholder={t("phone-optional")}
+          />
+          <TextField
+            fullWidth
+            size="small"
+            margin="dense"
+            type="text"
+            id="JobTitle"
+            name="JobTitle"
+            label={t("job-title")}
+            value={formData.JobTitle}
+            onChange={(e) => handleChange(e)}
+            placeholder={t("phone-optional")}
+          />
+          <Stack direction="row" spacing={1} justifyContent="flex-start" sx={{ mt: 2 }}>
+            <Button type="submit" variant="contained">
               {t("submit")}
-            </button>
-          </div>
+            </Button>
+          </Stack>
         </form>
-      </div>
-    </div>
+      </Box>
+    </Box>
   );
 };
 

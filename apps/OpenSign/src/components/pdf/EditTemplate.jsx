@@ -19,6 +19,12 @@ import SignersInput from "../shared/fields/SignersInput";
 import { PDFDocument } from "pdf-lib";
 import ModalUi from "../../primitives/ModalUi";
 import { SaveFileSize } from "../../constant/saveFileSize";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import TextField from "@mui/material/TextField";
+import Radio from "@mui/material/Radio";
+import Checkbox from "@mui/material/Checkbox";
+import FormControlLabel from "@mui/material/FormControlLabel";
 
 const EditTemplate = ({
   title,
@@ -296,38 +302,69 @@ const EditTemplate = ({
       handleClose={handleEditTemplateClose}
     >
       <ModalUi isOpen={showConfirm} showClose={false}>
-        <div className="p-[20px]">
-          <p className="text-base font-normal text-base-content py-[5px] md:py-[6px] px-[5px]">
+        <Box sx={{ p: 2.5 }}>
+          <Box
+            component="p"
+            sx={{
+              fontSize: "1rem",
+              fontWeight: 400,
+              color: "text.primary",
+              py: { xs: "5px", md: "6px" },
+              px: "5px"
+            }}
+          >
             {t("unsaved-changes-discard-them?")}
-          </p>
-          <div className="flex items-center mt-2.5 gap-2 md:gap-3 text-white">
-            <button
-              className="op-btn op-btn-primary px-6"
+          </Box>
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              mt: 1.25,
+              gap: { xs: 1, md: 1.5 }
+            }}
+          >
+            <Button
+              variant="contained"
+              sx={{ px: 3 }}
               onClick={discardChanges}
             >
               {t("yes-discard")}
-            </button>
-            <button
-              className="op-btn op-btn-secondary px-4 md:px-6"
+            </Button>
+            <Button
+              variant="contained"
+              color="secondary"
+              sx={{ px: { xs: 2, md: 3 } }}
               onClick={() => setShowConfirm(false)}
             >
               {t("cancel")}
-            </button>
-          </div>
-        </div>
+            </Button>
+          </Box>
+        </Box>
       </ModalUi>
       <div className="max-h-[300px] md:max-h-[400px] overflow-y-scroll p-[10px]">
-        <div className="text-base-content">
+        <Box sx={{ color: "text.primary" }}>
           <form onSubmit={handleSubmit}>
             <div className="mb-[0.35rem]">
               <label htmlFor="name" className="text-[13px]">
                 {t("report-heading.File")}
               </label>
-              <div
-                className="border-[1.5px] border-dashed border-gray-300 rounded-lg px-4 py-6 text-center text-gray-500 bg-white cursor-pointer hover:border-base-content transition"
+              <Box
                 onDrop={handleDrop}
                 onDragOver={handleDragOver}
                 onClick={() => inputFileRef?.current?.click()}
+                sx={{
+                  border: "1.5px dashed",
+                  borderColor: "outline.variant",
+                  borderRadius: 2,
+                  px: 2,
+                  py: 3,
+                  textAlign: "center",
+                  color: "text.secondary",
+                  bgcolor: "background.paper",
+                  cursor: "pointer",
+                  transition: "border-color 0.2s",
+                  "&:hover": { borderColor: "text.primary" }
+                }}
               >
                 <label
                   htmlFor="fileUpload"
@@ -335,7 +372,7 @@ const EditTemplate = ({
                 >
                   {t("browse-or-drag-to-replace-existing-file")}
                 </label>
-              </div>
+              </Box>
               <input
                 ref={inputFileRef}
                 type="file"
@@ -348,92 +385,112 @@ const EditTemplate = ({
                 onInput={(e) => e.target.setCustomValidity("")}
               />
               {uploadPdf?.name && (
-                <div
+                <Box
                   onClick={() => inputFileRef?.current?.click()}
-                  className="mt-2 cursor-pointer op-input op-input-bordered op-input-sm focus:outline-none py-2 font-semibold w-full text-xs"
+                  sx={{
+                    mt: 1,
+                    cursor: "pointer",
+                    border: "1px solid",
+                    borderColor: "outline.main",
+                    borderRadius: 1,
+                    py: 1,
+                    px: 1.5,
+                    fontWeight: 600,
+                    width: "100%",
+                    fontSize: "0.75rem"
+                  }}
                 >
                   selected:{" "}
                   {uploadPdf?.url
                     ? `${uploadPdf?.name}.pdf`
                     : getFileName(template.URL)}
-                </div>
+                </Box>
               )}
             </div>
             <div className="mb-[0.35rem]">
               <label htmlFor="name" className="text-[13px]">
                 {t("Title")}
-                <span className="text-[13px] text-[red]"> *</span>
+                <Box component="span" sx={{ fontSize: "13px", color: "error.main" }}>
+                  {" "}
+                  *
+                </Box>
               </label>
-              <input
+              <TextField
                 type="text"
                 name="Name"
+                size="small"
+                fullWidth
                 value={formData.Name}
                 onChange={(e) => handleStrInput(e)}
-                onInvalid={(e) =>
-                  e.target.setCustomValidity(t("input-required"))
-                }
-                onInput={(e) => e.target.setCustomValidity("")}
                 required
-                className="op-input op-input-bordered op-input-sm focus:outline-none hover:border-base-content w-full text-xs"
+                inputProps={{
+                  onInvalid: (e) =>
+                    e.target.setCustomValidity(t("input-required")),
+                  onInput: (e) => e.target.setCustomValidity("")
+                }}
+                sx={{ "& .MuiInputBase-input": { fontSize: "0.75rem" } }}
               />
             </div>
             <div className="mb-[0.35rem]">
               <label htmlFor="Note" className="text-[13px]">
                 {t("report-heading.Note")}
               </label>
-              <input
+              <TextField
                 type="text"
                 name="Note"
                 id="Note"
+                size="small"
+                fullWidth
                 value={formData.Note}
                 onChange={(e) => handleStrInput(e)}
-                className="op-input op-input-bordered op-input-sm focus:outline-none hover:border-base-content w-full text-xs"
+                sx={{ "& .MuiInputBase-input": { fontSize: "0.75rem" } }}
               />
             </div>
             <div className="mb-[0.35rem]">
               <label htmlFor="Description" className="text-[13px]">
                 {t("description")}
               </label>
-              <input
+              <TextField
                 type="text"
                 name="Description"
                 id="Description"
+                size="small"
+                fullWidth
                 value={formData.Description}
                 onChange={(e) => handleStrInput(e)}
-                className="op-input op-input-bordered op-input-sm focus:outline-none hover:border-base-content w-full text-xs"
+                sx={{ "& .MuiInputBase-input": { fontSize: "0.75rem" } }}
               />
             </div>
             <div className="mb-[0.35rem]">
               <label className="text-[13px]">{t("send-in-order")}</label>
-              <div className="flex flex-col md:flex-row md:gap-4">
-                <div className="flex items-center gap-[8px] ml-[8px] mb-[5px]">
-                  <input
-                    type="radio"
+              <Box sx={{ display: "flex", flexDirection: { xs: "column", md: "row" }, gap: { md: 2 } }}>
+                <Box sx={{ display: "flex", alignItems: "center", gap: "8px", ml: "8px", mb: "5px" }}>
+                  <Radio
+                    size="small"
                     value={"true"}
-                    className="op-radio op-radio-xs"
                     name="SendinOrder"
                     checked={formData.SendinOrder === "true"}
                     onChange={handleStrInput}
+                    sx={{ p: 0 }}
                   />
                   <div className="text-[12px]">{t("yes")}</div>
-                </div>
-                <div className="flex items-center gap-[8px] ml-[8px] mb-[5px]">
-                  <input
-                    type="radio"
+                </Box>
+                <Box sx={{ display: "flex", alignItems: "center", gap: "8px", ml: "8px", mb: "5px" }}>
+                  <Radio
+                    size="small"
                     value={"false"}
                     name="SendinOrder"
-                    className="op-radio op-radio-xs"
                     checked={formData.SendinOrder === "false"}
                     onChange={handleStrInput}
+                    sx={{ p: 0 }}
                   />
                   <div className="text-[12px]">{t("no")}</div>
-                </div>
-              </div>
+                </Box>
+              </Box>
               {formData.SendinOrder === "true" && (
-                <div className="flex items-center gap-[8px] ml-[8px] mt-[4px] mb-[5px]">
-                  <input
-                    type="checkbox"
-                    className="op-checkbox op-checkbox-xs"
+                <Box sx={{ display: "flex", alignItems: "center", gap: "8px", ml: "8px", mt: "4px", mb: "5px" }}>
+                  <Checkbox
+                    size="small"
                     name="SendInOrderStrict"
                     checked={formData.SendInOrderStrict === "true"}
                     onChange={(e) =>
@@ -442,6 +499,7 @@ const EditTemplate = ({
                         SendInOrderStrict: e.target.checked ? "true" : "false"
                       })
                     }
+                    sx={{ p: 0 }}
                   />
                   <span
                     className="text-[12px]"
@@ -449,7 +507,7 @@ const EditTemplate = ({
                   >
                     {t("strict-order")}
                   </span>
-                </div>
+                </Box>
               )}
             </div>
             <div className="text-xs mt-3">
@@ -481,30 +539,30 @@ const EditTemplate = ({
                   </div>
                 </Tooltip>
               </label>
-              <div className="flex flex-col md:flex-row md:gap-4">
-                <div className="flex items-center gap-2 ml-2 mb-1">
-                  <input
-                    type="radio"
+              <Box sx={{ display: "flex", flexDirection: { xs: "column", md: "row" }, gap: { md: 2 } }}>
+                <Box sx={{ display: "flex", alignItems: "center", gap: 1, ml: 1, mb: 0.5 }}>
+                  <Radio
+                    size="small"
                     value={"true"}
-                    className="op-radio op-radio-xs"
                     name="IsTourEnabled"
                     checked={formData.IsTourEnabled === "true"}
                     onChange={handleStrInput}
+                    sx={{ p: 0 }}
                   />
                   <div className="text-center">{t("yes")}</div>
-                </div>
-                <div className="flex items-center gap-2 ml-2 mb-1">
-                  <input
-                    type="radio"
+                </Box>
+                <Box sx={{ display: "flex", alignItems: "center", gap: 1, ml: 1, mb: 0.5 }}>
+                  <Radio
+                    size="small"
                     value={"false"}
                     name="IsTourEnabled"
-                    className="op-radio op-radio-xs"
                     checked={formData.IsTourEnabled === "false"}
                     onChange={handleStrInput}
+                    sx={{ p: 0 }}
                   />
                   <div className="text-center">{t("no")}</div>
-                </div>
-              </div>
+                </Box>
+              </Box>
             </div>
             <div className="text-xs mt-3">
               <label>
@@ -522,34 +580,26 @@ const EditTemplate = ({
                   </div>
                 </Tooltip>
               </label>
-              <div className="flex flex-col md:flex-row md:gap-4">
-                <div
-                  className={
-                    `flex items-center gap-2 ml-2 mb-1`
-                  }
-                >
-                  <input
-                    className="mr-[2px] op-radio op-radio-xs"
-                    type="radio"
+              <Box sx={{ display: "flex", flexDirection: { xs: "column", md: "row" }, gap: { md: 2 } }}>
+                <Box sx={{ display: "flex", alignItems: "center", gap: 1, ml: 1, mb: 0.5 }}>
+                  <Radio
+                    size="small"
                     onChange={() => handleNotifySignChange(true)}
                     checked={formData.NotifyOnSignatures === true}
+                    sx={{ p: 0, mr: "2px" }}
                   />
                   <div className="text-center">{t("yes")}</div>
-                </div>
-                <div
-                  className={
-                    `flex items-center gap-2 ml-2 mb-1`
-                  }
-                >
-                  <input
-                    className="mr-[2px] op-radio op-radio-xs"
-                    type="radio"
+                </Box>
+                <Box sx={{ display: "flex", alignItems: "center", gap: 1, ml: 1, mb: 0.5 }}>
+                  <Radio
+                    size="small"
                     onChange={() => handleNotifySignChange(false)}
                     checked={formData.NotifyOnSignatures === false}
+                    sx={{ p: 0, mr: "2px" }}
                   />
                   <div className="text-center">{t("no")}</div>
-                </div>
-              </div>
+                </Box>
+              </Box>
             </div>
             <div className="text-xs mt-3 mb-4">
               <label htmlFor="penColors">
@@ -566,25 +616,25 @@ const EditTemplate = ({
                   </div>
                 </Tooltip>
               </label>
-              <div className="ml-[7px] flex flex-col md:flex-row gap-[10px] mb-[0.7rem]">
+              <Box sx={{ ml: "7px", display: "flex", flexDirection: { xs: "column", md: "row" }, gap: "10px", mb: "0.7rem" }}>
                 {pensList.map((color) => (
-                  <div
+                  <Box
                     key={color}
-                    className="flex flex-row gap-[5px] items-center"
+                    sx={{ display: "flex", flexDirection: "row", gap: "5px", alignItems: "center" }}
                   >
-                    <input
-                      className="mr-[2px] op-checkbox op-checkbox-xs"
-                      type="checkbox"
+                    <Checkbox
+                      size="small"
                       name="penColors"
                       checked={selectedColors.includes(color)}
                       onChange={() => handleColorsChange(color)}
+                      sx={{ p: 0, mr: "2px" }}
                     />
                     <div className="hover:underline underline-offset-2 cursor-default capitalize">
                       {color}
                     </div>
-                  </div>
+                  </Box>
                 ))}
-              </div>
+              </Box>
             </div>
             <div className="text-xs mt-3">
               <SignersInput
@@ -610,43 +660,51 @@ const EditTemplate = ({
             </div>
             <div className="text-xs mt-2">
               <label className="block">{t("redirect-url")}</label>
-              <input
+              <TextField
                 name="RedirectUrl"
-                className="op-input op-input-bordered op-input-sm focus:outline-none hover:border-base-content w-full text-xs"
+                size="small"
+                fullWidth
                 value={formData.RedirectUrl}
                 onChange={handleStrInput}
-                onInvalid={(e) =>
-                  e.target.setCustomValidity(t("input-required"))
-                }
-                onInput={(e) => e.target.setCustomValidity("")}
+                inputProps={{
+                  onInvalid: (e) =>
+                    e.target.setCustomValidity(t("input-required")),
+                  onInput: (e) => e.target.setCustomValidity("")
+                }}
+                sx={{ "& .MuiInputBase-input": { fontSize: "0.75rem" } }}
               />
             </div>
             <div className="text-xs mt-2">
               <label className="block">
                 {t("time-to-complete")}
-                <span className="text-red-500 text-[13px]">*</span>
+                <Box component="span" sx={{ color: "error.main", fontSize: "13px" }}>
+                  *
+                </Box>
               </label>
-              <input
+              <TextField
                 type="number"
                 name="TimeToCompleteDays"
-                className="op-input op-input-bordered op-input-sm focus:outline-none hover:border-base-content w-full text-xs"
+                size="small"
+                fullWidth
                 value={formData.TimeToCompleteDays}
                 onChange={(e) => handleStrInput(e)}
-                onInvalid={(e) =>
-                  e.target.setCustomValidity(t("input-required"))
-                }
-                onInput={(e) => e.target.setCustomValidity("")}
-                min={1}
                 required
+                inputProps={{
+                  min: 1,
+                  onInvalid: (e) =>
+                    e.target.setCustomValidity(t("input-required")),
+                  onInput: (e) => e.target.setCustomValidity("")
+                }}
+                sx={{ "& .MuiInputBase-input": { fontSize: "0.75rem" } }}
               />
             </div>
-            <div className="mt-[1rem] flex justify-start">
-              <button type="submit" className="op-btn op-btn-primary">
+            <Box sx={{ mt: 2, display: "flex", justifyContent: "flex-start" }}>
+              <Button type="submit" variant="contained">
                 {t("submit")}
-              </button>
-            </div>
+              </Button>
+            </Box>
           </form>
-        </div>
+        </Box>
       </div>
     </ModalUi>
   );

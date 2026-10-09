@@ -15,6 +15,10 @@ import Tour from "../primitives/Tour";
 import axios from "axios";
 import Loader from "../primitives/Loader";
 import { useTranslation } from "react-i18next";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import TextField from "@mui/material/TextField";
+import Typography from "@mui/material/Typography";
 
 const DriveBody = lazyWithRetry(
   () => import("../components/opensigndrive/DriveBody")
@@ -580,7 +584,15 @@ function Opensigndrive() {
     handleHighlightClick();
   };
   return (
-    <div className="bg-base-100 text-base-content rounded-box w-full shadow-md">
+    <Box
+      sx={{
+        bgcolor: "background.paper",
+        color: "text.primary",
+        borderRadius: 3,
+        width: "100%",
+        boxShadow: 3
+      }}
+    >
       <ModalUi
         isOpen={isAlert.isShow}
         title={t("alert")}
@@ -588,77 +600,122 @@ function Opensigndrive() {
           setIsAlert({ isShow: false, alertMessage: "" });
         }}
       >
-        <div className="h-full p-[20px] pb-[15px]">
-          <p>{isAlert.alertMessage}</p>
-          <div className="h-[1px] bg-[#9f9f9f] w-full my-[15px]"></div>
-          <button
+        <Box sx={{ height: "100%", p: "20px", pb: "15px" }}>
+          <Typography component="p">{isAlert.alertMessage}</Typography>
+          <Box
+            sx={{ height: "1px", bgcolor: "divider", width: "100%", my: "15px" }}
+          />
+          <Button
             onClick={() => setIsAlert({ isShow: false, alertMessage: "" })}
             type="button"
-            className="op-btn op-btn-neutral op-btn-sm"
+            variant="contained"
+            color="inherit"
+            size="small"
           >
             {t("close")}
-          </button>
-        </div>
+          </Button>
+        </Box>
       </ModalUi>
       <ModalUi
         isOpen={isFolder}
         title={t("add-new-folder")}
         handleClose={oncloseFolder}
       >
-        <div className="h-full p-[20px] pt-[10px] pb-[15px]">
+        <Box sx={{ height: "100%", p: "20px", pt: "10px", pb: "15px" }}>
           {folderLoader ? (
-            <div className="h-[200px] flex justify-center items-center">
-              <Loader />
-            </div>
-          ) : (
-            <form
-              onSubmit={handleAddFolder}
-              className="flex flex-col text-base-content"
+            <Box
+              sx={{
+                height: "200px",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center"
+              }}
             >
-              <label className="py-[8px] text-[15px] font-[400] mb-0">
+              <Loader />
+            </Box>
+          ) : (
+            <Box
+              component="form"
+              onSubmit={handleAddFolder}
+              sx={{ display: "flex", flexDirection: "column" }}
+            >
+              <Typography
+                component="label"
+                sx={{ py: "8px", fontSize: "15px", fontWeight: 400, mb: 0 }}
+              >
                 {t("name")}
-                <span className="text-[red]">*</span>
-              </label>
-              <input
+                <Box component="span" sx={{ color: "error.main" }}>
+                  *
+                </Box>
+              </Typography>
+              <TextField
                 onInvalid={(e) =>
                   e.target.setCustomValidity(t("input-required"))
                 }
                 onInput={(e) => e.target.setCustomValidity("")}
                 required
-                className="op-input op-input-bordered op-input-sm"
+                size="small"
                 type="text"
                 value={newFolderName}
                 onChange={(e) => handleFolderName(e)}
               />
-              <span className="text-[red] text-[12px] mt-[6px]">{error}</span>
-              <div className="w-full h-[1px] bg-[#9f9f9f] my-[15px]"></div>
-              <div className="flex flex-row">
-                <button type="submit" className="op-btn op-btn-primary">
+              <Box
+                component="span"
+                sx={{ color: "error.main", fontSize: "12px", mt: "6px" }}
+              >
+                {error}
+              </Box>
+              <Box
+                sx={{ width: "100%", height: "1px", bgcolor: "divider", my: "15px" }}
+              />
+              <Box sx={{ display: "flex", flexDirection: "row" }}>
+                <Button type="submit" variant="contained">
                   {t("add")}
-                </button>
-                <button
+                </Button>
+                <Button
                   type="button"
-                  className="op-btn op-btn-ghost text-base-content ml-1"
+                  variant="text"
+                  color="inherit"
+                  sx={{ ml: 1 }}
                   onClick={oncloseFolder}
                 >
                   {t("close")}
-                </button>
-              </div>
-            </form>
+                </Button>
+              </Box>
+            </Box>
           )}
-        </div>
+        </Box>
       </ModalUi>
       {isLoading.isLoad ? (
-        <div className="flex flex-col justify-center items-center h-[100vh] w-full">
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+            height: "100vh",
+            width: "100%"
+          }}
+        >
           <Loader />
-          <span className="text-[13px] text-base-content">
+          <Box component="span" sx={{ fontSize: "13px", color: "text.primary" }}>
             {isLoading.message}
-          </span>
-        </div>
+          </Box>
+        </Box>
       ) : handleError ? (
-        <div className="flex justify-center items-center h-[100vh] w-full">
-          <span className="text-[20px] text-base-content">{handleError}</span>
-        </div>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            height: "100vh",
+            width: "100%"
+          }}
+        >
+          <Box component="span" sx={{ fontSize: "20px", color: "text.primary" }}>
+            {handleError}
+          </Box>
+        </Box>
       ) : (
         <>
           <div className="flex flex-row justify-between items-center px-[15px] md:px-[25px] pt-2 md:pt-[20px]">
@@ -681,16 +738,17 @@ function Opensigndrive() {
             </div>
             <div className="flex flex-row items-center justify-center md:gap-1">
               {/* Desktop search input */}
-              <div className="hidden md:block p-2">
-                <input
+              <Box sx={{ display: { xs: "none", md: "block" }, p: 1 }}>
+                <TextField
                   type="search"
+                  size="small"
                   value={searchTerm}
                   onChange={handleSearchChange}
                   placeholder={t("search-documents")}
                   onPaste={handleSearchPaste}
-                  className="op-input op-input-bordered op-input-sm focus:outline-none hover:border-base-content w-64 text-xs"
+                  sx={{ width: 256, "& .MuiInputBase-input": { fontSize: "0.75rem" } }}
                 />
-              </div>
+              </Box>
               {/* Mobile search toggle */}
               <button
                 className="md:hidden p-2 flex justify-center items-center focus:outline-none rounded-md hover:bg-base-300 text-[18px]"
@@ -882,23 +940,47 @@ function Opensigndrive() {
           </div>
           {/* Mobile search overlay */}
           {mobileSearchOpen && (
-            <div className="top-full left-0 w-full bg-white px-4 py-2 shadow-md md:hidden">
-              <input
+            <Box
+              sx={{
+                top: "100%",
+                left: 0,
+                width: "100%",
+                bgcolor: "background.paper",
+                px: 2,
+                py: 1,
+                boxShadow: 3,
+                display: { xs: "block", md: "none" }
+              }}
+            >
+              <TextField
                 type="search"
+                size="small"
+                fullWidth
                 value={searchTerm}
                 onChange={handleSearchChange}
                 placeholder={t("search-documents")}
                 onPaste={handleSearchPaste}
-                className="op-input op-input-bordered op-input-sm focus:outline-none hover:border-base-content w-full text-xs"
+                sx={{ "& .MuiInputBase-input": { fontSize: "0.75rem" } }}
               />
-            </div>
+            </Box>
           )}
           {pdfData && pdfData.length === 0 ? (
-            <div className="flex justify-center items-center w-full h-[50vh]">
-              <span className="text-base-content font-bold">
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                width: "100%",
+                height: "50vh"
+              }}
+            >
+              <Box
+                component="span"
+                sx={{ color: "text.primary", fontWeight: 700 }}
+              >
                 {t("no-data")}
-              </span>
-            </div>
+              </Box>
+            </Box>
           ) : (
             <div data-tut="reactourFifth">
               <React.Suspense fallback={<AppLoader />}>
@@ -927,7 +1009,7 @@ function Opensigndrive() {
           )}
         </>
       )}
-    </div>
+    </Box>
   );
 }
 

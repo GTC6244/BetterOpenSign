@@ -2,6 +2,10 @@ import { useState, useEffect } from "react";
 import DOMPurify from "dompurify";
 import juice from "juice";
 import { Trans, useTranslation } from "react-i18next";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import Link from "@mui/material/Link";
+import TextField from "@mui/material/TextField";
 
 const EmailBodyEditor = ({
   value,
@@ -70,7 +74,9 @@ const EmailBodyEditor = ({
     processContent(value);
   };
 
-  const screen = smallscreen ? "flex-col" : "flex-col md:flex-row ";
+  const flexDirection = smallscreen
+    ? "column"
+    : { xs: "column", md: "row" };
   const template =
     bodyName === "request"
       ? "#sample/requestemail"
@@ -79,50 +85,71 @@ const EmailBodyEditor = ({
         : "#";
   return (
     <>
-      <p className="text-sm ">
+      <Typography variant="body2" component="p">
         <Trans i18nKey={"open-email-builder"}>
           {"You can create email template using "}
-          <a
+          <Link
             href={`/emailbuilder${template}`}
             target="_blank"
             referrerPolicy="no-referrer"
-            className="op-link op-link-primary font-medium"
+            color="primary"
+            underline="hover"
+            sx={{ fontWeight: 500 }}
           >
             email builder
-          </a>
+          </Link>
           {" platform and copy html code."}
         </Trans>
-      </p>
-      <div className={`flex ${screen} gap-5`}>
+      </Typography>
+      <Box sx={{ display: "flex", flexDirection, gap: 2.5 }}>
         {/* Editor Pane */}
-        <div className="flex flex-1 flex-col mt-2">
-          <label>{t("paste-html-here")}:</label>
-          <div className="flex-1 mt-1 p-3 text-xs op-textarea op-textarea-bordered min-h-[70vh]">
-            <textarea
-              className="w-full min-h-[70vh] focus:outline-none"
-              value={inputHtml}
-              onChange={(e) => handleChange(e)}
-              placeholder="<html><body><h1>Hello!</h1></body></html>"
-            />
-          </div>
-        </div>
+        <Box sx={{ display: "flex", flex: 1, flexDirection: "column", mt: 1 }}>
+          <Box component="label">{t("paste-html-here")}:</Box>
+          <TextField
+            multiline
+            value={inputHtml}
+            onChange={(e) => handleChange(e)}
+            placeholder="<html><body><h1>Hello!</h1></body></html>"
+            sx={{
+              flex: 1,
+              mt: 0.5,
+              "& .MuiInputBase-root": {
+                alignItems: "flex-start",
+                minHeight: "70vh",
+                fontSize: "0.75rem"
+              },
+              "& textarea": { minHeight: "66vh !important" }
+            }}
+          />
+        </Box>
 
         {/* Live Preview Pane */}
-        <div className="flex flex-1 flex-col mt-2">
-          <label>{t("preview")}</label>
-          <div className="flex-1 mt-1 bg-white border-[1px] op-textarea border-[#ccc] min-h-[70vh]">
+        <Box sx={{ display: "flex", flex: 1, flexDirection: "column", mt: 1 }}>
+          <Box component="label">{t("preview")}</Box>
+          <Box
+            sx={{
+              flex: 1,
+              mt: 0.5,
+              bgcolor: "#fff",
+              border: "1px solid",
+              borderColor: "outline.variant",
+              borderRadius: 1,
+              minHeight: "70vh"
+            }}
+          >
             {cleanPreview && (
-              <iframe
+              <Box
+                component="iframe"
                 title="Safe Preview"
                 srcDoc={cleanPreview}
                 // SECURITY: sandbox prevents scripts from running even if they slip through
                 sandbox="allow-popups allow-popups-to-escape-sandbox"
-                className="w-full min-h-[70vh]"
+                sx={{ width: "100%", minHeight: "70vh", border: 0 }}
               />
             )}
-          </div>
-        </div>
-      </div>
+          </Box>
+        </Box>
+      </Box>
     </>
   );
 };

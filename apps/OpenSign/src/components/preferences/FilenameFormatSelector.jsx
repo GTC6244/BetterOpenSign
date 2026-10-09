@@ -2,7 +2,11 @@ import { useState, useEffect, useMemo } from "react";
 import Parse from "parse";
 import { buildDownloadFilename } from "../../utils";
 import { useTranslation } from "react-i18next";
-import { Tooltip as ReactTooltip } from "react-tooltip";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import TextField from "@mui/material/TextField";
+import MenuItem from "@mui/material/MenuItem";
+import Tooltip from "../../primitives/Tooltip";
 
 /**
  * Enum-like list of supported filename format IDs and their labels
@@ -55,44 +59,53 @@ const FilenameFormatSelector = ({ fileNameFormat, setFileNameFormat }) => {
     setFileNameFormat(nextValue);
   }
   return (
-    <div className="max-w-[400px] pr-[20px]">
-      <label className="text-[14px] mb-[0.7rem] font-medium">
+    <Box sx={{ maxWidth: 400, pr: "20px" }}>
+      <Typography
+        component="label"
+        sx={{
+          display: "inline-flex",
+          alignItems: "center",
+          fontSize: 14,
+          mb: "0.7rem",
+          fontWeight: 500
+        }}
+      >
         {t("document-download-filename-format")}
-        <span className="text-sm">
-          <a data-tooltip-id="filename-tooltip" className="ml-1" href="/">
-            <sup>
-              <i className="fa-light fa-question rounded-full border-[#33bbff] text-[#33bbff] text-[13px] border-[1px] py-[1.5px] px-[4px]"></i>
-            </sup>
-          </a>
-          <ReactTooltip id="filename-tooltip" className="z-50">
-            <div className="max-w-[200px] md:max-w-[450px]">
-              <p>{t("download-filename-format-help")}</p>
-            </div>
-          </ReactTooltip>
-        </span>
-      </label>
-      <select
-        className="op-select op-select-bordered op-select-sm focus:outline-none hover:border-base-content w-full h-full text-[11px]"
+        <Tooltip
+          id="filename-tooltip"
+          maxWidth
+          message={t("download-filename-format-help")}
+        />
+      </Typography>
+      <TextField
+        select
+        size="small"
+        fullWidth
         value={value}
         onChange={async (e) => {
           const v = e.target.value;
           setValue(v);
           await savePreference(v);
         }}
+        sx={{ "& .MuiInputBase-input": { fontSize: 11 } }}
       >
         {FILENAME_FORMATS.map((opt) => (
-          <option key={opt.id} value={opt.id}>
+          <MenuItem key={opt.id} value={opt.id} sx={{ fontSize: 11 }}>
             {opt.label}
-          </option>
+          </MenuItem>
         ))}
-      </select>
+      </TextField>
 
-      <div className="mt-2 text-xs opacity-80">
+      <Box sx={{ mt: 1, fontSize: 12, color: "text.secondary" }}>
         {t("preview")}
-        <span className="font-medium">{preview}</span>
-      </div>
-      {error && <div className="mt-2 text-xs text-red-600">{error}</div>}
-    </div>
+        <Box component="span" sx={{ fontWeight: 500 }}>
+          {preview}
+        </Box>
+      </Box>
+      {error && (
+        <Box sx={{ mt: 1, fontSize: 12, color: "error.main" }}>{error}</Box>
+      )}
+    </Box>
   );
 };
 

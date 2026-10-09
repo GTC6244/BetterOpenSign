@@ -25,6 +25,31 @@ import {
   setAlertInfo
 } from "../redux/reducers/userReducer";
 import { useDispatch, useSelector } from "react-redux";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import Button from "@mui/material/Button";
+import Tabs from "@mui/material/Tabs";
+import Tab from "@mui/material/Tab";
+import Checkbox from "@mui/material/Checkbox";
+import Radio from "@mui/material/Radio";
+import Switch from "@mui/material/Switch";
+import FormControlLabel from "@mui/material/FormControlLabel";
+
+const HelpIcon = () => (
+  <Box
+    component="i"
+    className="fa-light fa-question"
+    sx={{
+      borderRadius: "9999px",
+      border: 1,
+      borderColor: "info.main",
+      color: "info.main",
+      fontSize: "13px",
+      py: "1.5px",
+      px: "4px"
+    }}
+  />
+);
 
 const Preferences = () => {
   const appName =
@@ -245,65 +270,128 @@ const Preferences = () => {
     <React.Fragment>
       {alertInfo.msg && <Alert type={alertInfo.type}>{alertInfo.msg}</Alert>}
       {isTopLoader ? (
-        <div className="flex justify-center items-center h-screen">
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            height: "100vh"
+          }}
+        >
           <Loader />
-        </div>
+        </Box>
       ) : (
         <>
           {errMsg ? (
-            <div className="flex justify-center items-center h-screen">
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                height: "100vh"
+              }}
+            >
               {errMsg}
-            </div>
+            </Box>
           ) : (
-            <div className="relative bg-base-100 text-base-content flex flex-col justify-center shadow-md rounded-box mb-3">
+            <Box
+              sx={{
+                position: "relative",
+                bgcolor: "background.paper",
+                color: "text.primary",
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+                boxShadow: 3,
+                borderRadius: 3,
+                mb: 3
+              }}
+            >
               {isLoader && (
-                <div className="flex z-[100] justify-center items-center absolute w-full h-full rounded-box bg-black/30">
+                <Box
+                  sx={{
+                    display: "flex",
+                    zIndex: 100,
+                    justifyContent: "center",
+                    alignItems: "center",
+                    position: "absolute",
+                    width: "100%",
+                    height: "100%",
+                    borderRadius: 3,
+                    bgcolor: "rgba(0,0,0,0.3)"
+                  }}
+                >
                   <Loader />
-                </div>
+                </Box>
               )}
-              <h1 className="ml-4 mt-3 text-lg mb-2 font-semibold text-base-content">
+              <Typography
+                variant="h6"
+                sx={{
+                  ml: 2,
+                  mt: 1.5,
+                  fontSize: "1.125rem",
+                  mb: 1,
+                  fontWeight: 600
+                }}
+              >
                 {appName} {t("Preferences")}
-              </h1>
-              <div className="flex justify-center items-center mt-2">
-                <div
-                  role="tablist"
-                  className="op-tabs op-tabs-bordered op-tabs-sm md:op-tabs-md"
+              </Typography>
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  mt: 1
+                }}
+              >
+                <Tabs
+                  value={activeTab}
+                  onChange={(e, v) => setactiveTab(v)}
+                  variant="scrollable"
+                  scrollButtons="auto"
+                  aria-label="preferences tabs"
                 >
                   {tab.map((tabData, ind) => (
-                    <div
-                      onClick={() => setactiveTab(ind)}
+                    <Tab
                       key={ind}
-                      role="tab"
-                      className={` op-tab text-xs md:text-base pb-2 md:pb-0 transition-all`}
-                      aria-selected={activeTab === ind}
+                      icon={<i className={tabData.icon} />}
+                      iconPosition="start"
+                      label={tabData.title}
+                      id={`tab-${ind}`}
                       aria-controls={`panel-${tabData.title}`}
-                    >
-                      <i className={tabData.icon}></i>
-                      <span
-                        className={`${activeTab === ind ? "block" : "hidden"} md:block ml-1`}
-                        title={tabData?.title}
-                      >
-                        {tabData.title}
-                      </span>
-                    </div>
+                      sx={{ minHeight: 48, textTransform: "none" }}
+                    />
                   ))}
-                </div>
-              </div>
-              <div
+                </Tabs>
+              </Box>
+              <Box
                 id={`panel-${activeTab}`}
-                className="px-6 pt-4 pb-6"
+                sx={{ px: 3, pt: 2, pb: 3 }}
                 aria-labelledby={`tab-${activeTab}`}
                 role="tabpanel"
               >
                 {tabName(activeTab) === "general" && (
-                  <div className="grid grid-cols-1 md:grid-cols-12 md:gap-x-8">
+                  <Box
+                    sx={{
+                      display: "grid",
+                      gridTemplateColumns: { xs: "1fr", md: "repeat(12, 1fr)" },
+                      columnGap: { md: 4 }
+                    }}
+                  >
                     {/* Left Column - Signature Settings */}
-                    <div className="md:col-span-5 flex flex-col">
+                    <Box
+                      sx={{
+                        gridColumn: { md: "span 5" },
+                        display: "flex",
+                        flexDirection: "column"
+                      }}
+                    >
                       {/* Signature Types Section */}
-                      <div className="mb-6">
-                        <label
-                          className="text-[14px] mb-[0.7rem] font-medium"
+                      <Box sx={{ mb: 3 }}>
+                        <Typography
+                          component="label"
                           htmlFor="signaturetype"
+                          sx={{ fontSize: "14px", mb: "0.7rem", fontWeight: 500 }}
                         >
                           {t("allowed-signature-types")}
                           <a
@@ -311,7 +399,7 @@ const Preferences = () => {
                             className="ml-1"
                           >
                             <sup>
-                              <i className="fa-light fa-question rounded-full border-[#33bbff] text-[#33bbff] text-[13px] border-[1px] py-[1.5px] px-[4px]"></i>
+                              <HelpIcon />
                             </sup>
                           </a>
                           <ReactTooltip
@@ -357,40 +445,56 @@ const Preferences = () => {
                               </div>
                             </div>
                           </ReactTooltip>
-                        </label>
-                        <div className="flex flex-col md:flex-row gap-3 mb-2">
+                        </Typography>
+                        <Box
+                          sx={{
+                            display: "flex",
+                            flexDirection: { xs: "column", md: "row" },
+                            gap: 1.5,
+                            mb: 1
+                          }}
+                        >
                           {signatureType.map((type, i) => (
-                            <div
+                            <FormControlLabel
                               key={i}
-                              className="flex flex-row gap-2 items-center"
-                            >
-                              <input
-                                className="op-checkbox op-checkbox-xs"
-                                type="checkbox"
-                                id={`signature-type-${type.name}`}
-                                name="signaturetype"
-                                onChange={() => handleCheckboxChange(i)}
-                                checked={type.enabled}
-                              />
-                              <label
-                                htmlFor={`signature-type-${type.name}`}
-                                className="text-sm font-medium text-base-content hover:underline underline-offset-2 cursor-pointer capitalize mb-0"
-                                title={`Enabling this allows signers to ${type.name} signature`}
-                              >
-                                {type?.name === "typed" ? "type" : type?.name}
-                              </label>
-                            </div>
+                              sx={{ m: 0, textTransform: "capitalize" }}
+                              control={
+                                <Checkbox
+                                  size="small"
+                                  id={`signature-type-${type.name}`}
+                                  name="signaturetype"
+                                  onChange={() => handleCheckboxChange(i)}
+                                  checked={type.enabled}
+                                />
+                              }
+                              title={`Enabling this allows signers to ${type.name} signature`}
+                              label={
+                                <Typography
+                                  component="span"
+                                  sx={{
+                                    fontSize: "0.875rem",
+                                    fontWeight: 500,
+                                    "&:hover": { textDecoration: "underline" }
+                                  }}
+                                >
+                                  {type?.name === "typed" ? "type" : type?.name}
+                                </Typography>
+                              }
+                            />
                           ))}
-                        </div>
-                      </div>
+                        </Box>
+                      </Box>
 
                       {/* Notify on Signatures Section */}
-                      <div className="mb-6">
-                        <label className="text-[14px] mb-[0.7rem] font-medium">
+                      <Box sx={{ mb: 3 }}>
+                        <Typography
+                          component="label"
+                          sx={{ fontSize: "14px", mb: "0.7rem", fontWeight: 500 }}
+                        >
                           {t("notify-on-signatures")}
                           <a data-tooltip-id="nos-tooltip" className="ml-1">
                             <sup>
-                              <i className="fa-light fa-question rounded-full border-[#33bbff] text-[#33bbff] text-[13px] border-[1px] py-[1.5px] px-[4px]"></i>
+                              <HelpIcon />
                             </sup>
                           </a>
                           <ReactTooltip id="nos-tooltip" className="z-[999]">
@@ -402,59 +506,56 @@ const Preferences = () => {
                               <p>{t("notify-on-signatures-help.note")}</p>
                             </div>
                           </ReactTooltip>
-                        </label>
-                        <div className="flex flex-row gap-6">
-                          <div
-                            className={
-                              "flex items-center gap-2"
+                        </Typography>
+                        <Box sx={{ display: "flex", flexDirection: "row", gap: 3 }}>
+                          <FormControlLabel
+                            sx={{ m: 0 }}
+                            control={
+                              <Radio
+                                id="notify-yes"
+                                size="small"
+                                onChange={() => handleNotifySignChange(true)}
+                                checked={isNotifyOnSignatures === true}
+                              />
                             }
-                          >
-                            <input
-                              id="notify-yes"
-                              className="op-radio op-radio-xs"
-                              type="radio"
-                              onChange={() => handleNotifySignChange(true)}
-                              checked={isNotifyOnSignatures === true}
-                            />
-                            <label
-                              htmlFor="notify-yes"
-                              className="text-sm text-base-content cursor-pointer mb-0"
-                            >
-                              {t("yes")}
-                            </label>
-                          </div>
-                          <div
-                            className={
-                              "flex items-center gap-2"
+                            label={
+                              <Typography sx={{ fontSize: "0.875rem" }}>
+                                {t("yes")}
+                              </Typography>
                             }
-                          >
-                            <input
-                              id="notify-no"
-                              className="op-radio op-radio-xs"
-                              type="radio"
-                              onChange={() => handleNotifySignChange(false)}
-                              checked={isNotifyOnSignatures === false}
-                            />
-                            <label
-                              htmlFor="notify-no"
-                              className="text-sm text-base-content cursor-pointer mb-0"
-                            >
-                              {t("no")}
-                            </label>
-                          </div>
-                        </div>
-                      </div>
+                          />
+                          <FormControlLabel
+                            sx={{ m: 0 }}
+                            control={
+                              <Radio
+                                id="notify-no"
+                                size="small"
+                                onChange={() => handleNotifySignChange(false)}
+                                checked={isNotifyOnSignatures === false}
+                              />
+                            }
+                            label={
+                              <Typography sx={{ fontSize: "0.875rem" }}>
+                                {t("no")}
+                              </Typography>
+                            }
+                          />
+                        </Box>
+                      </Box>
 
                       {/* Send in Order Section */}
-                      <div className="mb-6">
-                        <label className="text-[14px] mb-[0.7rem] font-medium">
+                      <Box sx={{ mb: 3 }}>
+                        <Typography
+                          component="label"
+                          sx={{ fontSize: "14px", mb: "0.7rem", fontWeight: 500 }}
+                        >
                           {t("send-in-order")}
                           <a
                             data-tooltip-id="sendInOrder-tooltip"
                             className="ml-1"
                           >
                             <sup>
-                              <i className="fa-light fa-question rounded-full border-[#33bbff] text-[#33bbff] text-[13px] border-[1px] py-[1.5px] px-[4px]"></i>
+                              <HelpIcon />
                             </sup>
                           </a>
                           <ReactTooltip
@@ -483,59 +584,62 @@ const Preferences = () => {
                               <p>{t("send-in-order-help.p4")}</p>
                             </div>
                           </ReactTooltip>
-                        </label>
-                        <div className="flex flex-row gap-6">
-                          <div className="flex items-center gap-2">
-                            <input
-                              id="order-yes"
-                              type="radio"
-                              value={true}
-                              className="op-radio op-radio-xs"
-                              name="SendinOrder"
-                              checked={sendinOrder}
-                              onChange={handleSendinOrderInput}
-                            />
-                            <label
-                              htmlFor="order-yes"
-                              className="text-sm text-base-content cursor-pointer mb-0"
-                            >
-                              {t("yes")}
-                            </label>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <input
-                              id="order-no"
-                              type="radio"
-                              value={false}
-                              name="SendinOrder"
-                              className="op-radio op-radio-xs"
-                              checked={!sendinOrder}
-                              onChange={handleSendinOrderInput}
-                            />
-                            <label
-                              htmlFor="order-no"
-                              className="text-sm text-base-content cursor-pointer mb-0"
-                            >
-                              {t("no")}
-                            </label>
-                          </div>
-                        </div>
-                      </div>
+                        </Typography>
+                        <Box sx={{ display: "flex", flexDirection: "row", gap: 3 }}>
+                          <FormControlLabel
+                            sx={{ m: 0 }}
+                            control={
+                              <Radio
+                                id="order-yes"
+                                size="small"
+                                value={true}
+                                name="SendinOrder"
+                                checked={sendinOrder}
+                                onChange={handleSendinOrderInput}
+                              />
+                            }
+                            label={
+                              <Typography sx={{ fontSize: "0.875rem" }}>
+                                {t("yes")}
+                              </Typography>
+                            }
+                          />
+                          <FormControlLabel
+                            sx={{ m: 0 }}
+                            control={
+                              <Radio
+                                id="order-no"
+                                size="small"
+                                value={false}
+                                name="SendinOrder"
+                                checked={!sendinOrder}
+                                onChange={handleSendinOrderInput}
+                              />
+                            }
+                            label={
+                              <Typography sx={{ fontSize: "0.875rem" }}>
+                                {t("no")}
+                              </Typography>
+                            }
+                          />
+                        </Box>
+                      </Box>
 
 
-                      <div className="mb-6">
-                        <label
+                      <Box sx={{ mb: 3 }}>
+                        <Typography
+                          component="label"
                           htmlFor="sender-name-toggle"
-                          className="text-[14px] mb-[0.7rem] font-medium"
+                          sx={{ fontSize: "14px", mb: "0.7rem", fontWeight: 500 }}
                         >
                           {t("use-name-as-sender")}
-                        </label>
+                        </Typography>
                         <a
                           data-tooltip-id="sender-name-toggle-tooltip"
                           className="ml-1"
                         >
                           <sup>
-                            <i className="fa-light fa-question rounded-full border-[#33bbff] text-[#33bbff] text-[13px] border-[1px] py-[1.5px] px-[4px]"></i>
+                            <HelpIcon />
                           </sup>
                         </a>
                         <ReactTooltip
@@ -550,29 +654,30 @@ const Preferences = () => {
                             </p>
                           </div>
                         </ReactTooltip>
-                        <div className="cursor-pointer relative block items-center mb-0 ml-1">
-                          <input
+                        <Box sx={{ ml: 1 }}>
+                          <Switch
                             id="sender-name-toggle"
-                            type="checkbox"
-                            className="op-toggle checked:[--tglbg:#3368ff] transition-all checked:text-white"
                             checked={useNameAsSender}
                             onChange={() =>
                               setUseNameAsSender((prevValue) => !prevValue)
                             }
                           />
-                        </div>
-                      </div>
+                        </Box>
+                      </Box>
 
                       {/* Enable Tour Section */}
-                      <div className="mb-6">
-                        <label className="text-[14px] mb-[0.7rem] font-medium">
+                      <Box sx={{ mb: 3 }}>
+                        <Typography
+                          component="label"
+                          sx={{ fontSize: "14px", mb: "0.7rem", fontWeight: 500 }}
+                        >
                           {t("enable-tour")}
                           <a
                             data-tooltip-id="istourenabled-tooltip"
                             className="ml-1"
                           >
                             <sup>
-                              <i className="fa-light fa-question rounded-full border-[#33bbff] text-[#33bbff] text-[13px] border-[1px] py-[1.5px] px-[4px]"></i>
+                              <HelpIcon />
                             </sup>
                           </a>
                           <ReactTooltip
@@ -604,55 +709,63 @@ const Preferences = () => {
                               </p>
                             </div>
                           </ReactTooltip>
-                        </label>
-                        <div className="flex flex-row gap-6">
-                          <div className="flex items-center gap-2">
-                            <input
-                              id="tour-yes"
-                              type="radio"
-                              value={true}
-                              className="op-radio op-radio-xs"
-                              name="IsTourEnabled"
-                              checked={isTourEnabled}
-                              onChange={handleTourInput}
-                            />
-                            <label
-                              htmlFor="tour-yes"
-                              className="text-sm text-base-content cursor-pointer mb-0"
-                            >
-                              {t("yes")}
-                            </label>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <input
-                              id="tour-no"
-                              type="radio"
-                              value={false}
-                              name="IsTourEnabled"
-                              className="op-radio op-radio-xs"
-                              checked={!isTourEnabled}
-                              onChange={handleTourInput}
-                            />
-                            <label
-                              htmlFor="tour-no"
-                              className="text-sm text-base-content cursor-pointer mb-0"
-                            >
-                              {t("no")}
-                            </label>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
+                        </Typography>
+                        <Box sx={{ display: "flex", flexDirection: "row", gap: 3 }}>
+                          <FormControlLabel
+                            sx={{ m: 0 }}
+                            control={
+                              <Radio
+                                id="tour-yes"
+                                size="small"
+                                value={true}
+                                name="IsTourEnabled"
+                                checked={isTourEnabled}
+                                onChange={handleTourInput}
+                              />
+                            }
+                            label={
+                              <Typography sx={{ fontSize: "0.875rem" }}>
+                                {t("yes")}
+                              </Typography>
+                            }
+                          />
+                          <FormControlLabel
+                            sx={{ m: 0 }}
+                            control={
+                              <Radio
+                                id="tour-no"
+                                size="small"
+                                value={false}
+                                name="IsTourEnabled"
+                                checked={!isTourEnabled}
+                                onChange={handleTourInput}
+                              />
+                            }
+                            label={
+                              <Typography sx={{ fontSize: "0.875rem" }}>
+                                {t("no")}
+                              </Typography>
+                            }
+                          />
+                        </Box>
+                      </Box>
+                    </Box>
                     {/* Right Column - Timezone & Date Settings */}
-                    <div className="md:col-span-7 flex flex-col">
-                      <div className="mb-6">
+                    <Box
+                      sx={{
+                        gridColumn: { md: "span 7" },
+                        display: "flex",
+                        flexDirection: "column"
+                      }}
+                    >
+                      <Box sx={{ mb: 3 }}>
                         <TimezoneSelector
                           timezone={timezone}
                           setTimezone={setTimezone}
                         />
-                      </div>
+                      </Box>
 
-                      <div className="mb-6">
+                      <Box sx={{ mb: 3 }}>
                         <DateFormatSelector
                           timezone={timezone}
                           dateFormat={dateFormat}
@@ -660,29 +773,37 @@ const Preferences = () => {
                           setIs12HourTime={setIs12HourTime}
                           setDateFormat={setDateFormat}
                         />
-                      </div>
-                      <div className="mb-6">
+                      </Box>
+                      <Box sx={{ mb: 3 }}>
                         <FilenameFormatSelector
                           fileNameFormat={fileNameFormat}
                           setFileNameFormat={setFileNameFormat}
                         />
-                      </div>
-                    </div>
+                      </Box>
+                    </Box>
                     {/* Save Button - Full Width */}
-                    <div className="md:col-span-12 flex justify-start mt-2">
-                      <button
-                        className="op-btn op-btn-primary w-[110px]"
+                    <Box
+                      sx={{
+                        gridColumn: { md: "span 12" },
+                        display: "flex",
+                        justifyContent: "flex-start",
+                        mt: 1
+                      }}
+                    >
+                      <Button
+                        variant="contained"
+                        sx={{ width: 110 }}
                         onClick={handleSave}
                       >
                         {t("save")}
-                      </button>
-                    </div>
-                  </div>
+                      </Button>
+                    </Box>
+                  </Box>
                 )}
                 {tabName(activeTab) === "widgets" && <WidgetsTab />}
                 {tabName(activeTab) === "email" && <EmailTab />}
-              </div>
-            </div>
+              </Box>
+            </Box>
           )}
         </>
       )}

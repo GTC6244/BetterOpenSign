@@ -18,6 +18,15 @@ import {
 import PenColorComponent from "../../pdf/tab/PenColorComponent";
 import { getDatePickerDate, toHtmlPattern } from "../../../utils";
 import { emailRegex } from "../../../constant/const";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import TextField from "@mui/material/TextField";
+import Checkbox from "@mui/material/Checkbox";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Radio from "@mui/material/Radio";
+import Link from "@mui/material/Link";
+import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
+import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 
 const inputOpt = new Set(["text", "email", "number"]);
 const PREFILL_PREFIX = "prefill::";
@@ -31,25 +40,52 @@ const inputValidation = (pattern, type) => {
   if (pattern) return pattern;
   return inputTypes[type] || "";
 };
+// Canvas elements can't be themed via MUI `sx`, so the signature/draw canvas
+// keeps the OpenSign theme-aware utility classes for its border/background.
 const canavasTheme = `opensigncss:bg-white opensigndark:bg-[#121212] opensigndark:border-[#f6f3f4]/20 opensigncss:border-gray-300 opensigndark:hover:border-white opensigncss:hover:border-black border-[1px]`;
 
-const widgetLabelCss = (isRequired = false) => {
-  return `${isRequired ? "after:content-['_*'] after:text-red-500" : ""} block text-xs font-semibold`;
-};
+const WidgetLabel = ({ name, isRequired = false }) => (
+  <Typography
+    component="div"
+    sx={{ display: "block", fontSize: "0.75rem", fontWeight: 600, mb: 1 }}
+  >
+    {name}
+    {isRequired && (
+      <Box component="span" sx={{ color: "error.main" }}>
+        {" *"}
+      </Box>
+    )}
+  </Typography>
+);
 
 const DateWidget = ({ widget, isRequired, onChange, showLabel }) => {
   const format = widget?.options?.validation?.format || "MM/dd/yyyy";
 
   const PrefillDateInput = forwardRef(({ value, onClick }, ref) => (
-    <div
-      style={{ fontFamily: "Arial, sans-serif" }}
-      className="op-input op-input-bordered op-input-sm focus:outline-none hover:border-base-content w-full"
-      onClick={onClick}
+    <Box
       ref={ref}
+      onClick={onClick}
+      sx={{
+        fontFamily: "Arial, sans-serif",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+        width: "100%",
+        border: 1,
+        borderColor: "outline.main",
+        borderRadius: "12px",
+        px: 1.25,
+        py: 0.75,
+        fontSize: "0.875rem",
+        cursor: "pointer",
+        bgcolor: "background.paper",
+        color: "text.primary",
+        "&:hover": { borderColor: "text.primary" }
+      }}
     >
-      {value ? value : format}
-      <i className="fa-light fa-calendar ml-[5px]"></i>
-    </div>
+      <span>{value ? value : format}</span>
+      <CalendarTodayIcon sx={{ fontSize: 14, ml: 0.5 }} />
+    </Box>
   ));
   PrefillDateInput.displayName = "PrefillDateInput";
 
@@ -82,13 +118,11 @@ const DateWidget = ({ widget, isRequired, onChange, showLabel }) => {
   };
 
   return (
-    <div className="flex flex-col">
+    <Box sx={{ display: "flex", flexDirection: "column" }}>
       {showLabel && (
-        <div className={`${widgetLabelCss(isRequired)} mb-[0.5rem]`}>
-          {widget?.options?.name}
-        </div>
+        <WidgetLabel name={widget?.options?.name} isRequired={isRequired} />
       )}
-      <div className="min-w-max">
+      <Box sx={{ minWidth: "max-content" }}>
         <DatePicker
           portalId="datepicker-portal-root"
           id={`widget-${widget?.options?.name}-${widget.key}`}
@@ -128,8 +162,8 @@ const DateWidget = ({ widget, isRequired, onChange, showLabel }) => {
           dateFormat={widget?.options?.validation?.format || "MM/dd/yyyy"}
           required={isRequired}
         />
-      </div>
-    </div>
+      </Box>
+    </Box>
   );
 };
 const TextWidget = ({
@@ -156,14 +190,12 @@ const TextWidget = ({
     onChange(text);
   };
   return (
-    <div className="flex flex-col">
+    <Box sx={{ display: "flex", flexDirection: "column" }}>
       {showLabel && (
-        <div className={`${widgetLabelCss(isRequired)} mb-[0.5rem]`}>
-          {widget?.options?.name}
-        </div>
+        <WidgetLabel name={widget?.options?.name} isRequired={isRequired} />
       )}
-      <div className="min-w-max">
-        <input
+      <Box sx={{ minWidth: "max-content" }}>
+        <TextField
           type={isPredfineType ? inputType : "text"}
           id={`widget-${widget?.options?.name}-${widget.key}`}
           value={value}
@@ -171,27 +203,31 @@ const TextWidget = ({
             widget?.options?.hint ||
             t("enter-value", { value: widget?.options?.name })
           }
-          className={[
-            "op-input op-input-bordered op-input-sm focus:outline-none hover:border-base-content w-full text-xs",
-          ].join(" ")}
+          size="small"
+          fullWidth
           onChange={(e) => handleInputChange(e)}
-          pattern={pattern || undefined} // if no pattern, browser won't do pattern validation
-          onInvalid={(e) => {
-            const el = e.currentTarget;
-            // ✅ Only override message if pattern exists AND the error is patternMismatch
-            if (pattern && el.validity.patternMismatch) {
-              el.setCustomValidity(t("validation-alert-1"));
-            } else {
-              el.setCustomValidity("");
+          required={isRequired}
+          slotProps={{
+            htmlInput: {
+              pattern: pattern || undefined, // if no pattern, browser won't do pattern validation
+              onInvalid: (e) => {
+                const el = e.currentTarget;
+                // ✅ Only override message if pattern exists AND the error is patternMismatch
+                if (pattern && el.validity.patternMismatch) {
+                  el.setCustomValidity(t("validation-alert-1"));
+                } else {
+                  el.setCustomValidity("");
+                }
+              },
+              onInput: (e) => {
+                e.currentTarget.setCustomValidity("");
+              }
             }
           }}
-          onInput={(e) => {
-            e.currentTarget.setCustomValidity("");
-          }}
-          required={isRequired}
+          sx={{ "& .MuiInputBase-input": { fontSize: "0.75rem" } }}
         />
-      </div>
-    </div>
+      </Box>
+    </Box>
   );
 };
 const CheckboxWidget = ({ widget, isRequired, onChange, showLabel }) => {
@@ -220,39 +256,49 @@ const CheckboxWidget = ({ widget, isRequired, onChange, showLabel }) => {
   };
 
   return (
-    <div className="flex flex-col">
+    <Box sx={{ display: "flex", flexDirection: "column" }}>
       {showLabel && (
-        <div className={`${widgetLabelCss(isRequired)} mb-[0.5rem]`}>
-          {widget?.options?.name}
-        </div>
+        <WidgetLabel name={widget?.options?.name} isRequired={isRequired} />
       )}
-      <div className="flex flex-col gap-y-1 min-w-max relative">
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          gap: 0.5,
+          minWidth: "max-content",
+          position: "relative"
+        }}
+      >
         {widget.options?.values?.map((value, ind) => (
-          <div
+          <FormControlLabel
             key={ind}
-            className="select-none-cls flex items-center text-center gap-0.5"
-          >
-            <input
-              id={`checkbox-${widget.key + ind}`}
-              className="mt-[2px] op-checkbox op-checkbox-xs"
-              type="checkbox"
-              checked={selectedCheckbox.includes(ind)}
-              onChange={(e) => handleCheckboxValue(e.target.checked, ind)}
-            />
-            <label
-              htmlFor={`checkbox-${widget.key + ind}`}
-              className="text-xs mb-0 text-center ml-[3px] cursor-pointer"
-            >
-              {value}
-            </label>
-          </div>
+            className="select-none-cls"
+            sx={{ m: 0, userSelect: "none" }}
+            control={
+              <Checkbox
+                id={`checkbox-${widget.key + ind}`}
+                size="small"
+                checked={selectedCheckbox.includes(ind)}
+                onChange={(e) => handleCheckboxValue(e.target.checked, ind)}
+                sx={{ p: 0.25 }}
+              />
+            }
+            label={
+              <Box
+                component="span"
+                sx={{ fontSize: "0.75rem", cursor: "pointer", ml: 0.5 }}
+              >
+                {value}
+              </Box>
+            }
+          />
         ))}
         {/* ✅ the validator */}
         {isRequired && (
-          <input
+          <Box
+            component="input"
             tabIndex={-1}
             aria-hidden="true"
-            className="absolute opacity-0 pointer-events-none w-0.5 h-0.5 left-[0.46rem] top-4"
             name={groupName}
             value={noneSelected ? "" : "selected"} // empty => invalid, non-empty => valid
             required
@@ -260,10 +306,19 @@ const CheckboxWidget = ({ widget, isRequired, onChange, showLabel }) => {
               e.target.setCustomValidity(t("select-at-least-option"))
             }
             onChange={(e) => e.target.setCustomValidity("")}
+            sx={{
+              position: "absolute",
+              opacity: 0,
+              pointerEvents: "none",
+              width: "2px",
+              height: "2px",
+              left: "0.46rem",
+              top: 16
+            }}
           />
         )}
-      </div>
-    </div>
+      </Box>
+    </Box>
   );
 };
 const DropdownWidget = ({ widget, isRequired, onChange, showLabel }) => {
@@ -282,19 +337,21 @@ const DropdownWidget = ({ widget, isRequired, onChange, showLabel }) => {
   };
 
   return (
-    <div className="flex flex-col">
+    <Box sx={{ display: "flex", flexDirection: "column" }}>
       {showLabel && (
-        <div className={`${widgetLabelCss(isRequired)} mb-[0.5rem]`}>
-          {widget?.options?.name}
-        </div>
+        <WidgetLabel name={widget?.options?.name} isRequired={isRequired} />
       )}
-      <div className="min-w-max">
-        <select
-          className="op-select op-select-bordered op-select-sm focus:outline-none hover:border-base-content text-base-content w-full"
+      <Box sx={{ minWidth: "max-content" }}>
+        <TextField
+          select
+          SelectProps={{ native: true }}
           id={`widget-${widget?.options?.name}-${widget?.key}`}
           value={selected}
           onChange={(e) => handleDropdownChange(e.target.value)}
           required={isRequired}
+          size="small"
+          fullWidth
+          sx={{ "& .MuiInputBase-input": { fontSize: "0.875rem" } }}
         >
           {/* Default/Title option */}
           <option value="" disabled hidden>
@@ -305,9 +362,9 @@ const DropdownWidget = ({ widget, isRequired, onChange, showLabel }) => {
               {option}
             </option>
           ))}
-        </select>
-      </div>
-    </div>
+        </TextField>
+      </Box>
+    </Box>
   );
 };
 const RadioButtonWidget = ({ widget, isRequired, onChange, showLabel }) => {
@@ -326,37 +383,46 @@ const RadioButtonWidget = ({ widget, isRequired, onChange, showLabel }) => {
   };
 
   return (
-    <div className="flex flex-col">
+    <Box sx={{ display: "flex", flexDirection: "column" }}>
       {showLabel && (
-        <div className={`${widgetLabelCss(isRequired)} mb-[0.5rem]`}>
-          {widget?.options?.name}
-        </div>
+        <WidgetLabel name={widget?.options?.name} isRequired={isRequired} />
       )}
-      <div className="flex flex-col gap-y-1 min-w-max">
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          gap: 0.5,
+          minWidth: "max-content"
+        }}
+      >
         {widget.options?.values?.map((data, ind) => (
-          <div
+          <FormControlLabel
             key={ind}
-            className="select-none-cls flex items-center text-center gap-0.5"
-          >
-            <input
-              id={`radio-${widget.key + ind}`}
-              className="mt-[2px] op-radio op-radio-xs"
-              name={`radio-group-${widget.key}-${id}`} // ✅ same name => browser treats all radios as ONE group
-              type="radio"
-              required={isRequired && ind === 0} // ✅ set required ONCE (on first radio) to make the whole group mandatory
-              checked={selected === data?.trim()}
-              onChange={() => handleRadioChange(data)}
-            />
-            <label
-              htmlFor={`radio-${widget.key + ind}`}
-              className="text-xs mb-0 ml-[2px] cursor-pointer"
-            >
-              {data}
-            </label>
-          </div>
+            className="select-none-cls"
+            sx={{ m: 0, userSelect: "none" }}
+            control={
+              <Radio
+                id={`radio-${widget.key + ind}`}
+                name={`radio-group-${widget.key}-${id}`} // ✅ same name => browser treats all radios as ONE group
+                size="small"
+                required={isRequired && ind === 0} // ✅ set required ONCE (on first radio) to make the whole group mandatory
+                checked={selected === data?.trim()}
+                onChange={() => handleRadioChange(data)}
+                sx={{ p: 0.25 }}
+              />
+            }
+            label={
+              <Box
+                component="span"
+                sx={{ fontSize: "0.75rem", cursor: "pointer", ml: 0.25 }}
+              >
+                {data}
+              </Box>
+            }
+          />
         ))}
-      </div>
-    </div>
+      </Box>
+    </Box>
   );
 };
 const ImageWidget = ({ widget, isRequired, onChange, showLabel }) => {
@@ -387,51 +453,96 @@ const ImageWidget = ({ widget, isRequired, onChange, showLabel }) => {
   };
 
   return (
-    <div className="flex flex-col">
+    <Box sx={{ display: "flex", flexDirection: "column" }}>
       {showLabel && (
-        <div className={`${widgetLabelCss(isRequired)} mb-[0.5rem]`}>
-          {widget?.options?.name}
-        </div>
+        <WidgetLabel name={widget?.options?.name} isRequired={isRequired} />
       )}
-      <div className="flex flex-col prefillCanvas">
+      <Box className="prefillCanvas" sx={{ display: "flex", flexDirection: "column" }}>
         {defaultImg?.src || img?.src ? (
-          <div
-            className={`cursor-pointer rounded-box ${canavasTheme} flex flex-col w-full h-full justify-center items-center`}
+          <Box
+            sx={{
+              cursor: "pointer",
+              borderRadius: "12px",
+              border: 1,
+              borderColor: "outline.variant",
+              bgcolor: "background.paper",
+              display: "flex",
+              flexDirection: "column",
+              width: "100%",
+              height: "100%",
+              justifyContent: "center",
+              alignItems: "center"
+            }}
           >
-            <img
+            <Box
+              component="img"
               alt={`image_${widget?.options?.name}`}
               src={img.src || defaultImg?.src}
               draggable="false"
-              className="object-contain h-full w-full aspect-[5/2]"
+              sx={{
+                objectFit: "contain",
+                height: "100%",
+                width: "100%",
+                aspectRatio: "5/2"
+              }}
             />
-          </div>
+          </Box>
         ) : (
-          <div
-            className={`cursor-pointer rounded-box ${canavasTheme} overflow-hidden w-full h-full aspect-[5/2] flex flex-col justify-center items-center`}
+          <Box
             onClick={() => imageRef.current?.click()}
+            sx={{
+              cursor: "pointer",
+              borderRadius: "12px",
+              border: 1,
+              borderColor: "outline.variant",
+              bgcolor: "background.paper",
+              overflow: "hidden",
+              width: "100%",
+              height: "100%",
+              aspectRatio: "5/2",
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              alignItems: "center",
+              "&:hover": { borderColor: "text.primary" }
+            }}
           >
-            <i className="fa-light text-base-content fa-cloud-upload-alt text-[25px]"></i>
-            <div className="text-[10px] text-base-content">{t("upload")}</div>
-            <input
+            <CloudUploadIcon sx={{ fontSize: 25, color: "text.primary" }} />
+            <Box sx={{ fontSize: "10px", color: "text.primary" }}>
+              {t("upload")}
+            </Box>
+            <Box
+              component="input"
               type="file"
               onChange={(e) => onImageChange?.(e, widget)}
-              className="filetype w-[1px] h-[1px] opacity-0"
+              className="filetype"
               accept="image/png,image/jpeg"
               ref={imageRef} // Assign ref dynamically
               required={isRequired}
+              sx={{ width: "1px", height: "1px", opacity: 0 }}
             />
-          </div>
+          </Box>
         )}
-      </div>
+      </Box>
       {(defaultImg?.src || img?.src) && (
-        <span
+        <Link
+          component="button"
+          type="button"
           onClick={handleClearImage}
-          className="flex justify-start text-blue-500 underline cursor-pointer ml-1"
+          underline="always"
+          sx={{
+            display: "flex",
+            justifyContent: "flex-start",
+            color: "info.main",
+            cursor: "pointer",
+            ml: 0.5,
+            width: "fit-content"
+          }}
         >
           {t("clear")}
-        </span>
+        </Link>
       )}
-    </div>
+    </Box>
   );
 };
 const DrawWidget = ({ widget, isRequired, onChange, showLabel }) => {
@@ -470,21 +581,21 @@ const DrawWidget = ({ widget, isRequired, onChange, showLabel }) => {
   };
 
   return (
-    <div className="flex flex-col">
+    <Box sx={{ display: "flex", flexDirection: "column" }}>
       {showLabel && (
-        <div className={`${widgetLabelCss(isRequired)} mb-[0.5rem]`}>
-          {widget?.options?.name}
-        </div>
+        <WidgetLabel name={widget?.options?.name} isRequired={isRequired} />
       )}
-      <div className="relative w-fit">
+      <Box sx={{ position: "relative", width: "fit-content" }}>
         {image ? (
-          <div className={`prefillCanvas ${canavasTheme} rounded-[10px]`}>
-            <img
+          <Box className={`prefillCanvas ${canavasTheme}`} sx={{ borderRadius: "10px" }}>
+            <Box
+              component="img"
               alt={`draw_${widget?.options?.name}`}
               src={image}
-              className="prefillCanvas object-contain"
+              className="prefillCanvas"
+              sx={{ objectFit: "contain" }}
             />
-          </div>
+          </Box>
         ) : (
           <SignatureCanvas
             ref={canvasRef}
@@ -497,7 +608,8 @@ const DrawWidget = ({ widget, isRequired, onChange, showLabel }) => {
           />
         )}
         {/* ✅ Native form validation hook */}
-        <input
+        <Box
+          component="input"
           ref={sigRequiredRef}
           type="text"
           value={hasDraw}
@@ -505,24 +617,49 @@ const DrawWidget = ({ widget, isRequired, onChange, showLabel }) => {
           tabIndex={-1}
           onInvalid={(e) => e.target.setCustomValidity(t("draw-required"))}
           onChange={() => {}}
-          className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 opacity-0 w-[1px] h-[1px] pointer-events-none"
+          sx={{
+            position: "absolute",
+            left: "50%",
+            top: "50%",
+            transform: "translate(-50%, -50%)",
+            opacity: 0,
+            width: "1px",
+            height: "1px",
+            pointerEvents: "none"
+          }}
         />
-      </div>
-      <div className="flex flex-row justify-between mt-[8px] w-[200px]">
+      </Box>
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "space-between",
+          mt: 1,
+          width: 200
+        }}
+      >
         <PenColorComponent
           penColor={penColor}
           setPenColor={setPenColor}
           hideLabel
           penSize="sm"
         />
-        <span
+        <Link
+          component="button"
+          type="button"
           onClick={handleClear}
-          className="flex justify-start text-blue-500 underline cursor-pointer"
+          underline="always"
+          sx={{
+            display: "flex",
+            justifyContent: "flex-start",
+            color: "info.main",
+            cursor: "pointer"
+          }}
         >
           {t("clear")}
-        </span>
-      </div>
-    </div>
+        </Link>
+      </Box>
+    </Box>
   );
 };
 
@@ -548,38 +685,42 @@ const CellsWidget = ({ widget, isRequired, onChange, showLabel }) => {
   };
 
   return (
-    <div className="flex flex-col">
+    <Box sx={{ display: "flex", flexDirection: "column" }}>
       {showLabel && (
-        <div className={`${widgetLabelCss(isRequired)} mb-[0.5rem]`}>
-          {widget?.options?.name}
-        </div>
+        <WidgetLabel name={widget?.options?.name} isRequired={isRequired} />
       )}
-      <div className="relative">
-        <input
+      <Box sx={{ position: "relative" }}>
+        <TextField
           type="text"
           placeholder={
             hint || t("enter-value", { value: widget?.options?.name })
           }
           value={word ?? ""}
           onChange={(e) => handleChange(e)}
-          pattern={pattern || undefined} // if no pattern, browser won't do pattern validation
-          onInvalid={(e) => {
-            const el = e.currentTarget;
-            // ✅ Only override message if pattern exists AND the error is patternMismatch
-            if (pattern && el.validity.patternMismatch) {
-              el.setCustomValidity(t("validation-alert-1"));
-            } else {
-              el.setCustomValidity("");
+          size="small"
+          fullWidth
+          slotProps={{
+            htmlInput: {
+              pattern: pattern || undefined, // if no pattern, browser won't do pattern validation
+              maxLength: count,
+              onInvalid: (e) => {
+                const el = e.currentTarget;
+                // ✅ Only override message if pattern exists AND the error is patternMismatch
+                if (pattern && el.validity.patternMismatch) {
+                  el.setCustomValidity(t("validation-alert-1"));
+                } else {
+                  el.setCustomValidity("");
+                }
+              },
+              onInput: (e) => {
+                e.currentTarget.setCustomValidity("");
+              }
             }
           }}
-          onInput={(e) => {
-            e.currentTarget.setCustomValidity("");
-          }}
-          className="op-input op-input-bordered op-input-sm focus:outline-none text-base-content hover:border-base-content w-full text-xs"
-          maxLength={count}
+          sx={{ "& .MuiInputBase-input": { fontSize: "0.75rem" } }}
         />
-      </div>
-    </div>
+      </Box>
+    </Box>
   );
 };
 

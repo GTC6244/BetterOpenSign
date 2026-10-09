@@ -4,6 +4,12 @@ import Alert from "../../../primitives/Alert";
 import Loader from "../../../primitives/Loader";
 import { useTranslation } from "react-i18next";
 import { withSessionValidation } from "../../../utils";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import TextField from "@mui/material/TextField";
+import Button from "@mui/material/Button";
+import AddIcon from "@mui/icons-material/Add";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 
 const CreateFolder = ({ parentFolderId, onSuccess, folderCls, onBack }) => {
   const folderPtr = {
@@ -63,53 +69,82 @@ const CreateFolder = ({ parentFolderId, onSuccess, folderCls, onBack }) => {
   const handleLoader = (status) => setIsLoader(status);
 
   return (
-    <div>
+    <Box>
       {alert.message && <Alert type={alert.type}>{alert.message}</Alert>}
-      <div id="createFolder" className="relative">
+      <Box id="createFolder" sx={{ position: "relative" }}>
         {isLoader && (
-          <div className="absolute h-full w-full flex justify-center items-center">
+          <Box
+            sx={{
+              position: "absolute",
+              height: "100%",
+              width: "100%",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center"
+            }}
+          >
             <Loader />
-          </div>
+          </Box>
         )}
-        <h1 className="text-base font-semibold mt-[0.4rem]">
+        <Typography
+          component="h1"
+          sx={{ fontSize: "1rem", fontWeight: 600, mt: "0.4rem" }}
+        >
           {t("create-folder")}
-        </h1>
-        <div className="text-xs mt-2">
-          <label className="block">
+        </Typography>
+        <Box sx={{ mt: 1 }}>
+          <Typography
+            component="label"
+            sx={{ display: "block", fontSize: "0.75rem", mb: 0.5 }}
+          >
             {t("name")}
-            <span className="text-red-500 text-[13px]">*</span>
-          </label>
-          <input
-            className="op-input op-input-bordered op-input-sm focus:outline-none hover:border-base-content w-full text-xs"
+            <Box component="span" sx={{ color: "error.main", fontSize: "13px" }}>
+              *
+            </Box>
+          </Typography>
+          <TextField
+            size="small"
+            fullWidth
             value={name}
             onChange={(e) => setName(e.target.value)}
             onInvalid={(e) => e.target.setCustomValidity(t("input-required"))}
             onInput={(e) => e.target.setCustomValidity("")}
             required
+            slotProps={{ htmlInput: { style: { fontSize: "0.75rem" } } }}
           />
-        </div>
-        <div className="flex justify-between items-center py-[1rem] ">
-          <button
+        </Box>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            py: 2
+          }}
+        >
+          <Button
+            variant="contained"
+            size="small"
             onClick={handleCreateFolder}
             disabled={isLoader}
-            className="op-btn op-btn-primary op-btn-sm"
+            startIcon={<AddIcon />}
           >
-            <i className="fa-light fa-plus"></i>
-            <span>{t("create")}</span>
-          </button>
+            {t("create")}
+          </Button>
           {onBack && (
-            <div
-              className="op-btn op-btn-seconday op-btn-sm"
+            <Button
+              variant="outlined"
+              color="secondary"
+              size="small"
               title={t("back")}
               onClick={() => onBack()}
+              startIcon={<ArrowBackIcon />}
             >
-              <i className="fa-light fa-arrow-left" aria-hidden="true"></i>
-              <span className="text-xs">{t("back")}</span>
-            </div>
+              {t("back")}
+            </Button>
           )}
-        </div>
-      </div>
-    </div>
+        </Box>
+      </Box>
+    </Box>
   );
 };
 

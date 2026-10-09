@@ -1,7 +1,7 @@
-import { useState } from "react";
 import RecipientList from "./RecipientList";
-// import { Tooltip } from "react-tooltip";
 import { useTranslation } from "react-i18next";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
 
 function SignerListPlace(props) {
   const { t } = useTranslation();
@@ -12,44 +12,76 @@ function SignerListPlace(props) {
   };
 
   return (
-    <div>
-      <div className="mx-2 pr-2 pt-2 pb-1 text-[15px] text-base-content font-semibold border-b-[1px] border-base-300">
-        <span className="relative">
+    <Box>
+      <Box
+        sx={{
+          mx: 1,
+          pr: 1,
+          pt: 1,
+          pb: 0.5,
+          fontSize: "15px",
+          fontWeight: 600,
+          color: "text.primary",
+          borderBottom: "1px solid",
+          borderColor: "divider"
+        }}
+      >
+        <Box component="span" sx={{ position: "relative" }}>
           {props.title ? props.title : "Recipients"}
-          <sup onClick={() => props.setIsTour && props.setIsTour(true)}>
-            <i className="ml-1 cursor-pointer fa-light fa-question rounded-full border-[1px] border-base-content text-[11px] py-[1px] px-[3px]"></i>
-          </sup>
-        </span>
-      </div>
-      <div className="overflow-auto hide-scrollbar max-h-[180px]">
-        <RecipientList
-          {...props}
-        />
-      </div>
-      <div className="mx-1">
+          <Box
+            component="sup"
+            onClick={() => props.setIsTour && props.setIsTour(true)}
+          >
+            <Box
+              component="i"
+              className="fa-light fa-question"
+              sx={{
+                ml: 0.5,
+                cursor: "pointer",
+                borderRadius: "9999px",
+                border: "1px solid",
+                borderColor: "text.primary",
+                fontSize: "11px",
+                py: "1px",
+                px: "3px"
+              }}
+            />
+          </Box>
+        </Box>
+      </Box>
+      <Box className="hide-scrollbar" sx={{ overflow: "auto", maxHeight: "180px" }}>
+        <RecipientList {...props} />
+      </Box>
+      <Box sx={{ mx: 0.5 }}>
         {props.handleAddSigner ? (
-          <div
-            role="button"
+          <Button
             data-tut="reactourAddbtn"
             disabled={props?.isMailSend ? true : false}
-            className="op-btn op-btn-accent op-btn-outline w-full mt-[14px]"
+            variant="outlined"
+            color="secondary"
+            fullWidth
+            sx={{ mt: "14px" }}
+            startIcon={<Box component="i" className="fa-light fa-plus" />}
             onClick={() => props.handleAddSigner()}
           >
-            <i className="fa-light fa-plus"></i> {t("add-role")}
-          </div>
+            {t("add-role")}
+          </Button>
         ) : (
-          <div
-            role="button"
+          <Button
             data-tut="addRecipient"
-            className="op-btn op-btn-accent op-btn-outline w-full mt-[14px]"
             disabled={props?.isMailSend ? true : false}
+            variant="outlined"
+            color="secondary"
+            fullWidth
+            sx={{ mt: "14px" }}
+            startIcon={<Box component="i" className="fa-light fa-plus" />}
             onClick={handleAddRecipient}
           >
-            <i className="fa-light fa-plus"></i> {t("add-recipients")}
-          </div>
+            {t("add-recipients")}
+          </Button>
         )}
-      </div>
-    </div>
+      </Box>
+    </Box>
   );
 }
 

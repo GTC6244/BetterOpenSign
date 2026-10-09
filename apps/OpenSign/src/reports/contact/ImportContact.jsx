@@ -4,6 +4,17 @@ import * as XLSX from "xlsx";
 import Parse from "parse";
 import { emailRegex } from "../../constant/const";
 import { withSessionValidation } from "../../utils";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Link from "@mui/material/Link";
+import Typography from "@mui/material/Typography";
+import Divider from "@mui/material/Divider";
+import Table from "@mui/material/Table";
+import TableHead from "@mui/material/TableHead";
+import TableBody from "@mui/material/TableBody";
+import TableRow from "@mui/material/TableRow";
+import TableCell from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
 
 const ImportContact = ({ setLoader, onImport, showAlert }) => {
   const { t } = useTranslation();
@@ -217,94 +228,129 @@ const ImportContact = ({ setLoader, onImport, showAlert }) => {
   });
 
   return (
-    <form onSubmit={handleImportData} className="p-[20px] h-full">
-      <div className="text-xs">
-        <label className="block ml-2">
+    <Box component="form" onSubmit={handleImportData} sx={{ p: "20px", height: "100%" }}>
+      <Box sx={{ fontSize: "0.75rem" }}>
+        <Typography component="label" sx={{ display: "block", ml: 2, fontSize: "0.75rem" }}>
           {t("contacts-file")}
-          <span className="text-red-500 text-[13px]"> *</span>
-        </label>
-        <input
-          type="file"
-          accept=".csv, .xlsx, .xls"
-          onChange={handleFileUpload}
-          required
-          className="op-file-input op-file-input-bordered op-file-input-sm focus:outline-none hover:border-base-content w-full text-xs"
-        />
-        <p className="mt-1 ml-2 text-[11px] text-gray-600">
+          <Box component="span" sx={{ color: "error.main", fontSize: "13px" }}>
+            {" *"}
+          </Box>
+        </Typography>
+        <Box sx={{ width: "100%", my: 1 }}>
+          <Button
+            variant="outlined"
+            component="label"
+            size="small"
+            fullWidth
+            sx={{ justifyContent: "flex-start", textTransform: "none" }}
+          >
+            {t("contacts-file")}
+            <input
+              type="file"
+              accept=".csv, .xlsx, .xls"
+              onChange={handleFileUpload}
+              required
+              style={{
+                position: "absolute",
+                width: 1,
+                height: 1,
+                padding: 0,
+                margin: -1,
+                overflow: "hidden",
+                clip: "rect(0 0 0 0)",
+                whiteSpace: "nowrap",
+                border: 0
+              }}
+            />
+          </Button>
+        </Box>
+        <Typography sx={{ mt: 0.5, ml: 2, fontSize: "11px", color: "text.secondary" }}>
           {t("import-guideline")}{" "}
-          <a
+          <Link
             href="/sample_contacts.csv"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-primary underline cursor-pointer"
+            underline="always"
+            sx={{ cursor: "pointer" }}
           >
             {t("download-sample")}
-          </a>
-        </p>
-      </div>
-      <div className="text-md m-2">
-        <div className="flex flex-col md:flex-row gap-1">
-          <span>
+          </Link>
+        </Typography>
+      </Box>
+      <Box sx={{ fontSize: "1rem", m: 2 }}>
+        <Box sx={{ display: "flex", flexDirection: { xs: "column", md: "row" }, gap: 0.5 }}>
+          <Box component="span">
             {t("total-records-found", {
               count: importedData.length
             })}
-          </span>
-          <span>
+          </Box>
+          <Box component="span">
             {t("Invalid-records-found", {
               records: invalidRecords
             })}
-          </span>
-        </div>
+          </Box>
+        </Box>
         {importedData?.length > 0 && (
-          <div className="overflow-x-auto p-1">
-            <table className="op-table op-table-zebra w-full">
-              <thead>
-                <tr>
-                  {allKeys.map((key, index) => (
-                    <th key={index}>{key}</th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {currentRecords.map((row, rowIndex) => (
-                  <tr key={rowIndex}>
-                    {allKeys.map((key, colIndex) => (
-                      <td key={colIndex}>{row[key] || "-"}</td>
+          <Box sx={{ p: 0.5 }}>
+            <TableContainer sx={{ overflowX: "auto" }}>
+              <Table size="small">
+                <TableHead>
+                  <TableRow>
+                    {allKeys.map((key, index) => (
+                      <TableCell key={index}>{key}</TableCell>
                     ))}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-            <div className="flex justify-between items-center mt-4">
-              <button
-                className="op-btn op-btn-primary op-btn-sm"
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {currentRecords.map((row, rowIndex) => (
+                    <TableRow key={rowIndex}>
+                      {allKeys.map((key, colIndex) => (
+                        <TableCell key={colIndex}>{row[key] || "-"}</TableCell>
+                      ))}
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                mt: 2
+              }}
+            >
+              <Button
+                variant="contained"
+                size="small"
                 disabled={currentImportPage === 1}
                 onClick={handlePreviousPage}
               >
                 {t("previous")}
-              </button>
-              <span>
+              </Button>
+              <Box component="span">
                 {t("page-n-of-n", {
                   currentPage: currentImportPage,
                   totalPages: totalImportPages
                 })}
-              </span>
-              <button
-                className="op-btn op-btn-primary op-btn-sm"
+              </Box>
+              <Button
+                variant="contained"
+                size="small"
                 disabled={currentImportPage === totalImportPages}
                 onClick={handleNextPage}
               >
                 {t("next")}
-              </button>
-            </div>
-          </div>
+              </Button>
+            </Box>
+          </Box>
         )}
-      </div>
-      <div className="h-[1px] w-full my-[15px] bg-[#9f9f9f]"></div>
-      <button type="submit" className="op-btn op-btn-primary">
+      </Box>
+      <Divider sx={{ my: "15px" }} />
+      <Button type="submit" variant="contained">
         {t("import")}
-      </button>
-    </form>
+      </Button>
+    </Box>
   );
 };
 

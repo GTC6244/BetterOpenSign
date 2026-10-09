@@ -1,6 +1,9 @@
 import i18next from "i18next";
-import React, { useState } from "react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import Box from "@mui/material/Box";
+import TextField from "@mui/material/TextField";
+import MenuItem from "@mui/material/MenuItem";
 
 function SelectLanguage(props) {
   const { i18n } = useTranslation();
@@ -22,28 +25,33 @@ function SelectLanguage(props) {
     props?.updateExtUser && props.updateExtUser({ language: e.target.value });
   };
   return (
-    <div
-      className={`${
-        !props.isProfile && " mt-[9px] pb-2 md:pb-0 "
-      } flex justify-center items-center text-base-content`}
+    <Box
+      sx={{
+        ...(!props.isProfile && { mt: "9px", pb: { xs: 1, md: 0 } }),
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        color: "text.primary"
+      }}
     >
-      <select
+      <TextField
+        select
+        size="small"
         value={lang}
         onChange={handleChangeLang}
-        className={`${
-          !props.isProfile ? " md:w-[15%] w-[50%]" : "w-[180px]"
-        } op-select op-select-bordered op-select-sm `}
+        sx={{
+          width: !props.isProfile ? { xs: "50%", md: "15%" } : "180px"
+        }}
       >
-        <option disabled>select</option>
         {languages.map((item) => {
           return (
-            <option key={item.value} value={item.value}>
+            <MenuItem key={item.value} value={item.value}>
               {item.text}
-            </option>
+            </MenuItem>
           );
         })}
-      </select>
-    </div>
+      </TextField>
+    </Box>
   );
 }
 

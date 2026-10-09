@@ -1,5 +1,19 @@
 import React, { forwardRef, useEffect, useMemo, useRef, useState } from "react";
 import ModalUi from "../../primitives/ModalUi";
+import Box from "@mui/material/Box";
+import Stack from "@mui/material/Stack";
+import Typography from "@mui/material/Typography";
+import Button from "@mui/material/Button";
+import IconButton from "@mui/material/IconButton";
+import TextField from "@mui/material/TextField";
+import Checkbox from "@mui/material/Checkbox";
+import Radio from "@mui/material/Radio";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Card from "@mui/material/Card";
+import Link from "@mui/material/Link";
+import AddIcon from "@mui/icons-material/Add";
+import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import {
   getMonth,
   getYear,
@@ -31,24 +45,34 @@ import * as utils from "../../utils";
 import Draw from "./tab/Draw";
 import PenColorComponent from "./tab/PenColorComponent";
 
-const widgetTitle = "font-medium";
-const widgetLabelCss = (isRequired = false) => {
-  return `${isRequired ? "after:content-['_*'] after:text-red-500" : ""} block text-xs font-semibold`;
-};
+const WidgetLabel = ({ required = false, children }) => (
+  <Typography
+    component="span"
+    sx={{ display: "block", fontSize: "0.75rem", fontWeight: 600 }}
+  >
+    {children}
+    {required && (
+      <Box component="span" sx={{ color: "error.main" }}>
+        {" *"}
+      </Box>
+    )}
+  </Typography>
+);
 const ShowTextWidget = ({ position, handleWidgetDetails }) => {
   const inputRef = useRef(null);
   const [inputValue, setInputValue] = useState(position.options.response || "");
 
   return (
-    <input
-      ref={inputRef}
-      rows={1}
+    <TextField
+      inputRef={inputRef}
+      size="small"
+      fullWidth
       value={inputValue}
       onChange={(e) => {
         setInputValue(e.target.value);
         handleWidgetDetails(position, e.target.value);
       }}
-      className="op-input op-input-bordered op-input-sm focus:outline-none hover:border-base-content w-full text-xs"
+      slotProps={{ htmlInput: { style: { fontSize: "0.75rem" } } }}
     />
   );
 };
@@ -70,34 +94,67 @@ const ImageComponent = (props) => {
 
   return (
     <>
-      <span
-        className={`${widgetLabelCss(props?.position?.options?.status === "required")} ${widgetTitle}`}
-      >
+      <WidgetLabel required={props?.position?.options?.status === "required"}>
         {props?.position.options?.name}
-      </span>
+      </WidgetLabel>
       {imgUrl ? (
         <>
-          <div className="cursor-pointer op-card border-[1px] border-gray-400 flex flex-col w-full h-full justify-center items-center ">
-            <img
+          <Card
+            variant="outlined"
+            sx={{
+              cursor: "pointer",
+              display: "flex",
+              flexDirection: "column",
+              width: "100%",
+              height: "100%",
+              justifyContent: "center",
+              alignItems: "center",
+              borderColor: "outline.main"
+            }}
+          >
+            <Box
+              component="img"
               alt="print img"
               ref={(el) => (imageRefs.current[props?.id] = el)} // Assign ref dynamicallys
               src={imgUrl}
               draggable="false"
-              className="object-contain h-full w-full aspect-[5/2]"
+              sx={{
+                objectFit: "contain",
+                height: "100%",
+                width: "100%",
+                aspectRatio: "5 / 2"
+              }}
               onLoad={() => props?.handleImageLoaded?.(props?.position.key)}
               onError={() => props?.handleImageLoaded?.(props?.position.key)}
             />
-          </div>
-          <span
+          </Card>
+          <Link
+            component="button"
+            type="button"
+            underline="always"
             onClick={() => props?.handleClearImage(props?.position)}
-            className="flex justify-start text-blue-500 underline cursor-pointer"
+            sx={{ alignSelf: "flex-start", cursor: "pointer", fontSize: "inherit" }}
           >
             {t("clear")}
-          </span>
+          </Link>
         </>
       ) : (
-        <div
-          className="cursor-pointer op-card border-[1px] op-border-hover flex flex-col overflow-hidden w-full h-full aspect-[5/2] justify-center items-center"
+        <Box
+          sx={{
+            cursor: "pointer",
+            display: "flex",
+            flexDirection: "column",
+            overflow: "hidden",
+            width: "100%",
+            height: "100%",
+            aspectRatio: "5 / 2",
+            justifyContent: "center",
+            alignItems: "center",
+            border: 1,
+            borderColor: "outline.main",
+            borderRadius: 1,
+            "&:hover": { borderColor: "text.primary" }
+          }}
           onClick={() => imageRefs.current[props?.id]?.click()}
         >
           <input
@@ -108,9 +165,11 @@ const ImageComponent = (props) => {
             ref={(el) => (imageRefs.current[props?.id] = el)} // Assign ref dynamically
             hidden
           />
-          <i className="fa-light text-base-content fa-cloud-upload-alt text-[25px]"></i>
-          <div className="text-[10px] text-base-content">{t("upload")}</div>
-        </div>
+          <CloudUploadIcon sx={{ fontSize: 25, color: "text.secondary" }} />
+          <Box sx={{ fontSize: "10px", color: "text.secondary" }}>
+            {t("upload")}
+          </Box>
+        </Box>
       )}
     </>
   );
@@ -221,15 +280,28 @@ function PrefillWidgetModal(props) {
     }
   }, [props?.isPrefillModal, uniqueWidget]);
   const ExampleCustomInput = forwardRef(({ value, onClick }, ref) => (
-    <div
-      style={{ fontFamily: "Arial, sans-serif" }}
-      className="op-input op-input-bordered op-input-sm focus:outline-none hover:border-base-content w-full"
-      onClick={onClick}
+    <Box
       ref={ref}
+      onClick={onClick}
+      sx={{
+        fontFamily: "Arial, sans-serif",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+        width: "100%",
+        cursor: "pointer",
+        border: 1,
+        borderColor: "outline.main",
+        borderRadius: 1,
+        px: 1.5,
+        py: 0.75,
+        fontSize: "0.875rem",
+        "&:hover": { borderColor: "text.primary" }
+      }}
     >
       {value}
-      <i className="fa-light fa-calendar ml-[5px]"></i>
-    </div>
+      <CalendarMonthIcon sx={{ ml: "5px", fontSize: 16 }} />
+    </Box>
   ));
   ExampleCustomInput.displayName = "ExampleCustomInput";
 
@@ -460,45 +532,41 @@ function PrefillWidgetModal(props) {
       case "checkbox":
         return (
           <>
-            <span
-              className={`${widgetLabelCss(position?.options?.status === "required")} ${widgetTitle}`}
-            >
+            <WidgetLabel required={position?.options?.status === "required"}>
               {position.options?.name}
-            </span>
-            <div className="flex flex-col gap-y-1">
+            </WidgetLabel>
+            <Stack spacing={0.5}>
               {position.options?.values?.map((data, ind) => (
-                <div
+                <FormControlLabel
                   key={ind}
-                  className="select-none-cls flex items-center text-center gap-0.5"
-                >
-                  <input
-                    id={`modal-checkbox-${position.key + ind}`}
-                    className="mt-[2px] op-checkbox op-checkbox-xs"
-                    type="checkbox"
-                    checked={selectCheckbox(ind, position)}
-                    onChange={(e) =>
-                      handleCheckboxValue(e.target.checked, ind, position)
-                    }
-                  />
-                  <label
-                    htmlFor={`modal-checkbox-${position.key + ind}`}
-                    className="text-xs mb-0 text-center ml-[3px] cursor-pointer"
-                  >
-                    {data}
-                  </label>
-                </div>
+                  className="select-none-cls"
+                  sx={{ m: 0 }}
+                  control={
+                    <Checkbox
+                      id={`modal-checkbox-${position.key + ind}`}
+                      size="small"
+                      checked={selectCheckbox(ind, position)}
+                      onChange={(e) =>
+                        handleCheckboxValue(e.target.checked, ind, position)
+                      }
+                      sx={{ p: 0.25 }}
+                    />
+                  }
+                  label={data}
+                  slotProps={{
+                    typography: { sx: { fontSize: "0.75rem", ml: "3px" } }
+                  }}
+                />
               ))}
-            </div>
+            </Stack>
           </>
         );
       case textWidget:
         return (
           <>
-            <span
-              className={`${widgetLabelCss(position?.options?.status === "required")} ${widgetTitle}`}
-            >
+            <WidgetLabel required={position?.options?.status === "required"}>
               {position.options?.name}
-            </span>
+            </WidgetLabel>
             <ShowTextWidget
               position={position}
               handleWidgetDetails={handleWidgetDetails}
@@ -508,18 +576,21 @@ function PrefillWidgetModal(props) {
       case "dropdown":
         return (
           <>
-            <span
-              className={`${widgetLabelCss(position?.options?.status === "required")} ${widgetTitle}`}
-            >
+            <WidgetLabel required={position?.options?.status === "required"}>
               {position.options?.name}
-            </span>
-            <select
-              className="op-select op-select-bordered op-select-sm focus:outline-none hover:border-base-content text-base-content w-full"
+            </WidgetLabel>
+            <TextField
+              select
+              size="small"
+              fullWidth
               id="myDropdown"
               value={
-                position?.options?.response || position?.options?.defaultValue
+                position?.options?.response ||
+                position?.options?.defaultValue ||
+                ""
               }
               onChange={(e) => handleWidgetDetails(position, e.target.value)}
+              slotProps={{ select: { native: true } }}
             >
               {/* Default/Title option */}
               <option value="" disabled hidden>
@@ -530,23 +601,22 @@ function PrefillWidgetModal(props) {
                   {data}
                 </option>
               ))}
-            </select>
+            </TextField>
           </>
         );
       case "date":
         return (
           <>
-            <span
-              className={`${widgetLabelCss(position?.options?.status === "required")} ${widgetTitle}`}
-            >
+            <WidgetLabel required={position?.options?.status === "required"}>
               {position.options?.name}
-            </span>
+            </WidgetLabel>
             <DatePicker
               portalId="datepicker-portal-root"
               renderCustomHeader={({ date, changeYear, changeMonth }) => (
-                <div className="flex justify-start ml-2">
-                  <select
-                    className="bg-transparent outline-none"
+                <Box sx={{ display: "flex", justifyContent: "flex-start", ml: 1 }}>
+                  <Box
+                    component="select"
+                    sx={{ bgcolor: "transparent", border: 0, outline: "none" }}
                     value={months[getMonth(date)]}
                     onChange={({ target: { value } }) =>
                       changeMonth(months.indexOf(value))
@@ -557,9 +627,10 @@ function PrefillWidgetModal(props) {
                         {option}
                       </option>
                     ))}
-                  </select>
-                  <select
-                    className="bg-transparent outline-none"
+                  </Box>
+                  <Box
+                    component="select"
+                    sx={{ bgcolor: "transparent", border: 0, outline: "none" }}
                     value={getYear(date)}
                     onChange={({ target: { value } }) => changeYear(value)}
                   >
@@ -568,8 +639,8 @@ function PrefillWidgetModal(props) {
                         {option}
                       </option>
                     ))}
-                  </select>
-                </div>
+                  </Box>
+                </Box>
               )}
               closeOnScroll={true}
               selected={handleDate(position)}
@@ -592,43 +663,39 @@ function PrefillWidgetModal(props) {
       case radioButtonWidget:
         return (
           <>
-            <span
-              className={`${widgetLabelCss(position?.options?.status === "required")} ${widgetTitle}`}
-            >
+            <WidgetLabel required={position?.options?.status === "required"}>
               {position.options?.name}
-            </span>
-            <div className="flex flex-col gap-y-1">
+            </WidgetLabel>
+            <Stack spacing={0.5}>
               {position.options?.values.map((data, ind) => (
-                <div
+                <FormControlLabel
                   key={ind}
-                  className="select-none-cls flex items-center text-center gap-0.5"
-                >
-                  <input
-                    id={`modal-radio-${position.key + ind}`}
-                    className="mt-[2px] op-radio op-radio-xs"
-                    type="radio"
-                    checked={handleRadioCheck(data, position)}
-                    onChange={() => handleWidgetDetails(position, data)}
-                  />
-                  <label
-                    htmlFor={`modal-radio-${position.key + ind}`}
-                    className="text-xs mb-0 ml-[2px] cursor-pointer"
-                  >
-                    {data}
-                  </label>
-                </div>
+                  className="select-none-cls"
+                  sx={{ m: 0 }}
+                  control={
+                    <Radio
+                      id={`modal-radio-${position.key + ind}`}
+                      size="small"
+                      checked={handleRadioCheck(data, position)}
+                      onChange={() => handleWidgetDetails(position, data)}
+                      sx={{ p: 0.25 }}
+                    />
+                  }
+                  label={data}
+                  slotProps={{
+                    typography: { sx: { fontSize: "0.75rem", ml: "2px" } }
+                  }}
+                />
               ))}
-            </div>
+            </Stack>
           </>
         );
       case drawWidget:
         return (
-          <div>
-            <span
-              className={`${widgetLabelCss(position?.options?.status === "required")} ${widgetTitle}`}
-            >
+          <Box>
+            <WidgetLabel required={position?.options?.status === "required"}>
               {position.options?.name}
-            </span>
+            </WidgetLabel>
             <Draw
               key={position.key + "_" + (prefillImg?.length || 0)}
               penColor={penColor}
@@ -637,37 +704,59 @@ function PrefillWidgetModal(props) {
               handleSignatureChange={handleSignatureChange}
               prefillCls={"prefillCanvas"}
             />
-            <div className="flex flex-row justify-between mt-[10px]">
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "space-between",
+                mt: "10px"
+              }}
+            >
               <PenColorComponent
                 penColor={penColor}
                 setPenColor={setPenColor}
               />
-              <span
+              <Link
+                component="button"
+                type="button"
+                underline="always"
                 onClick={() => {
                   clearCanvasById(position?.key);
                   handleClearImage(position);
                 }}
-                className="flex justify-start text-blue-500 underline cursor-pointer"
+                sx={{ alignSelf: "flex-start", cursor: "pointer", fontSize: "inherit" }}
               >
                 {t("clear")}
-              </span>
-            </div>
-          </div>
+              </Link>
+            </Box>
+          </Box>
         );
       default:
         return position?.SignUrl ? (
-          <div className="pointer-events-none">
-            <img
+          <Box sx={{ pointerEvents: "none" }}>
+            <Box
+              component="img"
               alt="image"
               draggable="false"
               src={position?.SignUrl}
-              className="w-full h-full"
+              sx={{ width: "100%", height: "100%" }}
             />
-          </div>
+          </Box>
         ) : (
-          <div className="op-input op-input-bordered op-input-sm focus:outline-none hover:border-base-content w-full">
+          <Box
+            sx={{
+              width: "100%",
+              border: 1,
+              borderColor: "outline.main",
+              borderRadius: 1,
+              px: 1.5,
+              py: 0.75,
+              fontSize: "0.875rem",
+              color: "text.secondary"
+            }}
+          >
             No widget
-          </div>
+          </Box>
         );
     }
   };
@@ -794,39 +883,91 @@ function PrefillWidgetModal(props) {
         isOpen={true}
         handleClose={props.handleClosePrefillModal}
       >
-        <div className="relative">
+        <Box sx={{ position: "relative" }}>
           {(props?.isSubmit || loading) && (
-            <div className="absolute inset-0 flex items-center justify-center bg-white/70 z-[9999]">
+            <Box
+              sx={{
+                position: "absolute",
+                inset: 0,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                bgcolor: "rgba(255,255,255,0.7)",
+                zIndex: 9999
+              }}
+            >
               <Loader />
-            </div>
+            </Box>
           )}
           {uniqueWidget?.length > 0 && (
-            <div className="py-3 px-[10px] op-card border-[1px] border-gray-400 m-3 md:m-6 text-base-content flex flex-col relative">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-4 w-full">
+            <Card
+              variant="outlined"
+              sx={{
+                py: 1.5,
+                px: "10px",
+                m: { xs: 1.5, md: 3 },
+                display: "flex",
+                flexDirection: "column",
+                position: "relative",
+                borderColor: "outline.main"
+              }}
+            >
+              <Box
+                sx={{
+                  display: "grid",
+                  gridTemplateColumns: { xs: "1fr", md: "1fr 1fr" },
+                  columnGap: 5,
+                  rowGap: 2,
+                  width: "100%"
+                }}
+              >
                 {uniqueWidget.map((x, id) => (
-                  <div key={id} className="flex flex-col gap-2 w-full">
+                  <Box
+                    key={id}
+                    sx={{ display: "flex", flexDirection: "column", gap: 1, width: "100%" }}
+                  >
                     {handleWidgetType(x.widget, id)}
-                  </div>
+                  </Box>
                 ))}
-              </div>
-            </div>
+              </Box>
+            </Card>
           )}
 
-          <div>
+          <Box>
             {props.forms.length > 0 && (
-              <div className="overflow-y-auto m-3">
+              <Box sx={{ overflowY: "auto", m: 1.5 }}>
                 {uniqueWidget?.length > 0 && (
-                  <h1 className="font-medium text-[15px] mb-2">
+                  <Typography
+                    component="h1"
+                    sx={{ fontWeight: 500, fontSize: "15px", mb: 1 }}
+                  >
                     {t("recipients")}
-                  </h1>
+                  </Typography>
                 )}
-                <div className="py-3 px-[10px] op-card border-[1px] border-gray-400 text-base-content flex flex-col relative">
+                <Card
+                  variant="outlined"
+                  sx={{
+                    py: 1.5,
+                    px: "10px",
+                    display: "flex",
+                    flexDirection: "column",
+                    position: "relative",
+                    borderColor: "outline.main"
+                  }}
+                >
                   {props.forms?.map((field, id) => {
                     return (
-                      <div className="flex flex-col" key={field?.value}>
-                        <label>{field?.role}</label>
-                        <div className="flex justify-between items-center gap-1">
-                          <div className="flex-1">
+                      <Box sx={{ display: "flex", flexDirection: "column" }} key={field?.value}>
+                        <Typography component="label">{field?.role}</Typography>
+                        <Box
+                          sx={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                            alignItems: "center",
+                            gap: 0.5
+                          }}
+                        >
+                          <Box sx={{ flex: 1 }}>
                             <AsyncSelect
                               cacheOptions
                               defaultOptions
@@ -857,37 +998,47 @@ function PrefillWidgetModal(props) {
                                 "selectSignerModal"
                               )}
                             />
-                          </div>
-                          <button
+                          </Box>
+                          <IconButton
                             onClick={(e) => handleCreateNew(e, field.value)}
-                            className="op-btn op-btn-accent op-btn-outline op-btn-sm"
+                            color="secondary"
+                            size="small"
+                            sx={{
+                              border: 1,
+                              borderColor: "secondary.main",
+                              borderRadius: 1
+                            }}
                           >
-                            <i className="fa-light fa-plus"></i>
-                          </button>
-                        </div>
-                      </div>
+                            <AddIcon fontSize="small" />
+                          </IconButton>
+                        </Box>
+                      </Box>
                     );
                   })}
-                </div>
-              </div>
+                </Card>
+              </Box>
             )}
-          </div>
-          <div className="flex gap-2 mx-4 mb-3">
-            <button
+          </Box>
+          <Box sx={{ display: "flex", gap: 1, mx: 2, mb: 1.5 }}>
+            <Button
+              variant="contained"
+              color="primary"
+              size="small"
               disabled={props?.isSubmit}
-              className="op-btn op-btn-primary op-btn-sm w-[80px]"
+              sx={{ width: "80px" }}
               onClick={() => handleEmbedPrefill(props?.item)}
             >
-              <span>{t("next")}</span>
-            </button>
-                <button
-                  className="op-btn op-btn-ghost op-btn-sm"
-                  onClick={() => props.navigatePageToDoc()}
-                >
-                  <span>{t("edit-draft")}</span>
-                </button>
-          </div>
-        </div>
+              {t("next")}
+            </Button>
+            <Button
+              variant="text"
+              size="small"
+              onClick={() => props.navigatePageToDoc()}
+            >
+              {t("edit-draft")}
+            </Button>
+          </Box>
+        </Box>
       </ModalUi>
       <ModalUi
         title={t("add-contact")}

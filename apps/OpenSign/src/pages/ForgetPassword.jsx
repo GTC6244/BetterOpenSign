@@ -11,6 +11,11 @@ import {
 } from "../constant/const";
 import { useTranslation } from "react-i18next";
 import Loader from "../primitives/Loader";
+import Box from "@mui/material/Box";
+import Card from "@mui/material/Card";
+import Typography from "@mui/material/Typography";
+import Button from "@mui/material/Button";
+import TextField from "@mui/material/TextField";
 
 function ForgotPassword() {
   const { t } = useTranslation();
@@ -80,73 +85,130 @@ function ForgotPassword() {
       setImage(appInfo?.applogo || undefined);
   };
   return (
-    <div>
+    <Box>
       {isLoading && (
-        <div className="fixed w-full h-full flex justify-center items-center bg-black bg-opacity-30 z-50">
+        <Box
+          sx={{
+            position: "fixed",
+            inset: 0,
+            width: "100%",
+            height: "100%",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            bgcolor: "rgba(0,0,0,0.3)",
+            zIndex: 50
+          }}
+        >
           <Loader />
-        </div>
+        </Box>
       )}
       {toast?.message && <Alert type={toast.type}>{toast.message}</Alert>}
-      <div className="md:p-10 lg:p-16">
-        <div className="md:p-4 lg:p-10 p-4 bg-base-100 text-base-content op-card">
-          <div className="w-[250px] h-[66px] inline-block overflow-hidden">
+      <Box sx={{ p: { xs: 0, md: 5, lg: 8 } }}>
+        <Card
+          sx={{
+            p: { xs: 2, md: 2, lg: 5 },
+            bgcolor: "surface.main",
+            color: "surface.onMain"
+          }}
+        >
+          <Box
+            sx={{
+              width: 250,
+              height: 66,
+              display: "inline-block",
+              overflow: "hidden"
+            }}
+          >
             {image && (
               <img
                 src={image}
-                className="object-contain h-full"
+                style={{ objectFit: "contain", height: "100%" }}
                 alt="applogo"
               />
             )}
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-2">
-            <div>
+          </Box>
+          <Box
+            sx={{
+              display: "grid",
+              gridTemplateColumns: { xs: "1fr", md: "1fr 1fr" },
+              columnGap: 1
+            }}
+          >
+            <Box>
               <form onSubmit={handleSubmit}>
-                <h2 className="text-[30px] mt-6">{t("welcome")}</h2>
-                <span className="text-[12px] text-[#878787]">
+                <Typography component="h2" sx={{ fontSize: "30px", mt: 3 }}>
+                  {t("welcome")}
+                </Typography>
+                <Typography
+                  component="span"
+                  sx={{ fontSize: "12px", color: "text.secondary" }}
+                >
                   {t("reset-password-alert-3")}
-                </span>
-                <div className="w-full my-4 op-card bg-base-100 shadow-md outline outline-1 outline-slate-300/50">
-                  <div className="px-6 py-4">
-                    <label className="block text-xs">{t("email")}</label>
-                    <input
+                </Typography>
+                <Card sx={{ width: "100%", my: 2, boxShadow: 3 }}>
+                  <Box sx={{ px: 3, py: 2 }}>
+                    <Typography
+                      component="label"
+                      sx={{ display: "block", fontSize: "0.75rem" }}
+                    >
+                      {t("email")}
+                    </Typography>
+                    <TextField
                       type="email"
                       name="email"
-                      className="op-input op-input-bordered op-input-sm w-full"
+                      fullWidth
                       value={state.email}
                       onChange={handleChange}
-                      onInvalid={(e) =>
-                        e.target.setCustomValidity(t("input-required"))
-                      }
-                      onInput={(e) => e.target.setCustomValidity("")}
-                      required
+                      slotProps={{
+                        htmlInput: {
+                          required: true,
+                          onInvalid: (e) =>
+                            e.target.setCustomValidity(t("input-required")),
+                          onInput: (e) => e.target.setCustomValidity("")
+                        }
+                      }}
+                      sx={{ mt: 0.5 }}
                     />
-                    <hr className="my-2 border-none" />
-                  </div>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-center text-xs font-bold">
-                  <button type="submit" className="op-btn op-btn-primary">
+                  </Box>
+                </Card>
+                <Box
+                  sx={{
+                    display: "grid",
+                    gridTemplateColumns: { xs: "1fr", md: "1fr 1fr" },
+                    gap: 1
+                  }}
+                >
+                  <Button type="submit" variant="contained">
                     {t("submit")}
-                  </button>
-                  <button
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="contained"
+                    color="secondary"
                     onClick={() => navigate("/", { replace: true })}
-                    className="op-btn op-btn-secondary"
                   >
                     {t("login")}
-                  </button>
-                </div>
+                  </Button>
+                </Box>
               </form>
-            </div>
+            </Box>
             {!state.hideNav && (
-              <div className="self-center">
-                <div className="mx-auto md:w-[300px] lg:w-[500px]">
+              <Box sx={{ alignSelf: "center" }}>
+                <Box
+                  sx={{
+                    mx: "auto",
+                    width: { md: "300px", lg: "500px" }
+                  }}
+                >
                   <img src={login_img} alt="bisec" width="100%" />
-                </div>
-              </div>
+                </Box>
+              </Box>
             )}
-          </div>
-        </div>
-      </div>
-    </div>
+          </Box>
+        </Card>
+      </Box>
+    </Box>
   );
 }
 

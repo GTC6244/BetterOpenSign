@@ -1,4 +1,7 @@
 import { useTranslation } from "react-i18next";
+import Card from "@mui/material/Card";
+import Typography from "@mui/material/Typography";
+import Box from "@mui/material/Box";
 
 function ResponseTab({
   prefillCount = 0,
@@ -8,9 +11,17 @@ function ResponseTab({
   const { t } = useTranslation();
   const { status, message: msg } = message;
   return (
-    <div className="rounded-box border p-4 m-3 md:m-6 ">
-      <div className="font-medium">{t("summary")}</div>
-      <ul className="mt-2 list-disc pl-5 text-base-content/80">
+    <Card sx={{ p: 2, m: { xs: 1.5, md: 3 } }}>
+      <Typography sx={{ fontWeight: 500 }}>{t("summary")}</Typography>
+      <Box
+        component="ul"
+        sx={{
+          mt: 1,
+          pl: 2.5,
+          listStyleType: "disc",
+          color: "text.secondary"
+        }}
+      >
         <li>
           {t("prefill-fields")}: {prefillCount}
         </li>
@@ -25,8 +36,8 @@ function ResponseTab({
             {t("message")}: {msg}
           </li>
         )}
-      </ul>
-    </div>
+      </Box>
+    </Card>
   );
 }
 

@@ -1,5 +1,8 @@
 import RenderWidgets from "./RenderWidgets";
 import { useTranslation } from "react-i18next";
+import Box from "@mui/material/Box";
+import Card from "@mui/material/Card";
+import Button from "@mui/material/Button";
 
 const PrefillWidgets = ({ prefills = [], setPrefills, onNext }) => {
   const { t } = useTranslation();
@@ -26,12 +29,27 @@ const PrefillWidgets = ({ prefills = [], setPrefills, onNext }) => {
   return (
     <>
       {prefills?.length > 0 && (
-        <form
+        <Box
+          component="form"
           onSubmit={handleNext}
-          className="m-3 md:m-6 text-base-content flex flex-col relative"
+          sx={{
+            m: { xs: 1.5, md: 3 },
+            display: "flex",
+            flexDirection: "column",
+            position: "relative",
+            color: "text.primary"
+          }}
         >
-          <div className="py-3 px-[10px] op-card border-[1px] border-gray-400">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-4 w-full">
+          <Card sx={{ py: 1.5, px: 1.25 }}>
+            <Box
+              sx={{
+                display: "grid",
+                gridTemplateColumns: { xs: "1fr", md: "1fr 1fr" },
+                columnGap: 5,
+                rowGap: 2,
+                width: "100%"
+              }}
+            >
               {[...prefills]
                 .sort((a, b) =>
                   a.pageNumber !== b.pageNumber
@@ -48,18 +66,23 @@ const PrefillWidgets = ({ prefills = [], setPrefills, onNext }) => {
                     }
                   />
                 ))}
-            </div>
-          </div>
+            </Box>
+          </Card>
 
-          <div className="flex flex-row flex-wrap mt-3 gap-3 justify-center">
-            <button
-              type="submit"
-              className="op-btn op-btn-primary w-[150px] focus:outline-none"
-            >
+          <Box
+            sx={{
+              display: "flex",
+              flexWrap: "wrap",
+              mt: 1.5,
+              gap: 1.5,
+              justifyContent: "center"
+            }}
+          >
+            <Button type="submit" variant="contained" sx={{ width: 150 }}>
               {t("next")}
-            </button>
-          </div>
-        </form>
+            </Button>
+          </Box>
+        </Box>
       )}
     </>
   );

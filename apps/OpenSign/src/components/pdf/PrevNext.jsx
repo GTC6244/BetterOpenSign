@@ -1,5 +1,7 @@
-import React from "react";
 import { useTranslation } from "react-i18next";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Typography from "@mui/material/Typography";
 
 function PrevNext({ pageNumber, allPages, changePage }) {
   const { t } = useTranslation();
@@ -13,29 +15,43 @@ function PrevNext({ pageNumber, allPages, changePage }) {
   }
 
   return (
-    <div className="flex items-center">
-      <button
-        className="op-btn op-btn-neutral op-btn-xs md:op-btn-sm font-semibold text-xs"
+    <Box sx={{ display: "flex", alignItems: "center" }}>
+      <Button
+        variant="contained"
+        color="inherit"
+        size="small"
         disabled={pageNumber <= 1}
         onClick={previousPage}
+        sx={{ minWidth: 0, px: 1.5, fontWeight: 600 }}
       >
-        <span className="block">
-          <i className="fa-light fa-chevron-up" aria-hidden="true"></i>
-        </span>
-      </button>
-      <span className="text-xs text-base-content font-medium mx-2 2xl:text-[20px]">
+        <Box component="i" className="fa-light fa-chevron-up" aria-hidden="true" />
+      </Button>
+      <Typography
+        component="span"
+        sx={{
+          fontSize: { xs: "0.75rem", "2xl": "20px" },
+          color: "text.primary",
+          fontWeight: 500,
+          mx: 1
+        }}
+      >
         {pageNumber || (allPages ? 1 : "--")} {t("of")} {allPages || "--"}
-      </span>
-      <button
-        className="op-btn op-btn-neutral op-btn-xs md:op-btn-sm font-semibold text-xs"
+      </Typography>
+      <Button
+        variant="contained"
+        color="inherit"
+        size="small"
         disabled={pageNumber >= allPages}
         onClick={nextPage}
+        sx={{ minWidth: 0, px: 1.5, fontWeight: 600 }}
       >
-        <span className="block">
-          <i className="fa-light fa-chevron-down" aria-hidden="true"></i>
-        </span>
-      </button>
-    </div>
+        <Box
+          component="i"
+          className="fa-light fa-chevron-down"
+          aria-hidden="true"
+        />
+      </Button>
+    </Box>
   );
 }
 

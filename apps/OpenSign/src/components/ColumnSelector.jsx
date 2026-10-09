@@ -1,6 +1,10 @@
 import { useState, useEffect } from "react";
 import ModalUi from "../primitives/ModalUi";
 import { useTranslation } from "react-i18next";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Checkbox from "@mui/material/Checkbox";
+import FormControlLabel from "@mui/material/FormControlLabel";
 
 const ColumnSelector = ({
   isOpen,
@@ -32,29 +36,28 @@ const ColumnSelector = ({
 
   return (
     <ModalUi isOpen={isOpen} title={t("select-columns")} handleClose={onClose}>
-      <div className="p-[20px] flex flex-col gap-2">
+      <Box sx={{ p: "20px", display: "flex", flexDirection: "column", gap: 1 }}>
         {allColumns.map((col, i) => (
-          <div key={col} className="flex justify-between items-center gap-2">
-            <span className="flex justify-center items-center h-full">
-              <input
+          <FormControlLabel
+            key={col}
+            control={
+              <Checkbox
                 id={col + "_" + i}
-                type="checkbox"
+                size="small"
                 checked={selected.includes(col)}
                 onChange={() => handleChange(col)}
-                className="mb-0 cursor-pointer"
               />
-              <span className="whitespace-nowrap ml-1">
-                {t(`report-heading.${col}`, { defaultValue: col })}
-              </span>
-            </span>
-          </div>
+            }
+            label={t(`report-heading.${col}`, { defaultValue: col })}
+            sx={{ "& .MuiFormControlLabel-label": { whiteSpace: "nowrap" } }}
+          />
         ))}
-        <div className="flex justify-start mt-2">
-          <button onClick={handleApply} className="op-btn op-btn-primary">
+        <Box sx={{ display: "flex", justifyContent: "flex-start", mt: 1 }}>
+          <Button onClick={handleApply} variant="contained">
             {t("apply")}
-          </button>
-        </div>
-      </div>
+          </Button>
+        </Box>
+      </Box>
     </ModalUi>
   );
 };

@@ -1,5 +1,6 @@
 import React, { useRef } from "react";
 import { useTranslation } from "react-i18next";
+import Box from "@mui/material/Box";
 
 function UploadImage(props) {
   const { t } = useTranslation();
@@ -13,14 +14,29 @@ function UploadImage(props) {
   };
 
   return (
-    <div>
+    <Box>
       {(props?.isImageSelect || props?.isStampOrImage) && !props?.image ? (
-        <div className="flex justify-center">
-          <div
-            className={`${props?.currWidgetsDetails?.type === "initials" ? "intialSignatureCanvas" : "signatureCanvas"} bg-white border-[1.3px] border-gray-300 flex flex-col justify-center items-center mb-[6px] cursor-pointer`}
+        <Box sx={{ display: "flex", justifyContent: "center" }}>
+          <Box
+            className={
+              props?.currWidgetsDetails?.type === "initials"
+                ? "intialSignatureCanvas"
+                : "signatureCanvas"
+            }
             onClick={() =>
               getImageRef(props?.currWidgetsDetails?.key).current.click()
             }
+            sx={{
+              bgcolor: "common.white",
+              border: "1.3px solid",
+              borderColor: "outline.variant",
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              alignItems: "center",
+              mb: "6px",
+              cursor: "pointer"
+            }}
           >
             <input
               type="file"
@@ -30,28 +46,43 @@ function UploadImage(props) {
               ref={getImageRef(props?.currWidgetsDetails?.key)}
               hidden
             />
-            <i className="fa-light fa-cloud-upload-alt uploadImgLogo text-base-content"></i>
-            <div className="text-[10px] text-base-content">{t("upload")}</div>
-          </div>
-        </div>
+            <Box
+              component="i"
+              className="fa-light fa-cloud-upload-alt uploadImgLogo"
+              sx={{ color: "text.primary" }}
+            />
+            <Box sx={{ fontSize: "10px", color: "text.primary" }}>
+              {t("upload")}
+            </Box>
+          </Box>
+        </Box>
       ) : (
-        <>
-          <div className="flex justify-center">
-            <div
-              className={`${props?.currWidgetsDetails?.type === "initials" ? "intialSignatureCanvas" : "signatureCanvas"} bg-white border-[1.3px] border-gray-300 mb-[6px] overflow-hidden`}
-            >
-              <img
-                alt="print img"
-                ref={getImageRef(props?.currWidgetsDetails?.key)}
-                src={props?.image?.src}
-                draggable="false"
-                className="object-contain h-full w-full"
-              />
-            </div>
-          </div>
-        </>
+        <Box sx={{ display: "flex", justifyContent: "center" }}>
+          <Box
+            className={
+              props?.currWidgetsDetails?.type === "initials"
+                ? "intialSignatureCanvas"
+                : "signatureCanvas"
+            }
+            sx={{
+              bgcolor: "common.white",
+              border: "1.3px solid",
+              borderColor: "outline.variant",
+              mb: "6px",
+              overflow: "hidden"
+            }}
+          >
+            <img
+              alt="print img"
+              ref={getImageRef(props?.currWidgetsDetails?.key)}
+              src={props?.image?.src}
+              draggable="false"
+              style={{ objectFit: "contain", height: "100%", width: "100%" }}
+            />
+          </Box>
+        </Box>
       )}
-    </div>
+    </Box>
   );
 }
 

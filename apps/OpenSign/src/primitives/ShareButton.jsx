@@ -1,5 +1,8 @@
 import { useCallback, useState } from "react";
 import ModalUi from "./ModalUi";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Typography from "@mui/material/Typography";
 
 function useShare({ title, text, url }) {
   const [error, setError] = useState(null);
@@ -36,6 +39,9 @@ function useShare({ title, text, url }) {
 export default function ShareButton({ title, text, url, className, children }) {
   const { share, isSupported, error } = useShare({ title, text, url });
   const [isPopupOpen, setPopupOpen] = useState(false);
+
+  // Shared style for the fallback share-option buttons
+  const optionBtnSx = { m: 1, width: 190 };
 
   // Native Web Share API supported
   if (isSupported) {
@@ -74,17 +80,37 @@ export default function ShareButton({ title, text, url, className, children }) {
           }
           handleClose={() => setPopupOpen(false)}
         >
-          {error && <p style={{ color: "red" }}>Error: {error.message}</p>}
-          <div className="grid grid-cols-1 md:grid-cols-2 justify-items-start text-lg p-[20px]">
+          {error && (
+            <Typography sx={{ color: "error.main" }}>
+              Error: {error.message}
+            </Typography>
+          )}
+          <Box
+            sx={{
+              display: "grid",
+              gridTemplateColumns: { xs: "1fr", md: "1fr 1fr" },
+              justifyItems: "start",
+              p: "20px"
+            }}
+          >
             {/* Copy Link */}
-            <button
+            <Button
+              variant="outlined"
+              color="primary"
+              size="small"
+              sx={optionBtnSx}
+              startIcon={<i className="fa-solid fa-clipboard fa-lg"></i>}
               onClick={() => navigator.clipboard.writeText(url)}
-              className="m-2 op-btn op-btn-primary op-btn-outline op-btn-xs md:op-btn-sm w-[190px]"
             >
-              <i className="fa-solid fa-clipboard fa-lg"></i> Copy to clipboard
-            </button>
+              Copy to clipboard
+            </Button>
             {/* Twitter */}
-            <button
+            <Button
+              variant="outlined"
+              color="primary"
+              size="small"
+              sx={optionBtnSx}
+              startIcon={<i className="fa-brands fa-square-x-twitter fa-lg"></i>}
               onClick={() =>
                 window.open(
                   `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`,
@@ -92,14 +118,17 @@ export default function ShareButton({ title, text, url, className, children }) {
                   "noopener"
                 )
               }
-              className="m-2 op-btn op-btn-primary op-btn-outline op-btn-xs md:op-btn-sm w-[190px]"
             >
-              <i className="fa-brands fa-square-x-twitter fa-lg"></i> Share on
-              Twitter
-            </button>
+              Share on Twitter
+            </Button>
 
             {/* Facebook */}
-            <button
+            <Button
+              variant="outlined"
+              color="primary"
+              size="small"
+              sx={optionBtnSx}
+              startIcon={<i className="fa-brands fa-square-facebook fa-lg"></i>}
               onClick={() =>
                 window.open(
                   `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`,
@@ -107,14 +136,17 @@ export default function ShareButton({ title, text, url, className, children }) {
                   "noopener"
                 )
               }
-              className="m-2 op-btn op-btn-primary op-btn-outline op-btn-xs md:op-btn-sm w-[190px]"
             >
-              <i className="fa-brands fa-square-facebook fa-lg"></i> Share on
-              Facebook
-            </button>
+              Share on Facebook
+            </Button>
 
             {/* WhatsApp */}
-            <button
+            <Button
+              variant="outlined"
+              color="primary"
+              size="small"
+              sx={optionBtnSx}
+              startIcon={<i className="fa-brands fa-square-whatsapp fa-lg"></i>}
               onClick={() =>
                 window.open(
                   `https://wa.me/?text=${encodeURIComponent(text + " " + url)}`,
@@ -122,14 +154,17 @@ export default function ShareButton({ title, text, url, className, children }) {
                   "noopener"
                 )
               }
-              className="m-2 op-btn op-btn-primary op-btn-outline op-btn-xs md:op-btn-sm w-[190px]"
             >
-              <i className="fa-brands fa-square-whatsapp fa-lg"></i> Share on
-              WhatsApp
-            </button>
+              Share on WhatsApp
+            </Button>
 
             {/* Gmail (Web) */}
-            <button
+            <Button
+              variant="outlined"
+              color="primary"
+              size="small"
+              sx={optionBtnSx}
+              startIcon={<i className="fa-solid fa-envelope fa-lg"></i>}
               onClick={() =>
                 window.open(
                   `https://mail.google.com/mail/?view=cm&fs=1&su=${subject}&body=${body}`,
@@ -137,13 +172,17 @@ export default function ShareButton({ title, text, url, className, children }) {
                   "noopener"
                 )
               }
-              className="m-2 op-btn op-btn-primary op-btn-outline op-btn-xs md:op-btn-sm w-[190px]"
             >
-              <i className="fa-solid fa-envelope fa-lg"></i> Share via Gmail
-            </button>
+              Share via Gmail
+            </Button>
 
             {/* Microsoft Teams */}
-            <button
+            <Button
+              variant="outlined"
+              color="primary"
+              size="small"
+              sx={optionBtnSx}
+              startIcon={<i className="fa-brands fa-microsoft fa-lg"></i>}
               onClick={() =>
                 window.open(
                   `https://teams.microsoft.com/l/share?url=${encodeURIComponent(url)}&title=${encodeURIComponent(title)}`,
@@ -151,13 +190,17 @@ export default function ShareButton({ title, text, url, className, children }) {
                   "noopener"
                 )
               }
-              className="m-2 op-btn op-btn-primary op-btn-outline op-btn-xs md:op-btn-sm w-[190px]"
             >
-              <i className="fa-brands fa-microsoft fa-lg"></i> Share on Teams
-            </button>
+              Share on Teams
+            </Button>
 
             {/* Outlook Web */}
-            <button
+            <Button
+              variant="outlined"
+              color="primary"
+              size="small"
+              sx={optionBtnSx}
+              startIcon={<i className="fa-solid fa-envelope-open-text fa-lg"></i>}
               onClick={() =>
                 window.open(
                   `https://outlook.live.com/owa/?path=/mail/action/compose&subject=${subject}&body=${body}`,
@@ -165,12 +208,10 @@ export default function ShareButton({ title, text, url, className, children }) {
                   "noopener"
                 )
               }
-              className="m-2 op-btn op-btn-primary op-btn-outline op-btn-xs md:op-btn-sm w-[190px]"
             >
-              <i className="fa-solid fa-envelope-open-text fa-lg"></i> Share via
-              Outlook
-            </button>
-          </div>
+              Share via Outlook
+            </Button>
+          </Box>
         </ModalUi>
       )}
     </>

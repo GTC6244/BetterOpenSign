@@ -73,6 +73,9 @@ import WidgetsValueModal from "../components/pdf/WidgetsValueModal";
 import * as utils from "../utils";
 import { useWindowSize } from "../hook/useWindowSize";
 import { useScroll } from "../context/ScrollPdfContext";
+import Button from "@mui/material/Button";
+import Box from "@mui/material/Box";
+import Divider from "@mui/material/Divider";
 
 function PdfRequestFiles(
 ) {
@@ -1771,18 +1774,28 @@ function PdfRequestFiles(
 
   const RedirectNotice = () => {
     return !isredirectCanceled && redirectUrl ? (
-      <div
-        className="flex flex-row gap-1 items-center justify-center mb-3"
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "row",
+          gap: 0.5,
+          alignItems: "center",
+          justifyContent: "center",
+          mb: 1.5
+        }}
         aria-live="polite"
       >
         <p>{t("redirecting-you-in", { redirectTimeLeft })}</p>
-        <button
+        <Button
           onClick={handleRedirectCancel}
-          className="underline cursor-pointer op-text-primary focus:outline-none ml-2"
+          variant="text"
+          color="primary"
+          size="small"
+          sx={{ textDecoration: "underline", ml: 1 }}
         >
           {t("cancel")}
-        </button>
-      </div>
+        </Button>
+      </Box>
     ) : (
       <></>
     );
@@ -1833,7 +1846,7 @@ function PdfRequestFiles(
                   />
                 </div>
               )}
-              <div
+              <Box
                 style={{
                   pointerEvents:
                     isExpired ||
@@ -1841,17 +1854,37 @@ function PdfRequestFiles(
                       ? "none"
                       : "auto"
                 }}
-                 className={`${
-                      isGuestSignFlow
-                      ? "border-[0.5px] border-gray-300"
-                      : "op-card"
-                } relative overflow-hidden flex flex-col md:flex-row justify-between bg-base-300`}
+                sx={{
+                  position: "relative",
+                  overflow: "hidden",
+                  display: "flex",
+                  flexDirection: { xs: "column", md: "row" },
+                  justifyContent: "space-between",
+                  bgcolor: "surface.container",
+                  ...(isGuestSignFlow
+                    ? { border: "0.5px solid", borderColor: "outline.variant" }
+                    : { borderRadius: 2 })
+                }}
               >
                 {isUiLoading && (
-                  <div className="absolute h-full w-full flex flex-col justify-center items-center z-[999] bg-[#e6f2f2]/80">
+                  <Box
+                    sx={{
+                      position: "absolute",
+                      height: "100%",
+                      width: "100%",
+                      display: "flex",
+                      flexDirection: "column",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      zIndex: 999,
+                      bgcolor: "rgba(230,242,242,0.8)"
+                    }}
+                  >
                     <Loader />
-                    <span className="text-[13px]">{t("loading-mssg")}</span>
-                  </div>
+                    <Box component="span" sx={{ fontSize: "13px" }}>
+                      {t("loading-mssg")}
+                    </Box>
+                  </Box>
                 )}
                 {!isReqSignTourDisabled &&
                   isAgree &&
@@ -1900,19 +1933,19 @@ function PdfRequestFiles(
                     setDefaultSignAlert({ isShow: false, alertMessage: "" })
                   }
                 >
-                  <div className="h-full p-[20px]">
+                  <Box sx={{ height: "100%", p: 2.5 }}>
                     <p>{defaultSignAlert.alertMessage}</p>
-                    <div className="h-[1px] w-full my-[15px] bg-[#9f9f9f]"></div>
+                    <Divider sx={{ my: 1.875 }} />
                     {defaultSignImg ? (
                       <>
-                        <button
+                        <Button
                           onClick={() => addDefaultSignature()}
                           type="button"
-                          className="op-btn op-btn-primary"
+                          variant="contained"
                         >
                           {t("yes")}
-                        </button>
-                        <button
+                        </Button>
+                        <Button
                           onClick={() =>
                             setDefaultSignAlert({
                               isShow: false,
@@ -1920,23 +1953,25 @@ function PdfRequestFiles(
                             })
                           }
                           type="button"
-                          className="op-btn op-btn-secondary ml-1"
+                          variant="contained"
+                          color="secondary"
+                          sx={{ ml: 0.5 }}
                         >
                           {t("close")}
-                        </button>
+                        </Button>
                       </>
                     ) : (
-                      <button
+                      <Button
                         onClick={() =>
                           setIsAlert({ isShow: false, alertMessage: "" })
                         }
                         type="button"
-                        className="op-btn op-btn-primary"
+                        variant="contained"
                       >
                         {t("ok")}
-                      </button>
+                      </Button>
                     )}
-                  </div>
+                  </Box>
                 </ModalUi>
                 {/* this component used to render all pdf pages in left side */}
                 <RenderAllPdfPage
@@ -1987,76 +2022,107 @@ function PdfRequestFiles(
                         "md:min-w-[440px] md:max-w-[400px]"
                       }
                     >
-                      <div className="h-full p-[20px] text-base-content">
+                      <Box sx={{ height: "100%", p: 2.5, color: "text.primary" }}>
                         {isCompleted?.message ? (
                           <>
                             <p className="mb-2">{isCompleted?.message}</p>
                             <RedirectNotice />
                           </>
                         ) : (
-                          <div className="px-[15px]">
+                          <Box sx={{ px: 1.875 }}>
                             <span>{t("document-signed-alert-4")}</span>
-                          </div>
+                          </Box>
                         )}
                         {!isCompleted?.message && (
-                          <div className="flex flex-col mt-3 gap-1 px-[10px] justify-center items-center">
+                          <Box
+                            sx={{
+                              display: "flex",
+                              flexDirection: "column",
+                              mt: 1.5,
+                              gap: 0.5,
+                              px: 1.25,
+                              justifyContent: "center",
+                              alignItems: "center"
+                            }}
+                          >
                             <RedirectNotice />
                             <div className={`${!redirectUrl ? "m-2" : ""}`}>
-                              <button
+                              <Button
                                 onClick={(e) =>
                                   handleToPrint(e, setIsDownloading, pdfDetails)
                                 }
                                 type="button"
-                                className="font-[500] text-[13px] mr-[5px] op-btn op-btn-neutral"
+                                variant="contained"
+                                color="inherit"
+                                startIcon={
+                                  <i
+                                    className="fa-light fa-print"
+                                    aria-hidden="true"
+                                  />
+                                }
+                                sx={{ fontWeight: 500, fontSize: "13px", mr: "5px" }}
                               >
-                                <i
-                                  className="fa-light fa-print"
-                                  aria-hidden="true"
-                                ></i>
                                 <span className="hidden lg:block">
                                   {t("print")}
                                 </span>
-                              </button>
-                                <button
-                                  type="button"
-                                  onClick={() =>
-                                    handleDownloadCertificate(
-                                      pdfDetails,
-                                      setIsDownloading
-                                    )
-                                  }
-                                  className="font-[500] text-[13px] mr-[5px] op-btn op-btn-secondary"
-                                >
-                                  <i
-                                    className="fa-light fa-award mx-[3px] lg:mx-0"
-                                    aria-hidden="true"
-                                  ></i>
-                                  <span className="hidden lg:block">
-                                    {t("certificate")}
-                                  </span>
-                                </button>
-                              <button
+                              </Button>
+                              <Button
                                 type="button"
-                                className="font-[500] text-[13px] mr-[5px] op-btn op-btn-primary"
-                                onClick={handleDownload}
+                                onClick={() =>
+                                  handleDownloadCertificate(
+                                    pdfDetails,
+                                    setIsDownloading
+                                  )
+                                }
+                                variant="contained"
+                                color="secondary"
+                                startIcon={
+                                  <i
+                                    className="fa-light fa-award"
+                                    aria-hidden="true"
+                                  />
+                                }
+                                sx={{ fontWeight: 500, fontSize: "13px", mr: "5px" }}
                               >
-                                <i
-                                  className="fa-light fa-download"
-                                  aria-hidden="true"
-                                ></i>
+                                <span className="hidden lg:block">
+                                  {t("certificate")}
+                                </span>
+                              </Button>
+                              <Button
+                                type="button"
+                                variant="contained"
+                                onClick={handleDownload}
+                                startIcon={
+                                  <i
+                                    className="fa-light fa-download"
+                                    aria-hidden="true"
+                                  />
+                                }
+                                sx={{ fontWeight: 500, fontSize: "13px", mr: "5px" }}
+                              >
                                 <span className="hidden lg:block">
                                   {t("download")}
                                 </span>
-                              </button>
+                              </Button>
                             </div>
-                          </div>
+                          </Box>
                         )}
-                      </div>
+                      </Box>
                     </ModalUi>
                     {isDownloading === "pdf" && (
-                      <div className="fixed z-[1000] inset-0 flex justify-center items-center bg-black bg-opacity-30">
+                      <Box
+                        sx={{
+                          position: "fixed",
+                          zIndex: 1000,
+                          inset: 0,
+                          display: "flex",
+                          justifyContent: "center",
+                          alignItems: "center",
+                          bgcolor: "rgba(0,0,0,0.3)"
+                        }}
+                      >
                         <Loader />
-                      </div>
+                      </Box>
                     )}
                     <ModalUi
                       isOpen={
@@ -2071,13 +2137,20 @@ function PdfRequestFiles(
                       }
                       handleClose={() => setIsDownloading("")}
                     >
-                      <div className="p-3 md:p-5 text-[13px] md:text-base text-center text-base-content">
+                      <Box
+                        sx={{
+                          p: { xs: 1.5, md: 2.5 },
+                          fontSize: { xs: "13px", md: "1rem" },
+                          textAlign: "center",
+                          color: "text.primary"
+                        }}
+                      >
                         {isDownloading === "certificate" ? (
                           <p>{t("generate-certificate-alert")}</p>
                         ) : (
                           <p>{t("generate-certificate-err")}</p>
                         )}
-                      </div>
+                      </Box>
                     </ModalUi>
                     {/* pdf header which contain funish back button */}
                     <Header
@@ -2163,17 +2236,27 @@ function PdfRequestFiles(
                   </div>
                 </div>
 
-                <div className="w-full md:w-[23%] bg-base-100 overflow-y-auto hide-scrollbar ">
+                <Box
+                  className="w-full md:w-[23%] hide-scrollbar"
+                  sx={{ bgcolor: "surface.main", overflowY: "auto" }}
+                >
                   <div className={`max-h-screen`}>
                     <div className="w-full hidden md:inline-block">
                       {signedSigners.length > 0 && (
                         <>
-                          <div
+                          <Box
                             data-tut="reactourSecond"
-                            className="mx-2 pr-2 pt-2 pb-1 text-[15px] text-base-content font-semibold border-b-[1px] border-base-300"
+                            className="mx-2 pr-2 pt-2 pb-1"
+                            sx={{
+                              fontSize: "15px",
+                              color: "text.primary",
+                              fontWeight: 600,
+                              borderBottom: "1px solid",
+                              borderColor: "outline.variant"
+                            }}
                           >
                             <span>{t("signed-by")}</span>
-                          </div>
+                          </Box>
                           <div className="mt-[2px]">
                             {signedSigners.map((obj, ind) => {
                               return (
@@ -2194,14 +2277,30 @@ function PdfRequestFiles(
                         (() => {
                           return (
                             <>
-                              <div className="mx-2 pr-2 pt-2 pb-1 text-[15px] text-base-content font-semibold border-b-[1px] border-base-300">
+                              <Box
+                                className="mx-2 pr-2 pt-2 pb-1"
+                                sx={{
+                                  fontSize: "15px",
+                                  color: "text.primary",
+                                  fontWeight: 600,
+                                  borderBottom: "1px solid",
+                                  borderColor: "outline.variant"
+                                }}
+                              >
                                 <span>
                                   {t("yet-to-sign")}
                                   <sup onClick={handleTourHelp}>
-                                    <i className="ml-1 cursor-pointer fa-light fa-question rounded-full border-[1px] border-base-content text-[11px] py-[1px] px-[3px]"></i>
+                                    <Box
+                                      component="i"
+                                      className="ml-1 cursor-pointer fa-light fa-question rounded-full text-[11px] py-[1px] px-[3px]"
+                                      sx={{
+                                        border: "1px solid",
+                                        borderColor: "text.primary"
+                                      }}
+                                    />
                                   </sup>
                                 </span>
-                              </div>
+                              </Box>
                               <div
                                 data-tut="reactourFirst"
                                 className="mt-[5px]"
@@ -2252,8 +2351,8 @@ function PdfRequestFiles(
                         </div>
                       )}
                   </div>
-                </div>
-              </div>
+                </Box>
+              </Box>
             </div>
           )}
           {currentSigner && isShowModal[currWidgetsDetails?.key] && (
@@ -2286,16 +2385,17 @@ function PdfRequestFiles(
             title={isAlert?.title || t("alert-message")}
             handleClose={() => setIsAlert({ isShow: false, alertMessage: "" })}
           >
-            <div className="h-full p-[20px]">
+            <Box sx={{ height: "100%", p: 2.5 }}>
               <p>{isAlert.alertMessage}</p>
-              <button
+              <Button
                 onClick={() => setIsAlert({ isShow: false, alertMessage: "" })}
                 type="button"
-                className="op-btn op-btn-primary mt-3 px-4"
+                variant="contained"
+                sx={{ mt: 1.5, px: 2 }}
               >
                 {t("close")}
-              </button>
-            </div>
+              </Button>
+            </Box>
           </ModalUi>
           <TextFontSetting
             isTextSetting={isTextSetting}

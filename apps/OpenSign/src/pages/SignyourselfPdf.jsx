@@ -77,6 +77,8 @@ import {
 } from "../utils";
 
 import { useScroll } from "../context/ScrollPdfContext";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
 //For signYourself inProgress section signer can add sign and complete doc sign.
 function SignYourSelf() {
   const { t } = useTranslation();
@@ -1306,7 +1308,10 @@ function SignYourSelf() {
               />
             </div>
           )}
-          <div className="relative op-card overflow-hidden flex flex-col md:flex-row justify-between bg-base-300">
+          <Box
+            className="relative overflow-hidden flex flex-col md:flex-row justify-between"
+            sx={{ bgcolor: "surface.container" }}
+          >
             {isUiLoading && (
               <div className="absolute h-full w-full z-[999] flex flex-col justify-center items-center bg-[#e6f2f2]/80">
                 <Loader />
@@ -1396,12 +1401,13 @@ function SignYourSelf() {
                   <div className="p-[20px] h-full text-base-content">
                     <p>{showAlreadySignDoc.mssg}</p>
                     <div className="h-[1px] w-full my-[15px] bg-[#9f9f9f]"></div>
-                    <button
-                      className="op-btn op-btn-ghost text-base-content shadow-md"
+                    <Button
+                      variant="text"
+                      color="inherit"
                       onClick={() => setShowAlreadySignDoc({ status: false })}
                     >
                       {t("close")}
-                    </button>
+                    </Button>
                   </div>
                 </ModalUi>
                 <DropdownWidgetOption
@@ -1535,7 +1541,7 @@ function SignYourSelf() {
                 )}
               </div>
             </div>
-          </div>
+          </Box>
         </div>
       )}
       {!isCheckbox && isShowModal[currWidgetsDetails?.key] && (

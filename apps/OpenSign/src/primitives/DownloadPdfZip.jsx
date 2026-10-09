@@ -10,6 +10,13 @@ import {
 import Loader from "./Loader";
 import JSZip from "jszip";
 import { saveAs } from "file-saver";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import Button from "@mui/material/Button";
+import Divider from "@mui/material/Divider";
+import Radio from "@mui/material/Radio";
+import RadioGroup from "@mui/material/RadioGroup";
+import FormControlLabel from "@mui/material/FormControlLabel";
 
 function DownloadPdfZip(props) {
   const appName =
@@ -95,36 +102,44 @@ function DownloadPdfZip(props) {
       title={t("download-files")}
       handleClose={() => props.setIsDownloadModal(false)}
     >
-      <div className="p-[20px] h-full text-base-content">
-        {downloadType
-          .map((data, ind) => (
-            <label
+      <Box sx={{ p: 2.5, height: "100%", color: "text.primary" }}>
+        <RadioGroup
+          value={selectType}
+          onChange={(e) => setSelectType(Number(e.target.value))}
+        >
+          {downloadType.map((data, ind) => (
+            <FormControlLabel
               key={ind}
-              className="flex items-center gap-1 mb-2 cursor-pointer"
-            >
-              <input
-                className="mr-[8px] op-radio op-radio-xs"
-                type="radio"
-                value={data.id}
-                onChange={() => setSelectType(data.id)}
-                checked={selectType === data.id}
-              />
-              {data.label}
-            </label>
+              value={data.id}
+              control={<Radio size="small" />}
+              label={data.label}
+            />
           ))}
-        <div className="h-[1px] w-full my-[15px] bg-[#9f9f9f]"></div>
-        <button
+        </RadioGroup>
+        <Divider sx={{ my: "15px" }} />
+        <Button
           onClick={() => handleDownload()}
           type="submit"
-          className="op-btn op-btn-primary"
+          variant="contained"
+          color="primary"
         >
           {t("download")}
-        </button>
-      </div>
+        </Button>
+      </Box>
       {isDownloading === "pdf" && (
-        <div className="fixed z-[200] inset-0 flex justify-center items-center bg-black bg-opacity-30">
+        <Box
+          sx={{
+            position: "fixed",
+            zIndex: 200,
+            inset: 0,
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            bgcolor: "rgba(0,0,0,0.3)"
+          }}
+        >
           <Loader />
-        </div>
+        </Box>
       )}
       <ModalUi
         isOpen={
@@ -137,13 +152,20 @@ function DownloadPdfZip(props) {
         }
         handleClose={() => setIsDownloading("")}
       >
-        <div className="p-3 md:p-5 text-[13px] md:text-base text-center text-base-content">
+        <Box
+          sx={{
+            p: { xs: 1.5, md: 2.5 },
+            fontSize: { xs: "13px", md: "1rem" },
+            textAlign: "center",
+            color: "text.primary"
+          }}
+        >
           {isDownloading === "certificate" ? (
-            <p>{t("generate-certificate-alert")}</p>
+            <Typography>{t("generate-certificate-alert")}</Typography>
           ) : (
-            <p>{t("generate-certificate-err")}</p>
+            <Typography>{t("generate-certificate-err")}</Typography>
           )}
-        </div>
+        </Box>
       </ModalUi>
     </ModalUi>
   );

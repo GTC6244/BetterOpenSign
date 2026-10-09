@@ -8,6 +8,7 @@ import {
   isMobile,
   nameColor
 } from "../../constant/Utils";
+import Box from "@mui/material/Box";
 const cursor =
   "cursor-[url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAACXBIWXMAAAsTAAALEwEAmpwYAAAASElEQVR4nGNgwAMkJSUbpKSkOvCpIaT5PxSTbogUQjMYMwxeIIXmVFIxA8UGDDyQGg0DnIDi6JKUlCxHMqCeZAOghjSAMD5FAKfeaURdUFxCAAAAAElFTkSuQmCC'),_pointer]";
 const RecipientList = (props) => {
@@ -102,21 +103,56 @@ const RecipientList = (props) => {
     <>
       {props?.prefillSigner?.length > 0 &&
         props?.prefillSigner?.map((obj, ind) => (
-          <div
+          <Box
             key={ind}
             data-tut="prefillTour"
-            className={`${
-              props.uniqueId === obj.Id
-                ? "op-bg-primary text-white"
-                : "transparent text-base-content"
-            } cursor-pointer px-2 py-1 m-1 mb-2 border-[1px] gap-1 rounded-xl flex justify-center items-center op-border-primary text-[12px] font-bold whitespace-nowrap text-ellipsis`}
             onClick={(e) => handleSelectRecipient(e, ind, obj, true)}
+            sx={{
+              bgcolor:
+                props.uniqueId === obj.Id ? "primary.main" : "transparent",
+              color:
+                props.uniqueId === obj.Id
+                  ? "primary.contrastText"
+                  : "text.primary",
+              border: "1px solid",
+              borderColor: "primary.main",
+              cursor: "pointer",
+              px: 1,
+              py: 0.5,
+              m: 0.5,
+              mb: 1,
+              gap: 0.5,
+              borderRadius: "0.75rem",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              fontSize: "12px",
+              fontWeight: 700,
+              whiteSpace: "nowrap",
+              textOverflow: "ellipsis"
+            }}
           >
-            <i
-              className={`${props.uniqueId === obj.Id ? "bg-white op-text-primary" : "op-bg-primary text-white"} w-[20px] h-[20px] flex justify-center items-center text-[10px] fa-light fa-signature rounded-full`}
-            ></i>
+            <Box
+              component="i"
+              className="fa-light fa-signature"
+              sx={{
+                bgcolor:
+                  props.uniqueId === obj.Id ? "common.white" : "primary.main",
+                color:
+                  props.uniqueId === obj.Id
+                    ? "primary.main"
+                    : "primary.contrastText",
+                width: "20px",
+                height: "20px",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                fontSize: "10px",
+                borderRadius: "9999px"
+              }}
+            ></Box>
             <span>{obj.Name}</span>
-          </div>
+          </Box>
         ))}
       {props.signersdata.length > 0 &&
         props.signersdata.map((obj, ind) => {
@@ -173,10 +209,9 @@ const RecipientList = (props) => {
                     )}
                   </span>
                 </div>
-                <div
-                  className={`${obj.Name ? "flex-col" : "flex-row"} ${
-                    isSelected(ind) ? "text-[#424242]" : "text-base-content"
-                  } flex overflow-hidden flex-grow-0`}
+                <Box
+                  className={`${obj.Name ? "flex-col" : "flex-row"} flex overflow-hidden flex-grow-0`}
+                  sx={{ color: isSelected(ind) ? "#424242" : "text.primary" }}
                 >
                   {obj.Name ? (
                     <span className="text-[12px] font-bold truncate whitespace-nowrap">
@@ -219,7 +254,7 @@ const RecipientList = (props) => {
                       {obj?.Role || obj?.Email}
                     </span>
                   )}
-                </div>
+                </Box>
               </div>
               {isMobile && props.sendInOrder && (
                 <div className="flex flex-row items-center gap-[5px] mr-2">
@@ -252,15 +287,16 @@ const RecipientList = (props) => {
                 </div>
               )}
               {props.handleDeleteUser && obj?.Role !== "prefill" && (
-                <div
+                <Box
                   onClick={(e) => {
                     e.stopPropagation();
                     props.handleDeleteUser(obj.Id);
                   }}
-                  className={`${isSelected(ind) ? "text-[#424242]" : "text-base-content"} cursor-pointer`}
+                  className="cursor-pointer"
+                  sx={{ color: isSelected(ind) ? "#424242" : "text.primary" }}
                 >
                   <i className="fa-light fa-trash-can 2xl:text-[22px]"></i>
-                </div>
+                </Box>
               )}
               <hr />
             </div>

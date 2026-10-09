@@ -2,9 +2,15 @@ import React, { useState, useEffect } from "react";
 import AsyncSelect from "react-select/async";
 import AddContact from "../../../primitives/AddContact";
 import Tooltip from "../../../primitives/Tooltip";
-import { createPortal } from "react-dom";
 import { useTranslation } from "react-i18next";
 import { findContact } from "../../../constant/Utils";
+import { useTheme } from "@mui/material/styles";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import Dialog from "@mui/material/Dialog";
+import IconButton from "@mui/material/IconButton";
+import CloseIcon from "@mui/icons-material/Close";
+import AddIcon from "@mui/icons-material/Add";
 function arrayMove(array, from, to) {
   array = array.slice();
   array.splice(to < 0 ? array.length + to : to, 0, array.splice(from, 1)[0]);
@@ -12,17 +18,26 @@ function arrayMove(array, from, to) {
 }
 
 const AddSignerModal = ({ isOpen, children }) => {
-  if (!isOpen) {
-    return null;
-  }
-
-  return createPortal(
-    <div className="op-modal op-modal-open">
-      <div className="op-modal-box p-0 min-w-[90%] md:min-w-[500px] max-h-90 overflow-y-auto hide-scrollbar text-sm">
-        {children}
-      </div>
-    </div>,
-    document.body
+  return (
+    <Dialog
+      open={!!isOpen}
+      fullWidth
+      maxWidth={false}
+      slotProps={{
+        paper: {
+          sx: {
+            position: "relative",
+            p: 0,
+            minWidth: { xs: "90%", md: 500 },
+            maxHeight: "90vh",
+            overflowY: "auto",
+            fontSize: "0.875rem"
+          }
+        }
+      }}
+    >
+      {children}
+    </Dialog>
   );
 };
 
@@ -34,10 +49,55 @@ const AddSignerModal = ({ isOpen, children }) => {
 
 const SignersInput = (props) => {
   const { t } = useTranslation();
+  const theme = useTheme();
   const [state, setState] = useState(undefined);
   const [selected, setSelected] = useState([]);
   const [isModal, setIsModel] = useState(false);
   const [modalIsOpen, setModalIsOpen] = useState(false);
+
+  // MD3-themed styles for the react-select dropdown (replaces DaisyUI op-* classes).
+  const selectStyles = {
+    control: (base, state) => ({
+      ...base,
+      minHeight: 32,
+      fontSize: 11,
+      backgroundColor: theme.palette.background.paper,
+      borderColor: state.isFocused
+        ? theme.palette.primary.main
+        : theme.palette.divider,
+      boxShadow: "none",
+      "&:hover": { borderColor: theme.palette.text.primary }
+    }),
+    valueContainer: (base) => ({ ...base, padding: "2px 8px" }),
+    menu: (base) => ({
+      ...base,
+      backgroundColor: theme.palette.background.paper,
+      color: theme.palette.text.primary,
+      borderRadius: 8
+    }),
+    menuPortal: (base) => ({ ...base, zIndex: 9999 }),
+    option: (base, state) => ({
+      ...base,
+      backgroundColor: state.isFocused
+        ? theme.palette.surface.container
+        : theme.palette.background.paper,
+      color: theme.palette.text.primary,
+      cursor: "pointer"
+    }),
+    multiValue: (base) => ({
+      ...base,
+      backgroundColor: theme.palette.primary.main,
+      borderRadius: 8
+    }),
+    multiValueLabel: (base) => ({
+      ...base,
+      color: theme.palette.primary.contrastText,
+      fontSize: 11
+    }),
+    singleValue: (base) => ({ ...base, color: theme.palette.text.primary }),
+    input: (base) => ({ ...base, color: theme.palette.text.primary }),
+    placeholder: (base) => ({ ...base, color: theme.palette.text.secondary })
+  };
 
   useEffect(() => {
     // to provide initial data for selected list items in Bcc for edit template
@@ -149,22 +209,35 @@ const SignersInput = (props) => {
     }
   };
   return (
-    <div className="text-xs mt-2 ">
-      <label className="block relative">
+    <Box sx={{ fontSize: "0.75rem", mt: 1 }}>
+      <Typography
+        component="label"
+        sx={{ display: "block", position: "relative" }}
+      >
         {props.label ? props.label : t("signers")}
-        {props.required && <span className="text-red-500 text-[13px]">*</span>}
-        <span
-          className={`z-[${props?.zindex ? props.zindex : 30}] absolute ml-1 text-xs`}
+        {props.required && (
+          <Box component="span" sx={{ color: "error.main", fontSize: "13px" }}>
+            *
+          </Box>
+        )}
+        <Box
+          component="span"
+          sx={{
+            zIndex: props?.zindex ? props.zindex : 30,
+            position: "absolute",
+            ml: 0.5,
+            fontSize: "0.75rem"
+          }}
         >
           <Tooltip
             id={`${props.label ? props.label : "signers"}-tooltip`}
             message={props.helpText ? props.helpText : t("signers-help")}
           />
-        </span>
-      </label>
-      <div className="flex gap-x-[5px]">
-        <div
-          className={`w-full z-[${props?.zindex ? props.zindex : 40}]`}
+        </Box>
+      </Typography>
+      <Box sx={{ display: "flex", columnGap: "5px" }}>
+        <Box
+          sx={{ width: "100%", zIndex: props?.zindex ? props.zindex : 40 }}
         >
           <AsyncSelect
             onSortEnd={onSortEnd}
@@ -180,42 +253,54 @@ const SignersInput = (props) => {
             loadingMessage={() => t("loading")}
             noOptionsMessage={() => t("contact-not-found")}
             loadOptions={loadOptions}
-            unstyled
-            classNames={{
-              control: () =>
-                "op-input op-input-bordered op-input-sm focus:outline-none hover:border-base-content w-full h-full text-[11px]",
-              valueContainer: () =>
-                "flex flex-row gap-x-[2px] gap-y-[2px] md:gap-y-0 w-full my-[2px]",
-              multiValue: () => "op-badge op-badge-primary h-full text-[11px]",
-              multiValueLabel: () => "mb-[2px]",
-              menu: () =>
-                "mt-1 shadow-md rounded-lg bg-base-200 text-base-content",
-              menuList: () => "shadow-md rounded-lg overflow-hidden",
-              option: () =>
-                "bg-base-200 text-base-content rounded-lg m-1 hover:bg-base-300 p-2",
-              noOptionsMessage: () => "p-2 bg-base-200 rounded-lg m-1 p-2"
-            }}
+            styles={selectStyles}
           />
-        </div>
-        <div
+        </Box>
+        <Box
           onClick={() => {
             setIsModel(true);
             openModal();
           }}
-          className="cursor-pointer op-input op-input-bordered focus:outline-none hover:border-base-content max-h-[38px] min-w-[48px] flex justify-center items-center"
+          sx={{
+            cursor: "pointer",
+            border: "1px solid",
+            borderColor: "divider",
+            borderRadius: 1,
+            maxHeight: "38px",
+            minWidth: "48px",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            color: "text.primary",
+            "&:hover": { borderColor: "text.primary" }
+          }}
         >
-          <i className="fa-light fa-plus"></i>
-        </div>
+          <AddIcon fontSize="small" />
+        </Box>
         <AddSignerModal isOpen={modalIsOpen}>
-          <h3 className="text-base-content font-bold text-lg pt-[15px] px-[20px]">
-            {t("add-contact")}
-          </h3>
-          <button
-            onClick={handleModalCloseClick}
-            className="op-btn op-btn-sm op-btn-circle op-btn-ghost text-base-content absolute right-2 top-2"
+          <Typography
+            component="h3"
+            sx={{
+              color: "text.primary",
+              fontWeight: 700,
+              fontSize: "1.125rem",
+              pt: "15px",
+              px: "20px"
+            }}
           >
-            ✕
-          </button>
+            {t("add-contact")}
+          </Typography>
+          <IconButton
+            onClick={handleModalCloseClick}
+            sx={{
+              position: "absolute",
+              right: 8,
+              top: 8,
+              color: "text.primary"
+            }}
+          >
+            <CloseIcon fontSize="small" />
+          </IconButton>
           {isModal && (
             <AddContact
               isDisableTitle
@@ -225,8 +310,8 @@ const SignersInput = (props) => {
             />
           )}
         </AddSignerModal>
-      </div>
-    </div>
+      </Box>
+    </Box>
   );
 };
 

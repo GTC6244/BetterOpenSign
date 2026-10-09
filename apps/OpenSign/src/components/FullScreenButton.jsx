@@ -1,5 +1,7 @@
 // FullScreenButton.js
 import React, { useState, useEffect } from "react";
+import Box from "@mui/material/Box";
+import IconButton from "@mui/material/IconButton";
 
 const FullScreenButton = () => {
   const [isFullScreen, setIsFullScreen] = useState(false);
@@ -64,18 +66,19 @@ const FullScreenButton = () => {
   };
 
   return (
-    <div className="flex items-center">
-      <button
+    <Box sx={{ display: "flex", alignItems: "center" }}>
+      <IconButton
         onClick={toggleFullScreen}
-        className="text-base-content p-2 text-sm focus:outline-none"
+        size="small"
+        sx={{ color: "text.primary" }}
       >
         {isFullScreen ? (
           <i className="fa-light fa-compress"></i>
         ) : (
           <i className="fa-light fa-maximize"></i>
         )}
-      </button>
-    </div>
+      </IconButton>
+    </Box>
   );
 };
 

@@ -6,6 +6,13 @@ import { getTenantDetails } from "../constant/Utils";
 import { emailRegex } from "../constant/const";
 import { useDispatch } from "react-redux";
 import { sessionStatus } from "../redux/reducers/userReducer";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import TextField from "@mui/material/TextField";
+import Button from "@mui/material/Button";
+import Link from "@mui/material/Link";
+import Checkbox from "@mui/material/Checkbox";
+import FormControlLabel from "@mui/material/FormControlLabel";
 
 const AddContact = (props) => {
   const { t } = useTranslation();
@@ -136,147 +143,149 @@ const AddContact = (props) => {
   };
 
   return (
-    <div className="h-full px-[20px] py-[10px]">
+    <Box sx={{ height: "100%", px: 2.5, py: 1.25, color: "text.primary" }}>
       {isLoader && (
-        <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-30">
+        <Box
+          sx={{
+            position: "fixed",
+            inset: 0,
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            bgcolor: "rgba(0,0,0,0.3)"
+          }}
+        >
           <Loader />
-        </div>
+        </Box>
       )}
-      <div className="w-full mx-auto p-[8px]">
+      <Box sx={{ width: "100%", mx: "auto", p: 1 }}>
         {!props?.isDisableTitle && (
-          <div className="text-[14px] font-[700] text-base-content mb-1">
+          <Typography sx={{ fontSize: 14, fontWeight: 700, mb: 0.5 }}>
             {t("add-contact")}
-          </div>
+          </Typography>
         )}
         {isUserExist && props?.isAddYourSelfCheckbox && (
-          <div className="mb-[0.75rem] flex items-center mt-1">
-            <input
-              type="checkbox"
-              id="addYourself"
-              checked={addYourself}
-              onChange={handleAddYourselfChange}
-              className="op-checkbox op-checkbox-sm"
-            />
-            <label
-              htmlFor="addYourself"
-              className="ml-[0.5rem] text-base-content mb-0"
-            >
-              {t("add-yourself")}
-            </label>
-          </div>
+          <FormControlLabel
+            sx={{ mb: 1.5, mt: 0.5 }}
+            control={
+              <Checkbox
+                size="small"
+                id="addYourself"
+                checked={addYourself}
+                onChange={handleAddYourselfChange}
+              />
+            }
+            label={t("add-yourself")}
+          />
         )}
-        <form className="text-base-content" onSubmit={handleSubmit}>
-          <div className="mb-[0.75rem]">
-            <label htmlFor="name" className="text-[13px]">
-              {t("name")}
-              <span className="text-[13px] text-[red]"> *</span>
-            </label>
-            <input
-              type="text"
-              id="name"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              onInvalid={(e) => e.target.setCustomValidity(t("input-required"))}
-              onInput={(e) => e.target.setCustomValidity("")}
-              required
-              disabled={addYourself}
-              className="op-input op-input-bordered op-input-sm focus:outline-none hover:border-base-content w-full text-xs"
-              placeholder={t("enter-name")}
-            />
-          </div>
-          <div className="mb-[0.75rem]">
-            <label htmlFor="email" className="text-[13px]">
-              {t("email")}
-              <span className="text-[13px] text-[red]"> *</span>
-            </label>
-            <input
-              type="email"
-              id="email"
-              value={email}
-              onChange={(e) =>
-                setEmail(e.target.value?.toLowerCase()?.replace(/\s/g, ""))
+        <Box component="form" onSubmit={handleSubmit}>
+          <TextField
+            fullWidth
+            size="small"
+            id="name"
+            label={t("name")}
+            required
+            disabled={addYourself}
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder={t("enter-name")}
+            slotProps={{
+              htmlInput: {
+                onInvalid: (e) =>
+                  e.target.setCustomValidity(t("input-required")),
+                onInput: (e) => e.target.setCustomValidity("")
               }
-              onInvalid={(e) => e.target.setCustomValidity(t("input-required"))}
-              onInput={(e) => e.target.setCustomValidity("")}
-              required
-              disabled={addYourself}
-              className="op-input op-input-bordered op-input-sm focus:outline-none hover:border-base-content w-full text-xs lowercase"
-              placeholder={t("enter-email")}
-            />
-          </div>
+            }}
+            sx={{ mb: 1.5 }}
+          />
+          <TextField
+            fullWidth
+            size="small"
+            id="email"
+            type="email"
+            label={t("email")}
+            required
+            disabled={addYourself}
+            value={email}
+            onChange={(e) =>
+              setEmail(e.target.value?.toLowerCase()?.replace(/\s/g, ""))
+            }
+            placeholder={t("enter-email")}
+            slotProps={{
+              htmlInput: {
+                onInvalid: (e) =>
+                  e.target.setCustomValidity(t("input-required")),
+                onInput: (e) => e.target.setCustomValidity(""),
+                style: { textTransform: "lowercase" }
+              }
+            }}
+            sx={{ mb: 1.5 }}
+          />
           {isOptionalDetails && (
             <>
-              <div className="mb-[0.75rem]">
-                <label htmlFor="phone" className="text-[13px]">
-                  {t("phone")}
-                </label>
-                <input
-                  type="text"
-                  id="phone"
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                  // disabled={addYourself}
-                  className="op-input op-input-bordered op-input-sm focus:outline-none hover:border-base-content w-full text-xs"
-                  placeholder={t("phone-optional")}
-                />
-              </div>
-              <div className="mb-[0.75rem]">
-                <label htmlFor="company" className="text-[13px]">
-                  {t("company")}
-                </label>
-                <input
-                  type="text"
-                  id="company"
-                  value={company}
-                  onChange={(e) => setCompany(e.target.value)}
-                  // disabled={addYourself}
-                  className="op-input op-input-bordered op-input-sm focus:outline-none hover:border-base-content w-full text-xs"
-                  placeholder={t("phone-optional")}
-                />
-              </div>
-              <div className="mb-[0.75rem]">
-                <label htmlFor="jobTitle" className="text-[13px]">
-                  {t("job-title")}
-                </label>
-                <input
-                  type="text"
-                  id="jobTitle"
-                  value={jobTitle}
-                  onChange={(e) => setJobTitle(e.target.value)}
-                  // disabled={addYourself}
-                  className="op-input op-input-bordered op-input-sm focus:outline-none hover:border-base-content w-full text-xs"
-                  placeholder={t("phone-optional")}
-                />
-              </div>
+              <TextField
+                fullWidth
+                size="small"
+                id="phone"
+                label={t("phone")}
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                placeholder={t("phone-optional")}
+                sx={{ mb: 1.5 }}
+              />
+              <TextField
+                fullWidth
+                size="small"
+                id="company"
+                label={t("company")}
+                value={company}
+                onChange={(e) => setCompany(e.target.value)}
+                placeholder={t("phone-optional")}
+                sx={{ mb: 1.5 }}
+              />
+              <TextField
+                fullWidth
+                size="small"
+                id="jobTitle"
+                label={t("job-title")}
+                value={jobTitle}
+                onChange={(e) => setJobTitle(e.target.value)}
+                placeholder={t("phone-optional")}
+                sx={{ mb: 1.5 }}
+              />
             </>
           )}
-          <button
+          <Link
+            component="button"
+            type="button"
+            underline="hover"
             onClick={(e) => {
               e.preventDefault();
               setIsOptionalDetails(!isOptionalDetails);
             }}
-            className="text-base-content/60 no-underline hover:underline focus:outline-none"
+            sx={{ color: "text.secondary" }}
           >
             {isOptionalDetails
               ? t("hide-optional-details")
               : t("optional-details")}
-          </button>
+          </Link>
 
-          <div className="mt-6 flex justify-start gap-2">
-            <button type="submit" className="op-btn op-btn-primary">
+          <Box sx={{ mt: 3, display: "flex", justifyContent: "flex-start", gap: 1 }}>
+            <Button type="submit" variant="contained" color="primary">
               {t("submit")}
-            </button>
-            <button
+            </Button>
+            <Button
               type="button"
+              variant="contained"
+              color="secondary"
               onClick={() => handleReset()}
-              className="op-btn op-btn-secondary"
             >
               {t("reset")}
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
+            </Button>
+          </Box>
+        </Box>
+      </Box>
+    </Box>
   );
 };
 

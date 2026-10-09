@@ -1,12 +1,24 @@
-import React from "react";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
 import Loader from "./Loader";
 
 function LoaderWithMsg({ isLoading }) {
   return (
-    <div className="flex flex-col justify-center items-center h-[100vh]">
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center",
+        height: "100vh",
+        gap: 1.5
+      }}
+    >
       <Loader />
-      <span className="text-[13px] text-base-content">{isLoading.message}</span>
-    </div>
+      <Typography variant="caption" sx={{ color: "text.primary" }}>
+        {isLoading.message}
+      </Typography>
+    </Box>
   );
 }
 

@@ -13,6 +13,17 @@ import { showTenant } from "../redux/reducers/ShowTenant";
 import Loader from "../primitives/Loader";
 import { useTranslation } from "react-i18next";
 import { emailRegex } from "../constant/const";
+import Box from "@mui/material/Box";
+import Paper from "@mui/material/Paper";
+import Button from "@mui/material/Button";
+import TextField from "@mui/material/TextField";
+import Typography from "@mui/material/Typography";
+import Link from "@mui/material/Link";
+import Checkbox from "@mui/material/Checkbox";
+import IconButton from "@mui/material/IconButton";
+import InputAdornment from "@mui/material/InputAdornment";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
 
 const AddAdmin = () => {
   const appName =
@@ -265,198 +276,298 @@ const AddAdmin = () => {
     }
   };
   return (
-    <div className="h-screen flex justify-center">
+    <Box sx={{ height: "100vh", display: "flex", justifyContent: "center" }}>
       {state.loading ? (
-        <div className="text-[grey] flex justify-center items-center text-lg md:text-2xl">
+        <Box
+          sx={{
+            color: "text.secondary",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            fontSize: { xs: "1.125rem", md: "1.5rem" }
+          }}
+        >
           <Loader />
-        </div>
+        </Box>
       ) : (
         <>
           {errMsg ? (
-            <div className="text-[grey] flex justify-center items-center text-lg md:text-2xl">
+            <Box
+              sx={{
+                color: "text.secondary",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                fontSize: { xs: "1.125rem", md: "1.5rem" }
+              }}
+            >
               {errMsg}
-            </div>
+            </Box>
           ) : (
-            <div className="w-[95%] md:w-[500px]">
+            <Box sx={{ width: { xs: "95%", md: 500 } }}>
               <form onSubmit={handleSubmit}>
-                <div className="w-full my-4 op-card bg-base-100 shadow-md outline outline-1 outline-slate-300/50">
-                  <h2 className="text-[30px] text-center mt-3 font-medium">
-                    {t("opensign-setup", { appName })}
-                  </h2>
-                  <NavLink
-                    to="https://discord.com/invite/xe9TDuyAyj"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-center text-sm mt-1 text-[blue] cursor-pointer"
+                <Paper
+                  elevation={2}
+                  sx={{
+                    width: "100%",
+                    my: 2,
+                    borderRadius: 3,
+                    border: 1,
+                    borderColor: "divider"
+                  }}
+                >
+                  <Typography
+                    variant="h4"
+                    sx={{ textAlign: "center", mt: 1.5, fontWeight: 500 }}
                   >
-                    {t("join-discord")}
-                    <i
-                      aria-hidden="true"
-                      className="fa-brands fa-discord ml-1"
-                    ></i>
-                    {/* <span className="fa-sr-only">OpenSign&apos;s Discord</span> */}
-                  </NavLink>
-                  <div className="px-6 py-3 text-xs">
-                    <label className="block ">
+                    {t("opensign-setup", { appName })}
+                  </Typography>
+                  <Box sx={{ textAlign: "center" }}>
+                    <Link
+                      component={NavLink}
+                      to="https://discord.com/invite/xe9TDuyAyj"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      sx={{ fontSize: "0.875rem", mt: 0.5, cursor: "pointer" }}
+                    >
+                      {t("join-discord")}
+                      <i
+                        aria-hidden="true"
+                        className="fa-brands fa-discord ml-1"
+                      ></i>
+                    </Link>
+                  </Box>
+                  <Box sx={{ px: 3, py: 1.5 }}>
+                    <Typography
+                      component="label"
+                      variant="caption"
+                      sx={{ display: "block" }}
+                    >
                       {t("name")}{" "}
-                      <span className="text-[red] text-[13px]">*</span>
-                    </label>
-                    <input
+                      <Box component="span" sx={{ color: "error.main" }}>
+                        *
+                      </Box>
+                    </Typography>
+                    <TextField
                       type="text"
-                      className="op-input op-input-bordered op-input-sm focus:outline-none hover:border-base-content w-full text-xs"
+                      fullWidth
+                      size="small"
                       value={name}
                       onChange={(e) => setName(e.target.value)}
-                      onInvalid={(e) =>
-                        e.target.setCustomValidity(t("input-required"))
-                      }
-                      onInput={(e) => e.target.setCustomValidity("")}
-                      required
+                      slotProps={{
+                        htmlInput: {
+                          required: true,
+                          onInvalid: (e) =>
+                            e.target.setCustomValidity(t("input-required")),
+                          onInput: (e) => e.target.setCustomValidity("")
+                        }
+                      }}
                     />
-                    <hr className="my-2 border-none" />
-                    <label>
+                    <Box sx={{ my: 1 }} />
+                    <Typography component="label" variant="caption">
                       {"email"}{" "}
-                      <span className="text-[red] text-[13px]">*</span>
-                    </label>
-                    <input
+                      <Box component="span" sx={{ color: "error.main" }}>
+                        *
+                      </Box>
+                    </Typography>
+                    <TextField
                       id="email"
                       type="email"
-                      className="op-input op-input-bordered op-input-sm focus:outline-none hover:border-base-content w-full text-xs"
+                      fullWidth
+                      size="small"
                       value={email}
                       onChange={(e) =>
                         setEmail(
                           e.target.value?.toLowerCase()?.replace(/\s/g, "")
                         )
                       }
-                      onInvalid={(e) =>
-                        e.target.setCustomValidity(t("input-required"))
-                      }
-                      onInput={(e) => e.target.setCustomValidity("")}
-                      required
+                      slotProps={{
+                        htmlInput: {
+                          required: true,
+                          onInvalid: (e) =>
+                            e.target.setCustomValidity(t("input-required")),
+                          onInput: (e) => e.target.setCustomValidity("")
+                        }
+                      }}
                     />
-                    <hr className="my-2 border-none" />
-                    <label>
+                    <Box sx={{ my: 1 }} />
+                    <Typography component="label" variant="caption">
                       {t("phone")}{" "}
-                      <span className="text-[red] text-[13px]">*</span>
-                    </label>
-                    <input
+                      <Box component="span" sx={{ color: "error.main" }}>
+                        *
+                      </Box>
+                    </Typography>
+                    <TextField
                       type="tel"
-                      className="op-input op-input-bordered op-input-sm focus:outline-none hover:border-base-content w-full text-xs"
+                      fullWidth
+                      size="small"
                       value={phone}
                       onChange={(e) => setPhone(e.target.value)}
-                      onInvalid={(e) =>
-                        e.target.setCustomValidity(t("input-required"))
-                      }
-                      onInput={(e) => e.target.setCustomValidity("")}
-                      required
+                      slotProps={{
+                        htmlInput: {
+                          required: true,
+                          onInvalid: (e) =>
+                            e.target.setCustomValidity(t("input-required")),
+                          onInput: (e) => e.target.setCustomValidity("")
+                        }
+                      }}
                     />
-                    <hr className="my-2 border-none" />
-                    <label>
+                    <Box sx={{ my: 1 }} />
+                    <Typography component="label" variant="caption">
                       {t("company")}{" "}
-                      <span className="text-[red] text-[13px]">*</span>
-                    </label>
-                    <input
+                      <Box component="span" sx={{ color: "error.main" }}>
+                        *
+                      </Box>
+                    </Typography>
+                    <TextField
                       type="text"
-                      className="op-input op-input-bordered op-input-sm focus:outline-none hover:border-base-content w-full text-xs"
+                      fullWidth
+                      size="small"
                       value={company}
                       onChange={(e) => setCompany(e.target.value)}
-                      onInvalid={(e) =>
-                        e.target.setCustomValidity(t("input-required"))
-                      }
-                      onInput={(e) => e.target.setCustomValidity("")}
-                      required
+                      slotProps={{
+                        htmlInput: {
+                          required: true,
+                          onInvalid: (e) =>
+                            e.target.setCustomValidity(t("input-required")),
+                          onInput: (e) => e.target.setCustomValidity("")
+                        }
+                      }}
                     />
-                    <hr className="my-2 border-none" />
-                    <label>
+                    <Box sx={{ my: 1 }} />
+                    <Typography component="label" variant="caption">
                       {t("job-title")}{" "}
-                      <span className="text-[red] text-[13px]">*</span>
-                    </label>
-                    <input
+                      <Box component="span" sx={{ color: "error.main" }}>
+                        *
+                      </Box>
+                    </Typography>
+                    <TextField
                       type="text"
-                      className="op-input op-input-bordered op-input-sm focus:outline-none hover:border-base-content w-full text-xs"
+                      fullWidth
+                      size="small"
                       value={jobTitle}
                       onChange={(e) => setJobTitle(e.target.value)}
-                      onInvalid={(e) =>
-                        e.target.setCustomValidity(t("input-required"))
-                      }
-                      onInput={(e) => e.target.setCustomValidity("")}
-                      required
-                    />
-                    <hr className="my-2 border-none" />
-                    <label>
-                      {t("password")}
-                      <span className="text-[red] text-[13px]">*</span>
-                    </label>
-                    <div className="relative">
-                      <input
-                        type={showPassword ? "text" : "password"}
-                        className="op-input op-input-bordered op-input-sm focus:outline-none hover:border-base-content w-full text-xs"
-                        name="password"
-                        value={password}
-                        onChange={(e) => handlePasswordChange(e)}
-                        onInvalid={(e) =>
-                          e.target.setCustomValidity(t("input-required"))
+                      slotProps={{
+                        htmlInput: {
+                          required: true,
+                          onInvalid: (e) =>
+                            e.target.setCustomValidity(t("input-required")),
+                          onInput: (e) => e.target.setCustomValidity("")
                         }
-                        onInput={(e) => e.target.setCustomValidity("")}
-                        required
-                      />
-                      <span
-                        className={`absolute top-[50%] right-[10px] -translate-y-[50%] cursor-pointer text-base-content`}
-                        onClick={togglePasswordVisibility}
-                      >
-                        {showPassword ? (
-                          <i className="fa fa-eye-slash" /> // Close eye icon
-                        ) : (
-                          <i className="fa fa-eye" /> // Open eye icon
-                        )}
-                      </span>
-                    </div>
+                      }}
+                    />
+                    <Box sx={{ my: 1 }} />
+                    <Typography component="label" variant="caption">
+                      {t("password")}
+                      <Box component="span" sx={{ color: "error.main" }}>
+                        *
+                      </Box>
+                    </Typography>
+                    <TextField
+                      type={showPassword ? "text" : "password"}
+                      name="password"
+                      fullWidth
+                      size="small"
+                      value={password}
+                      onChange={(e) => handlePasswordChange(e)}
+                      slotProps={{
+                        htmlInput: {
+                          required: true,
+                          onInvalid: (e) =>
+                            e.target.setCustomValidity(t("input-required")),
+                          onInput: (e) => e.target.setCustomValidity("")
+                        },
+                        input: {
+                          endAdornment: (
+                            <InputAdornment position="end">
+                              <IconButton
+                                aria-label="toggle password visibility"
+                                onClick={togglePasswordVisibility}
+                                edge="end"
+                                size="small"
+                              >
+                                {showPassword ? (
+                                  <VisibilityOff fontSize="small" />
+                                ) : (
+                                  <Visibility fontSize="small" />
+                                )}
+                              </IconButton>
+                            </InputAdornment>
+                          )
+                        }
+                      }}
+                    />
                     {password.length > 0 && (
-                      <div className="mt-1 text-[11px]">
-                        <p
-                          className={`${
-                            lengthValid ? "text-green-600" : "text-red-600"
-                          }`}
+                      <Box sx={{ mt: 0.5, fontSize: "11px" }}>
+                        <Typography
+                          variant="caption"
+                          component="p"
+                          sx={{
+                            color: lengthValid ? "success.main" : "error.main"
+                          }}
                         >
                           {lengthValid ? "✓" : "✗"} {t("password-length")}
-                        </p>
-                        <p
-                          className={`${
-                            caseDigitValid ? "text-green-600" : "text-red-600"
-                          }`}
+                        </Typography>
+                        <Typography
+                          variant="caption"
+                          component="p"
+                          sx={{
+                            color: caseDigitValid ? "success.main" : "error.main"
+                          }}
                         >
                           {caseDigitValid ? "✓" : "✗"} {t("password-case")}
-                        </p>
-                        <p
-                          className={`${
-                            specialCharValid ? "text-green-600" : "text-red-600"
-                          }`}
+                        </Typography>
+                        <Typography
+                          variant="caption"
+                          component="p"
+                          sx={{
+                            color: specialCharValid
+                              ? "success.main"
+                              : "error.main"
+                          }}
                         >
                           {specialCharValid ? "✓" : "✗"}{" "}
                           {t("password-special-char")}
-                        </p>
-                      </div>
+                        </Typography>
+                      </Box>
                     )}
-                    <div className="mt-2.5 ml-1 flex flex-row items-center">
-                      <input
-                        type="checkbox"
-                        className="op-checkbox op-checkbox-sm"
+                    <Box
+                      sx={{
+                        mt: 1.25,
+                        ml: 0.5,
+                        display: "flex",
+                        flexDirection: "row",
+                        alignItems: "center"
+                      }}
+                    >
+                      <Checkbox
                         id="termsandcondition"
+                        size="small"
                         checked={isAuthorize}
                         onChange={(e) => setIsAuthorize(e.target.checked)}
-                        onInvalid={(e) =>
-                          e.target.setCustomValidity(t("input-required"))
-                        }
-                        onInput={(e) => e.target.setCustomValidity("")}
-                        required
+                        sx={{ p: 0 }}
+                        slotProps={{
+                          input: {
+                            required: true,
+                            onInvalid: (e) =>
+                              e.target.setCustomValidity(t("input-required")),
+                            onInput: (e) => e.target.setCustomValidity("")
+                          }
+                        }}
                       />
-                      <label
-                        className="text-xs cursor-pointer ml-1 mb-0"
+                      <Typography
+                        component="label"
                         htmlFor="termsandcondition"
+                        variant="caption"
+                        sx={{ cursor: "pointer", ml: 0.5 }}
                       >
                         {t("agree")}
-                      </label>
-                      <span
-                        className="underline cursor-pointer ml-1"
+                      </Typography>
+                      <Link
+                        component="button"
+                        type="button"
+                        underline="always"
+                        sx={{ ml: 0.5, cursor: "pointer" }}
                         onClick={() =>
                           openInNewTab(
                             "https://www.opensignlabs.com/terms-and-conditions"
@@ -464,41 +575,52 @@ const AddAdmin = () => {
                         }
                       >
                         {t("term")}
-                      </span>
-                      <span>.</span>
-                    </div>
-                    <div className="mt-2.5 ml-1 flex flex-row items-center">
-                      <input
-                        type="checkbox"
-                        className="op-checkbox op-checkbox-sm"
+                      </Link>
+                      <Box component="span">.</Box>
+                    </Box>
+                    <Box
+                      sx={{
+                        mt: 1.25,
+                        ml: 0.5,
+                        display: "flex",
+                        flexDirection: "row",
+                        alignItems: "center"
+                      }}
+                    >
+                      <Checkbox
                         id="subscribetoopensign"
+                        size="small"
                         checked={isSubscribeNews}
                         onChange={(e) => setIsSubscribeNews(e.target.checked)}
+                        sx={{ p: 0 }}
                       />
-                      <label
-                        className="text-xs cursor-pointer ml-1 mb-0"
+                      <Typography
+                        component="label"
                         htmlFor="subscribetoopensign"
+                        variant="caption"
+                        sx={{ cursor: "pointer", ml: 0.5 }}
                       >
                         {t("subscribe-to-opensign")}
-                      </label>
-                    </div>
-                  </div>
-                  <div className="mx-4 text-center text-xs font-bold mb-3">
-                    <button
+                      </Typography>
+                    </Box>
+                  </Box>
+                  <Box sx={{ mx: 2, textAlign: "center", mb: 1.5 }}>
+                    <Button
                       type="submit"
-                      className="op-btn op-btn-primary w-full"
+                      variant="contained"
+                      fullWidth
                       disabled={state.loading}
                     >
                       {state.loading ? t("loading") : t("next")}
-                    </button>
-                  </div>
-                </div>
+                    </Button>
+                  </Box>
+                </Paper>
               </form>
-            </div>
+            </Box>
           )}
         </>
       )}
-    </div>
+    </Box>
   );
 };
 

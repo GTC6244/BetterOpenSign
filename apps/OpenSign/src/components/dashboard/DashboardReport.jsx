@@ -6,6 +6,8 @@ import axios from "axios";
 import Loader from "../../primitives/Loader";
 import { useTranslation } from "react-i18next";
 import { withSessionValidation } from "../../utils";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
 function DashboardReport(props) {
   const { t } = useTranslation();
   const [List, setList] = useState([]);
@@ -191,9 +193,16 @@ function DashboardReport(props) {
   return (
     <>
       {isLoader ? (
-        <div className="h-[250px] flex justify-center items-center">
+        <Box
+          sx={{
+            height: 250,
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center"
+          }}
+        >
           <Loader />
-        </div>
+        </Box>
       ) : (
         <>
           {reportName ? (
@@ -214,11 +223,23 @@ function DashboardReport(props) {
               isSearchResult={isSearchResult}
             />
           ) : (
-            <div className="flex items-center justify-center h-[100px] w-full bg-white rounded-box">
-              <div className="text-center text-xl text-base-content">
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                height: 100,
+                width: "100%",
+                bgcolor: "surface.main",
+                borderRadius: 2
+              }}
+            >
+              <Typography
+                sx={{ textAlign: "center", fontSize: "1.25rem", color: "text.primary" }}
+              >
                 {t("report-not-found")}
-              </div>
-            </div>
+              </Typography>
+            </Box>
           )}
         </>
       )}

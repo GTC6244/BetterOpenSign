@@ -13,6 +13,8 @@ import {
   clearAcroFields,
   isPdfPasswordProtected
 } from "../../utils/acroFieldExtractor";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
 
 function RenderAllPdfPage(props) {
   const { t } = useTranslation();
@@ -175,9 +177,21 @@ function RenderAllPdfPage(props) {
   };
   return (
     <div ref={pageContainer} className="hidden w-[20%] bg-base-100 md:block">
-      <div className="mx-2 pr-2 pt-2 pb-1 text-[15px] text-base-content font-semibold border-b-[1px] border-base-300">
+      <Box
+        sx={{
+          mx: 1,
+          pr: 1,
+          pt: 1,
+          pb: 0.5,
+          fontSize: "15px",
+          color: "text.primary",
+          fontWeight: 600,
+          borderBottom: 1,
+          borderColor: "divider"
+        }}
+      >
         {t("pages")}
-      </div>
+      </Box>
       <div
         className={`flex h-[90%] flex-col items-center m-2  
          autoSignScroll hide-scrollbar max-h-[100vh] `}
@@ -216,23 +230,26 @@ function RenderAllPdfPage(props) {
           ))}
         </Document>
         {props?.isMergePdfBtn && (
-          <button
-            className="mb-2 bg-base-100 px-2 py-2 ring-[0.5px] ring-base-content rounded-box flex gap-1 justify-center items-center"
-            onClick={() => mergePdfInputRef.current.click()}
-            title={t("add-pages")}
-          >
+          <>
             <input
               type="file"
-              className="hidden"
+              style={{ display: "none" }}
               accept="application/pdf"
               ref={mergePdfInputRef}
               onChange={handleFileUpload}
             />
-            <i className="fa-light fa-plus text-gray-500"></i>
-            <span className="text-xs lg:text-sm text-base-content">
+            <Button
+              variant="outlined"
+              size="small"
+              color="inherit"
+              onClick={() => mergePdfInputRef.current.click()}
+              title={t("add-pages")}
+              startIcon={<i className="fa-light fa-plus" />}
+              sx={{ mb: 1, textTransform: "none" }}
+            >
               {t("add-pages")}
-            </span>
-          </button>
+            </Button>
+          </>
         )}
       </div>
     </div>

@@ -1,50 +1,70 @@
+import Box from "@mui/material/Box";
 import { useGuidelinesContext } from "../../context/GuidelinesContext";
 
 const Guidelines = ({ pageNumber }) => {
   const { guideRefs } = useGuidelinesContext();
 
+  const horizontalSx = {
+    position: "absolute",
+    pointerEvents: "none",
+    zIndex: 1000,
+    left: 0,
+    width: "100%",
+    borderTop: "1px dashed",
+    borderColor: "primary.main"
+  };
+  const verticalSx = {
+    position: "absolute",
+    pointerEvents: "none",
+    zIndex: 1000,
+    top: 0,
+    height: "100%",
+    borderLeft: "1px dashed",
+    borderColor: "primary.main"
+  };
+
   return (
     <>
       {/* Horizontal guidelines */}
       {/* top guide */}
-      <div
+      <Box
         ref={(el) => {
           if (!guideRefs.current[pageNumber])
             guideRefs.current[pageNumber] = {};
           guideRefs.current[pageNumber].top = el;
         }}
-        className="absolute pointer-events-none z-[1000] left-0 w-full border-t-[1px] border-dashed border-[#3b82f6]"
+        sx={horizontalSx}
         style={{ top: 0, display: "none" }}
       />
       {/* bottom guide */}
-      <div
+      <Box
         ref={(el) => {
           if (!guideRefs.current[pageNumber])
             guideRefs.current[pageNumber] = {};
           guideRefs.current[pageNumber].bottom = el;
         }}
-        className="absolute pointer-events-none z-[1000] left-0 w-full border-t-[1px] border-dashed border-[#3b82f6]"
+        sx={horizontalSx}
         style={{ top: 0, display: "none" }}
       />
       {/* Vertical guidelines */}
       {/* left guide */}
-      <div
+      <Box
         ref={(el) => {
           if (!guideRefs.current[pageNumber])
             guideRefs.current[pageNumber] = {};
           guideRefs.current[pageNumber].left = el;
         }}
-        className="absolute pointer-events-none z-[1000] top-0 h-full border-l-[1px] border-dashed border-[#3b82f6]"
+        sx={verticalSx}
         style={{ left: 0, display: "none" }}
       />
       {/* right guide */}
-      <div
+      <Box
         ref={(el) => {
           if (!guideRefs.current[pageNumber])
             guideRefs.current[pageNumber] = {};
           guideRefs.current[pageNumber].right = el;
         }}
-        className="absolute pointer-events-none z-[1000] top-0 h-full border-l-[1px] border-dashed border-[#3b82f6]"
+        sx={verticalSx}
         style={{ left: 0, display: "none" }}
       />
     </>

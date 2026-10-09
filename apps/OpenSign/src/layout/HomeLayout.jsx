@@ -16,6 +16,8 @@ import Loader from "../primitives/Loader";
 import { useTranslation } from "react-i18next";
 import { sessionStatus } from "../redux/reducers/userReducer";
 import SessionExpiredModal from "../primitives/SessionExpiredModal";
+import Box from "@mui/material/Box";
+import Link from "@mui/material/Link";
 
 const HomeLayout = () => {
   const appName =
@@ -107,20 +109,21 @@ const HomeLayout = () => {
         {
           selector: '[data-tut="nonpresentmask"]',
           content: () => (
-            <div>
+            <Box>
               {t("tour-mssg.home-layout-3", { appName })}
-              <p className="mt-[3px]">
+              <Box component="p" sx={{ mt: "3px" }}>
                 ⭐ Star us on
-                <a
+                <Link
                   href={github}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="underline font-medium pl-1 cursor-pointer"
+                  underline="always"
+                  sx={{ fontWeight: 500, pl: 1, cursor: "pointer" }}
                 >
                   GitHub
-                </a>
-              </p>
-            </div>
+                </Link>
+              </Box>
+            </Box>
           ),
           position: "center",
           styles: { fontSize: "13px", maskArea: nonPresentMaskCss }
@@ -173,41 +176,56 @@ const HomeLayout = () => {
   }
 
   return isValidSession && localStorage.getItem("accesstoken") ? (
-    <div className="flex flex-col h-screen overflow-hidden">
+    <Box sx={{ display: "flex", flexDirection: "column", height: "100vh", overflow: "hidden" }}>
       {/* HEADER */}
-      <header className="z-[501]">
+      <Box component="header" sx={{ zIndex: 501 }}>
         {!isLoader && <Header setIsLoggingOut={setIsLoggingOut} />}
-      </header>
+      </Box>
       {isLoader ? (
-        <div className="flex h-[100vh] justify-center items-center">
+        <Box sx={{ display: "flex", height: "100vh", justifyContent: "center", alignItems: "center" }}>
           <Loader />
-        </div>
+        </Box>
       ) : (
         <>
           {isLoggingOut && (
-            <div className="inset-0 bg-black/30 z-[1000] fixed flex justify-center items-center">
+            <Box
+              sx={{
+                position: "fixed",
+                inset: 0,
+                zIndex: 1000,
+                bgcolor: "rgba(0,0,0,0.3)",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center"
+              }}
+            >
               <Loader />
-            </div>
+            </Box>
           )}
           {/* BODY */}
-          <div className="flex flex-1 overflow-hidden">
+          <Box sx={{ display: "flex", flex: 1, overflow: "hidden" }}>
             {/* SIDEBAR with width animation */}
             <Sidebar />
             {/* MAIN (includes both content + footer in one scrollable column) */}
-            <main
+            <Box
+              component="main"
               id="renderList"
-              className="flex-1 overflow-auto transition-all duration-300 ease-in-out"
+              sx={{
+                flex: 1,
+                overflow: "auto",
+                transition: "all 0.3s ease-in-out"
+              }}
             >
-              <div className="flex flex-col min-h-full">
+              <Box sx={{ display: "flex", flexDirection: "column", minHeight: "100%" }}>
                 {/* your page content */}
-                <div className="p-3">{<Outlet />}</div>
+                <Box sx={{ p: 1.5 }}>{<Outlet />}</Box>
                 {/* sticky-but-scrollable footer */}
-                <div className="mt-auto z-30">
+                <Box sx={{ mt: "auto", zIndex: 30 }}>
                   <Footer />
-                </div>
-              </div>
-            </main>
-          </div>
+                </Box>
+              </Box>
+            </Box>
+          </Box>
           {isTour && (
             <Tour
               onRequestClose={closeTour}
@@ -219,7 +237,7 @@ const HomeLayout = () => {
           )}
         </>
       )}
-    </div>
+    </Box>
   ) : (
     <SessionExpiredModal />
   );

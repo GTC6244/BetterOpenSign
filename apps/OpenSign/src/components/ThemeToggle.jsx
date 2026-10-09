@@ -1,40 +1,33 @@
-import { useEffect, useState } from "react";
+import Switch from "@mui/material/Switch";
+import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
+import LightModeOutlinedIcon from "@mui/icons-material/LightModeOutlined";
+import { useThemeMode } from "../theme/ThemeModeProvider";
 
+/**
+ * Material Design 3 light/dark toggle. Mode state lives in ThemeModeProvider,
+ * which drives both the MUI theme and the legacy `data-theme` attribute.
+ */
 const ThemeToggle = () => {
-  const [isDark, setIsDark] = useState(false);
-
-  useEffect(() => {
-    const storedTheme = localStorage.getItem("theme");
-    if (storedTheme === "dark") {
-      setIsDark(true);
-      document.documentElement.setAttribute("data-theme", "opensigndark");
-    } else {
-      document.documentElement.setAttribute("data-theme", "opensigncss");
-    }
-  }, []);
-
-  const handleChange = () => {
-    const newTheme = !isDark;
-    setIsDark(newTheme);
-    if (newTheme) {
-      document.documentElement.setAttribute("data-theme", "opensigndark");
-      localStorage.setItem("theme", "dark");
-    } else {
-      document.documentElement.setAttribute("data-theme", "opensigncss");
-      localStorage.setItem("theme", "light");
-    }
-  };
+  const { isDark, toggleMode } = useThemeMode();
 
   return (
-    <>
-      <input
-        id="dark-mode-toggle"
-        type="checkbox"
-        className="op-toggle checked:[--tglbg:#3368ff] transition-all checked:bg-white"
-        checked={isDark}
-        onChange={handleChange}
-      />
-    </>
+    <Switch
+      id="dark-mode-toggle"
+      checked={isDark}
+      onChange={toggleMode}
+      color="primary"
+      inputProps={{ "aria-label": "Toggle dark mode" }}
+      icon={<LightModeOutlinedIcon sx={{ fontSize: 16, color: "#fbbf24" }} />}
+      checkedIcon={<DarkModeOutlinedIcon sx={{ fontSize: 16, color: "#4a9eff" }} />}
+      sx={{
+        "& .MuiSwitch-switchBase": { padding: "7px" },
+        "& .MuiSwitch-thumb": {
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center"
+        }
+      }}
+    />
   );
 };
 

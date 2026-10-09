@@ -20,6 +20,10 @@ import PageReorderModal from "./PageReorderModal";
 import { useTranslation } from "react-i18next";
 import { PDFDocument } from "pdf-lib";
 import { maxFileSize } from "../../constant/const";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Typography from "@mui/material/Typography";
+import Divider from "@mui/material/Divider";
 
 function Header(props) {
   const { t } = useTranslation();
@@ -199,10 +203,12 @@ function Header(props) {
         >
           <div className="flex justify-between items-center py-[5px] pl-[10px] ">
             <div onClick={() => window.history.go(-2)}>
-              <i
-                className="fa-light fa-arrow-left text-base-content"
+              <Box
+                component="i"
+                className="fa-light fa-arrow-left"
                 aria-hidden="true"
-              ></i>
+                sx={{ color: "text.primary" }}
+              ></Box>
             </div>
             <PrevNext
               pageNumber={props?.pageNumber}
@@ -212,12 +218,21 @@ function Header(props) {
             {props?.isCompleted || props?.alreadySign ? (
               <DropdownMenu.Root>
                 <DropdownMenu.Trigger asChild>
-                  <div className="op-link op-link-primary no-underline text-[16px] font-semibold px-3">
+                  <Box
+                    sx={{
+                      color: "primary.main",
+                      textDecoration: "none",
+                      fontSize: "16px",
+                      fontWeight: 600,
+                      px: 1.5,
+                      cursor: "pointer"
+                    }}
+                  >
                     <i
                       className="fa-light fa-ellipsis-v"
                       aria-hidden="true"
                     ></i>
-                  </div>
+                  </Box>
                 </DropdownMenu.Trigger>
                 <DropdownMenu.Portal>
                   <DropdownMenu.Content
@@ -247,13 +262,13 @@ function Header(props) {
                               )
                             }
                           >
-                            <div className="border-none bg-[#fff]">
+                            <Box sx={{ display: "flex", flexDirection: "row" }}>
                               <i
                                 className="fa-light fa-award mr-[3px]"
                                 aria-hidden="true"
                               ></i>
                               {t("certificate")}
-                            </div>
+                            </Box>
                           </DropdownMenu.Item>
                         )
                     }
@@ -296,38 +311,54 @@ function Header(props) {
                 {props?.currentSigner && (
                   <div className="flex items-center" data-tut="reactourFifth">
                     {props?.decline && !isViewerSigner && (
-                      <div
+                      <Box
                         onClick={() => handleDeclinePdfAlert()}
-                        className="text-[red] border-none font-[650] text-[14px] mr-2"
+                        sx={{
+                          color: "error.main",
+                          fontWeight: 650,
+                          fontSize: "14px",
+                          mr: 1,
+                          cursor: "pointer"
+                        }}
                       >
                         {t("decline")}
-                      </div>
+                      </Box>
                     )}
                     {props?.isPlaceholder ? (
-                      <div
+                      <Box
                         onClick={() => {
                           if (!props?.isMailSend) {
                             props?.handleSaveDoc();
                           }
                         }}
-                        className={`${
-                          props?.isMailSend ? "" : "op-link-primary"
-                        } op-link no-underline font-[650] text-[14px]`}
+                        sx={{
+                          color: props?.isMailSend ? "inherit" : "primary.main",
+                          textDecoration: "none",
+                          fontWeight: 650,
+                          fontSize: "14px",
+                          cursor: "pointer"
+                        }}
                         data-tut="headerArea"
                       >
                         {props?.completeBtnTitle
                           ? props?.completeBtnTitle
                           : t("send")}
-                      </div>
+                      </Box>
                     ) : (
                       !isViewerSigner && (
-                        <div
+                        <Box
                           data-tut="reactourThird"
                           onClick={() => props?.embedWidgetsData()}
-                          className="border-none font-[650] text-[14px] op-link op-link-primary no-underline"
+                          sx={{
+                            color: "primary.main",
+                            textDecoration: "none",
+                            fontWeight: 650,
+                            fontSize: "14px",
+                            cursor: "pointer"
+                          }}
                         >
                           {finishLabel}
-                        </div>
+                        </Box>
                       )
                     )}
                     <input
@@ -339,12 +370,21 @@ function Header(props) {
                     />
                     <DropdownMenu.Root>
                       <DropdownMenu.Trigger asChild>
-                        <div className="font-[650] text-[18px] px-3  text-base-content no-underline">
+                        <Box
+                          sx={{
+                            fontWeight: 650,
+                            fontSize: "18px",
+                            px: 1.5,
+                            color: "text.primary",
+                            textDecoration: "none",
+                            cursor: "pointer"
+                          }}
+                        >
                           <i
                             className="fa-light fa-ellipsis-v"
                             aria-hidden="true"
                           ></i>
-                        </div>
+                        </Box>
                       </DropdownMenu.Trigger>
                       <DropdownMenu.Portal>
                         <DropdownMenu.Content
@@ -466,13 +506,20 @@ function Header(props) {
                   </div>
                 )}
                 {props?.isPublicTemplate && (
-                  <div
+                  <Box
                     data-tut="reactourThird"
                     onClick={() => props?.embedWidgetsData()}
-                    className="border-none font-[650] text-[14px] pr-2 op-link op-link-primary no-underline"
+                    sx={{
+                      fontWeight: 650,
+                      fontSize: "14px",
+                      pr: 1,
+                      color: "primary.main",
+                      textDecoration: "none",
+                      cursor: "pointer"
+                    }}
                   >
                     {t("sign-now")}
-                  </div>
+                  </Box>
                 )}
               </div>
             )}
@@ -490,26 +537,33 @@ function Header(props) {
               <div className="flex mx-[100px] lg:mx-0 order-last lg:order-none"></div>
               <div className="flex">
                 {props?.setIsEditTemplate && (
-                  <button
+                  <Button
                     onClick={() => props?.setIsEditTemplate(true)}
-                    className="outline-none border-none text-center mr-[3px]"
+                    variant="text"
+                    color="inherit"
+                    sx={{ minWidth: 0, textAlign: "center", mr: "3px", color: "text.primary" }}
                   >
-                    <i className="fa-light fa-gear fa-lg text-base-content"></i>
-                  </button>
+                    <i className="fa-light fa-gear fa-lg"></i>
+                  </Button>
                 )}
                 {enabledBackBtn && (
-                  <button
+                  <Button
                     onClick={() => window.history.go(-2)}
                     type="button"
-                    className="op-btn op-btn-ghost text-base-content op-btn-sm mr-[3px]"
+                    variant="text"
+                    color="inherit"
+                    size="small"
+                    sx={{ mr: "3px", color: "text.primary" }}
                   >
                     {t("back")}
-                  </button>
+                  </Button>
                 )}
-                <button
+                <Button
                   disabled={props?.isMailSend && true}
                   data-tut="headerArea"
-                  className="op-btn op-btn-primary op-btn-sm mr-[3px]"
+                  variant="contained"
+                  size="small"
+                  sx={{ mr: "3px" }}
                   onClick={() => props?.handleSaveDoc()}
                 >
                   {props?.completeBtnTitle
@@ -517,28 +571,31 @@ function Header(props) {
                     : props?.isMailSend
                       ? t("sent")
                       : t("send")}
-                </button>
+                </Button>
               </div>
             </>
           ) : props?.isPdfRequestFiles || props?.isSelfSign ? (
             props?.alreadySign || (props?.isSelfSign && props?.isCompleted) ? (
               <div className="flex flex-row">
-                <button
+                <Button
                   onClick={(e) =>
                     handleToPrint(e, setIsDownloading, props?.pdfDetails)
                   }
                   type="button"
-                  className="op-btn op-btn-neutral op-btn-sm mr-[3px] shadow"
+                  variant="contained"
+                  color="inherit"
+                  size="small"
+                  sx={{ mr: "3px" }}
                 >
                   <i
                     className="fa-light fa-print py-[3px]"
                     aria-hidden="true"
                   ></i>
                   <span className="hidden lg:block">{t("print")}</span>
-                </button>
+                </Button>
                 {
                     props?.isCompleted && (
-                      <button
+                      <Button
                         type="button"
                         onClick={() =>
                           handleDownloadCertificate(
@@ -546,7 +603,10 @@ function Header(props) {
                             setIsDownloading
                           )
                         }
-                        className="op-btn op-btn-secondary op-btn-sm mr-[3px] shadow"
+                        variant="contained"
+                        color="secondary"
+                        size="small"
+                        sx={{ mr: "3px" }}
                       >
                         <i
                           className="fa-light fa-award py-[3px]"
@@ -555,12 +615,14 @@ function Header(props) {
                         <span className="hidden lg:block">
                           {t("certificate")}
                         </span>
-                      </button>
+                      </Button>
                     )
                 }
-                <button
+                <Button
                   type="button"
-                  className="op-btn op-btn-primary op-btn-sm mr-[3px] shadow"
+                  variant="contained"
+                  size="small"
+                  sx={{ mr: "3px" }}
                   onClick={() => handleDownloadBtn()}
                 >
                   <i
@@ -568,47 +630,58 @@ function Header(props) {
                     aria-hidden="true"
                   ></i>
                   <span className="hidden lg:block">{t("download")}</span>
-                </button>
+                </Button>
               </div>
             ) : (
               <div className="flex" data-tut="reactourFifth">
                 {props?.currentSigner && (
                   <>
                     {props?.templateId && (
-                      <button
+                      <Button
                         onClick={() => handleDownloadDoc()}
                         type="button"
-                        className="op-btn op-btn-ghost text-base-content op-btn-sm mr-[3px]"
+                        variant="text"
+                        color="inherit"
+                        size="small"
+                        sx={{ mr: "3px", color: "text.primary" }}
                       >
                         <span className="hidden lg:block">{t("download")}</span>
-                      </button>
+                      </Button>
                     )}
                     {!props?.isSelfSign && !isViewerSigner && (
-                      <button
-                        className="op-btn op-btn-secondary op-btn-sm mr-[3px] shadow"
+                      <Button
+                        variant="contained"
+                        color="secondary"
+                        size="small"
+                        sx={{ mr: "3px" }}
                         onClick={() => handleDeclinePdfAlert()}
                       >
                         {t("decline")}
-                      </button>
+                      </Button>
                     )}
                     {!props?.templateId && (
-                      <button
+                      <Button
                         type="button"
-                        className="op-btn op-btn-ghost text-base-content op-btn-sm mr-[3px]"
+                        variant="text"
+                        color="inherit"
+                        size="small"
+                        sx={{ mr: "3px", color: "text.primary" }}
                         onClick={() => handleDownloadDoc()}
                       >
                         <i className="fa-light fa-arrow-down font-semibold lg:hidden"></i>
                         <span className="hidden lg:block">{t("download")}</span>
-                      </button>
+                      </Button>
                     )}
                     {!isViewerSigner && (
-                      <button
+                      <Button
                         type="button"
-                        className="op-btn op-btn-primary op-btn-sm mr-[3px] shadow"
+                        variant="contained"
+                        size="small"
+                        sx={{ mr: "3px" }}
                         onClick={() => props?.embedWidgetsData()}
                       >
                         {finishLabel}
-                      </button>
+                      </Button>
                     )}
                   </>
                 )}
@@ -618,7 +691,7 @@ function Header(props) {
             <div className="flex flex-row">
               {
                   props?.isCompleted && (
-                    <button
+                    <Button
                       type="button"
                       onClick={() =>
                         handleDownloadCertificate(
@@ -626,77 +699,104 @@ function Header(props) {
                           setIsDownloading
                         )
                       }
-                      className="op-btn op-btn-secondary op-btn-sm gap-0 font-medium text-[12px] mr-[3px] shadow"
+                      variant="contained"
+                      color="secondary"
+                      size="small"
+                      sx={{ gap: 0, fontWeight: 500, fontSize: "12px", mr: "3px" }}
                     >
                       <i className="fa-light fa-award" aria-hidden="true"></i>
                       <span className="hidden lg:block ml-1">
                         {t("certificate")}
                       </span>
-                    </button>
+                    </Button>
                   )
               }
-              <button
+              <Button
                 onClick={(e) =>
                   handleToPrint(e, setIsDownloading, props?.pdfDetails)
                 }
                 type="button"
-                className="op-btn op-btn-neutral op-btn-sm gap-0 font-medium text-[12px] mr-[3px] shadow"
+                variant="contained"
+                color="inherit"
+                size="small"
+                sx={{ gap: 0, fontWeight: 500, fontSize: "12px", mr: "3px" }}
               >
                 <i className="fa-light fa-print" aria-hidden="true"></i>
                 <span className="hidden lg:block ml-1">{t("print")}</span>
-              </button>
-              <button
+              </Button>
+              <Button
                 type="button"
-                className="op-btn op-btn-primary op-btn-sm gap-0 font-medium text-[12px] mr-[3px] shadow"
+                variant="contained"
+                size="small"
+                sx={{ gap: 0, fontWeight: 500, fontSize: "12px", mr: "3px" }}
                 // onClick={() => props?.setIsDownloadModal(true)}
                 onClick={() => handleDownloadBtn()}
               >
                 <i className="fa-light fa-download" aria-hidden="true"></i>
                 <span className="hidden lg:block ml-1">{t("download")}</span>
-              </button>
-              <button
+              </Button>
+              <Button
                 type="button"
-                className="op-btn op-btn-info op-btn-sm gap-0 font-medium text-[12px] mr-[3px] shadow"
+                variant="contained"
+                color="info"
+                size="small"
+                sx={{ gap: 0, fontWeight: 500, fontSize: "12px", mr: "3px" }}
                 onClick={() => props?.setIsEmail(true)}
               >
                 <i className="fa-light fa-envelope" aria-hidden="true"></i>
                 <span className="hidden lg:block ml-1">{t("mail")}</span>
-              </button>
+              </Button>
             </div>
           ) : props?.isPublicTemplate ? (
             <div className="flex">
-              <button
+              <Button
                 type="button"
-                className="op-btn op-btn-primary op-btn-sm  shadow"
+                variant="contained"
+                size="small"
                 onClick={() => props?.embedWidgetsData()}
               >
                 {t("sign-now")}
-              </button>
+              </Button>
             </div>
           ) : (
             <div className="flex">
-              <button
+              <Button
                 onClick={() => window.history.go(-2)}
                 type="button"
-                className="op-btn op-btn-ghost text-base-content op-btn-sm mr-[3px]"
+                variant="text"
+                color="inherit"
+                size="small"
+                sx={{ mr: "3px", color: "text.primary" }}
               >
                 {t("back")}
-              </button>
-              <button
+              </Button>
+              <Button
                 type="button"
-                className="op-btn op-btn-primary op-btn-sm mr-[3px]"
+                variant="contained"
+                size="small"
+                sx={{ mr: "3px" }}
                 onClick={() => props?.embedWidgetsData()}
               >
                 {finishLabel}
-              </button>
+              </Button>
             </div>
           )}
         </div>
       )}
       {isDownloading === "pdf" && (
-        <div className="fixed z-[200] inset-0 flex justify-center items-center bg-black bg-opacity-30">
+        <Box
+          sx={{
+            position: "fixed",
+            zIndex: 200,
+            inset: 0,
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            bgcolor: "rgba(0,0,0,0.3)"
+          }}
+        >
           <Loader />
-        </div>
+        </Box>
       )}
       <ModalUi
         isOpen={
@@ -709,38 +809,51 @@ function Header(props) {
         }
         handleClose={() => setIsDownloading("")}
       >
-        <div className="p-3 md:p-5 text-[13px] md:text-base text-center text-base-content">
+        <Box
+          sx={{
+            p: { xs: 1.5, md: 2.5 },
+            fontSize: { xs: "13px", md: "1rem" },
+            textAlign: "center",
+            color: "text.primary"
+          }}
+        >
           {isDownloading === "certificate" ? (
             <p>{t("generate-certificate-alert")}</p>
           ) : (
             <p>{t("generate-certificate-err")}</p>
           )}
-        </div>
+        </Box>
       </ModalUi>
       <ModalUi
         isOpen={isDeletePage}
         title={t("delete-page")}
         handleClose={() => setIsDeletePage(false)}
       >
-        <div className="h-[100%] p-[20px]">
-          <p className="font-medium text-base-content">{t("delete-alert-2")}</p>
-          <p className="pt-3 text-base-content">{t("delete-note")}</p>
-          <div className="h-[1px] bg-[#9f9f9f] w-full my-[15px]"></div>
-          <button
+        <Box sx={{ height: "100%", p: 2.5 }}>
+          <Typography sx={{ fontWeight: 500, color: "text.primary" }}>
+            {t("delete-alert-2")}
+          </Typography>
+          <Typography sx={{ pt: 1.5, color: "text.primary" }}>
+            {t("delete-note")}
+          </Typography>
+          <Divider sx={{ my: 1.875 }} />
+          <Button
             onClick={() => handleDetelePage()}
             type="button"
-            className="op-btn op-btn-primary"
+            variant="contained"
           >
             {t("yes")}
-          </button>
-          <button
+          </Button>
+          <Button
             onClick={() => setIsDeletePage(false)}
             type="button"
-            className="op-btn op-btn-ghost text-base-content"
+            variant="text"
+            color="inherit"
+            sx={{ color: "text.primary" }}
           >
             {t("no")}
-          </button>
-        </div>
+          </Button>
+        </Box>
       </ModalUi>
       <PageReorderModal
         isOpen={isReorderModal}

@@ -2,6 +2,14 @@ import { useState, useEffect } from "react";
 import dp from "../assets/images/dp.png";
 import FullScreenButton from "./FullScreenButton";
 import ThemeToggle from "./ThemeToggle";
+import Box from "@mui/material/Box";
+import IconButton from "@mui/material/IconButton";
+import Avatar from "@mui/material/Avatar";
+import Typography from "@mui/material/Typography";
+import Paper from "@mui/material/Paper";
+import MenuList from "@mui/material/MenuList";
+import MenuItem from "@mui/material/MenuItem";
+import Chip from "@mui/material/Chip";
 import { useNavigate } from "react-router";
 import Parse from "parse";
 import { useWindowSize } from "../hook/useWindowSize";
@@ -130,142 +138,181 @@ const Header = ({ isConsole, setIsLoggingOut }) => {
 
   return (
     <>
-      <div className="op-navbar bg-base-100 shadow touch-none">
-        <div className="flex-none">
-          <button
-            className="op-btn op-btn-square op-btn-ghost focus:outline-none hover:bg-transparent op-btn-sm no-animation"
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          minHeight: 64,
+          px: 1,
+          bgcolor: "background.paper",
+          color: "text.primary",
+          boxShadow: 1,
+          touchAction: "none"
+        }}
+      >
+        <Box sx={{ flex: "none" }}>
+          <IconButton
             onClick={showSidebar}
+            size="small"
+            sx={{ color: "text.primary" }}
           >
-            <i className="fa-light fa-bars text-xl text-base-content"></i>
-          </button>
-        </div>
-        <div className="flex-1 ml-2">
-          <div
+            <i className="fa-light fa-bars" style={{ fontSize: "1.25rem" }}></i>
+          </IconButton>
+        </Box>
+        <Box sx={{ flex: 1, ml: 1 }}>
+          <Box
             onClick={() => navigate("/dashboard/35KBoSgoAK")}
-            className="h-[25px] md:h-[40px] w-auto overflow-hidden cursor-pointer"
+            sx={{
+              height: { xs: "25px", md: "40px" },
+              width: "auto",
+              overflow: "hidden",
+              cursor: "pointer"
+            }}
           >
             {applogo && (
-              <img
-                className="object-contain h-full w-auto"
+              <Box
+                component="img"
+                sx={{ objectFit: "contain", height: "100%", width: "auto" }}
                 src={
-                      isDarkTheme
-                      ? "/static/js/assets/images/logo-dark.png"
-                      : applogo
+                  isDarkTheme
+                    ? "/static/js/assets/images/logo-dark.png"
+                    : applogo
                 }
                 alt="logo"
               />
             )}
-          </div>
-        </div>
-        <div id="profile-menu" className="flex-none gap-2">
-          <div>
-              <FullScreenButton />
-          </div>
+          </Box>
+        </Box>
+        <Box
+          id="profile-menu"
+          sx={{ flex: "none", display: "flex", alignItems: "center", gap: 1 }}
+        >
+          <Box>
+            <FullScreenButton />
+          </Box>
           {width >= 768 && (
-            <div
+            <Avatar
               onClick={toggleDropdown}
-              className="cursor-pointer w-[35px] h-[35px] rounded-full ring-[1px] ring-offset-2 ring-gray-400 overflow-hidden"
-            >
-              <img
-                className="w-[35px] h-[35px] object-contain"
-                src={image}
-                alt="img"
-              />
-            </div>
+              src={image}
+              alt="img"
+              sx={{
+                width: 35,
+                height: 35,
+                cursor: "pointer",
+                border: "1px solid",
+                borderColor: "outline.main"
+              }}
+            />
           )}
           {width >= 768 && (
-            <div
+            <Box
               onClick={toggleDropdown}
               role="button"
               tabIndex="0"
-              className="cursor-pointer text-base-content text-sm"
+              sx={{ cursor: "pointer", color: "text.primary", fontSize: "0.875rem" }}
             >
               {username && username}
-            </div>
+            </Box>
           )}
-          <div
-            className="op-dropdown op-dropdown-open op-dropdown-end"
-            id="profile-menu"
-          >
-            <div
+          <Box sx={{ position: "relative" }} id="profile-menu">
+            <IconButton
               tabIndex={0}
               role="button"
               onClick={toggleDropdown}
-              className="op-btn op-btn-ghost op-btn-xs w-[10px] h-[20px] hover:bg-transparent"
+              size="small"
+              sx={{ color: "text.primary" }}
             >
-              <i className="fa-light fa-angle-down text-base-content"></i>
-            </div>
-            <ul
-              tabIndex={0}
-              className={`mt-4 z-[1] p-2 shadow op-dropdown-open op-menu op-menu-sm op-dropdown-content text-base-content bg-base-100 rounded-box w-56 ${
-                isOpen ? "" : "hidden"
-              }`}
-            >
-              {!isConsole && (
-                <>
-                    <li
-                      onClick={() =>
-                        openInNewTab("https://docs.opensignlabs.com")
-                      }
-                    >
-                      <span>
-                        <i className="fa-light fa-book"></i> {t("docs")}
-                      </span>
-                    </li>
-                  <li
-                    onClick={() => {
-                      setIsOpen(false);
-                      navigate("/profile");
-                    }}
-                  >
-                    <span>
-                      <i className="fa-light fa-user"></i> {t("profile")}
-                    </span>
-                  </li>
-                    <li
-                      onClick={() => {
-                        setIsOpen(false);
-                        navigate("/changepassword");
-                      }}
-                    >
-                      <span>
-                        <i className="fa-light fa-lock"></i>{" "}
-                        {t("change-password")}
-                      </span>
-                    </li>
-                  <li
-                    onClick={() => {
-                      setIsOpen(false);
-                      navigate("/verify-document");
-                    }}
-                  >
-                    <span>
-                      <i className="fa-light fa-check-square"></i>{" "}
-                      {t("verify-document")}
-                    </span>
-                  </li>
-                  <li>
-                    <span>
-                      <i className="fa-light fa-moon"></i>
-                      {t("dark-mode")}
-                      <span className="text-[10px] font-semibold bg-base-300 text-base-content px-1 rounded-md">
-                        BETA
-                      </span>
-                      <ThemeToggle />
-                    </span>
-                  </li>
-                </>
-              )}
-              <li onClick={handleLogout}>
-                <span>
-                  <i className="fa-light fa-arrow-right-from-bracket"></i>{" "}
-                  {t("log-out")}
-                </span>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </div>
+              <i className="fa-light fa-angle-down"></i>
+            </IconButton>
+            {isOpen && (
+              <Paper
+                elevation={3}
+                sx={{
+                  position: "absolute",
+                  right: 0,
+                  mt: 2,
+                  zIndex: 1,
+                  width: 224,
+                  borderRadius: 2,
+                  color: "text.primary"
+                }}
+              >
+                <MenuList dense>
+                  {!isConsole && (
+                    <>
+                      <MenuItem
+                        onClick={() =>
+                          openInNewTab("https://docs.opensignlabs.com")
+                        }
+                      >
+                        <i className="fa-light fa-book"></i>
+                        <Box component="span" sx={{ ml: 1 }}>
+                          {t("docs")}
+                        </Box>
+                      </MenuItem>
+                      <MenuItem
+                        onClick={() => {
+                          setIsOpen(false);
+                          navigate("/profile");
+                        }}
+                      >
+                        <i className="fa-light fa-user"></i>
+                        <Box component="span" sx={{ ml: 1 }}>
+                          {t("profile")}
+                        </Box>
+                      </MenuItem>
+                      <MenuItem
+                        onClick={() => {
+                          setIsOpen(false);
+                          navigate("/changepassword");
+                        }}
+                      >
+                        <i className="fa-light fa-lock"></i>
+                        <Box component="span" sx={{ ml: 1 }}>
+                          {t("change-password")}
+                        </Box>
+                      </MenuItem>
+                      <MenuItem
+                        onClick={() => {
+                          setIsOpen(false);
+                          navigate("/verify-document");
+                        }}
+                      >
+                        <i className="fa-light fa-check-square"></i>
+                        <Box component="span" sx={{ ml: 1 }}>
+                          {t("verify-document")}
+                        </Box>
+                      </MenuItem>
+                      <MenuItem disableRipple sx={{ gap: 1 }}>
+                        <i className="fa-light fa-moon"></i>
+                        <Box component="span">{t("dark-mode")}</Box>
+                        <Chip
+                          label="BETA"
+                          size="small"
+                          sx={{
+                            height: 16,
+                            fontSize: "10px",
+                            fontWeight: 600,
+                            bgcolor: "surface.containerHighest",
+                            color: "text.primary"
+                          }}
+                        />
+                        <ThemeToggle />
+                      </MenuItem>
+                    </>
+                  )}
+                  <MenuItem onClick={handleLogout}>
+                    <i className="fa-light fa-arrow-right-from-bracket"></i>
+                    <Box component="span" sx={{ ml: 1 }}>
+                      {t("log-out")}
+                    </Box>
+                  </MenuItem>
+                </MenuList>
+              </Paper>
+            )}
+          </Box>
+        </Box>
+      </Box>
     </>
   );
 };

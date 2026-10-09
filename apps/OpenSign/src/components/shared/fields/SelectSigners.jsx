@@ -3,9 +3,15 @@ import AsyncSelect from "react-select/async";
 import { useTranslation } from "react-i18next";
 import axios from "axios";
 import { handleUnlinkSigner } from "../../../constant/Utils";
+import { useTheme } from "@mui/material/styles";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import Button from "@mui/material/Button";
+import AddIcon from "@mui/icons-material/Add";
 
 const SelectSigners = (props) => {
   const { t } = useTranslation();
+  const theme = useTheme();
   const {
     signerPos,
     setSignerPos,
@@ -20,6 +26,51 @@ const SelectSigners = (props) => {
   const [selected, setSelected] = useState();
   const [userData, setUserData] = useState({});
   const [isError, setIsError] = useState(false);
+
+  // MD3-themed styles for the react-select dropdown (replaces DaisyUI op-* classes).
+  const selectStyles = {
+    control: (base, state) => ({
+      ...base,
+      minHeight: 32,
+      fontSize: 11,
+      backgroundColor: theme.palette.background.paper,
+      borderColor: state.isFocused
+        ? theme.palette.primary.main
+        : theme.palette.divider,
+      boxShadow: "none",
+      "&:hover": { borderColor: theme.palette.text.primary }
+    }),
+    valueContainer: (base) => ({ ...base, padding: "2px 8px" }),
+    menu: (base) => ({
+      ...base,
+      backgroundColor: theme.palette.background.paper,
+      color: theme.palette.text.primary,
+      borderRadius: 8,
+      zIndex: 9999
+    }),
+    menuPortal: (base) => ({ ...base, zIndex: 9999 }),
+    option: (base, state) => ({
+      ...base,
+      backgroundColor: state.isFocused
+        ? theme.palette.surface.container
+        : theme.palette.background.paper,
+      color: theme.palette.text.primary,
+      cursor: "pointer"
+    }),
+    multiValue: (base) => ({
+      ...base,
+      backgroundColor: theme.palette.primary.main,
+      borderRadius: 8
+    }),
+    multiValueLabel: (base) => ({
+      ...base,
+      color: theme.palette.primary.contrastText,
+      fontSize: 11
+    }),
+    singleValue: (base) => ({ ...base, color: theme.palette.text.primary }),
+    input: (base) => ({ ...base, color: theme.palette.text.primary }),
+    placeholder: (base) => ({ ...base, color: theme.palette.text.secondary })
+  };
 
   useEffect(() => {
     //condition to check already assign signer exist if yes then show signer's email on dropdown input box
@@ -125,14 +176,17 @@ const SelectSigners = (props) => {
     }
   };
   return (
-    <div className="h-full px-[20px] py-[10px] text-base-content">
-      <div className="w-full mx-auto p-[8px]">
-        <div className="mb-0">
-          <label className="text-[14px] font-bold">
+    <Box sx={{ height: "100%", px: "20px", py: "10px", color: "text.primary" }}>
+      <Box sx={{ width: "100%", mx: "auto", p: "8px" }}>
+        <Box sx={{ mb: 0 }}>
+          <Typography
+            component="label"
+            sx={{ fontSize: "14px", fontWeight: 700 }}
+          >
             {t("choose-from-contacts")}
-          </label>
-          <div className="flex gap-2 ">
-            <div className="flex-1">
+          </Typography>
+          <Box sx={{ display: "flex", gap: 1 }}>
+            <Box sx={{ flex: 1 }}>
               <AsyncSelect
                 cacheOptions
                 defaultOptions
@@ -141,58 +195,50 @@ const SelectSigners = (props) => {
                 noOptionsMessage={() => t("contact-not-found")}
                 loadOptions={loadOptions}
                 onChange={handleOptions}
-                unstyled
                 onFocus={() => loadOptions()}
-                classNames={{
-                  control: () =>
-                    "op-input op-input-bordered op-input-sm focus:outline-none hover:border-base-content w-full h-full text-[11px]",
-                  valueContainer: () =>
-                    "flex flex-row gap-x-[2px] gap-y-[2px] md:gap-y-0 w-full my-[2px]",
-                  multiValue: () =>
-                    "op-badge op-badge-primary h-full text-[11px]",
-                  multiValueLabel: () => "mb-[2px]",
-                  menu: () =>
-                    "mt-1 shadow-md rounded-lg bg-base-200 text-base-content absolute z-9999",
-                  menuList: () => "shadow-md rounded-lg  ",
-                  option: () =>
-                    "bg-base-200 text-base-content rounded-lg m-1 hover:bg-base-300 p-2 ",
-                  noOptionsMessage: () => "p-2 bg-base-200 rounded-lg m-1 p-2"
-                }}
+                styles={selectStyles}
                 menuPortalTarget={document.getElementById("selectSignerModal")}
               />
-            </div>
+            </Box>
             {!props.isContact && (
-              <button
+              <Button
+                variant="outlined"
+                color="secondary"
+                size="small"
                 onClick={() => props.setIsContact(true)}
-                className="op-btn op-btn-accent  op-btn-outline op-btn-sm  "
+                sx={{ minWidth: 0, px: 1.5 }}
               >
-                <i className="fa-light fa-plus"></i>
-              </button>
+                <AddIcon fontSize="small" />
+              </Button>
             )}
-          </div>
-        </div>
-        <p
-          className={`${
-            isError ? "text-[red]" : "text-transparent"
-          } text-[11px] ml-[6px] my-[2px]`}
+          </Box>
+        </Box>
+        <Typography
+          sx={{
+            color: isError ? "error.main" : "transparent",
+            fontSize: "11px",
+            ml: "6px",
+            my: "2px"
+          }}
         >
           {t("select-signer")}
-        </p>
-        <div className="flex gap-2">
-          <button className="op-btn op-btn-primary" onClick={() => handleAdd()}>
+        </Typography>
+        <Box sx={{ display: "flex", gap: 1 }}>
+          <Button variant="contained" onClick={() => handleAdd()}>
             {t("submit")}
-          </button>
+          </Button>
           {props.isExistSigner && isRemove && (
-            <button
-              className="op-btn op-btn-accent op-btn-outline"
+            <Button
+              variant="outlined"
+              color="secondary"
               onClick={() => handleRemove()}
             >
               {t("no-signer")}
-            </button>
+            </Button>
           )}
-        </div>
-      </div>
-    </div>
+        </Box>
+      </Box>
+    </Box>
   );
 };
 

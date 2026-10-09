@@ -7,6 +7,11 @@ import Alert from "../primitives/Alert";
 import HandleError from "../primitives/HandleError";
 import { useWindowSize } from "../hook/useWindowSize";
 import { useTranslation } from "react-i18next";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import Button from "@mui/material/Button";
+import IconButton from "@mui/material/IconButton";
+import TextField from "@mui/material/TextField";
 
 function processDimensions(x, y, width, height) {
   if (width < 0) {
@@ -215,14 +220,14 @@ const DebugPdf = () => {
     setAnnotations(updateAnnotations);
   };
   return (
-    <div>
+    <Box>
       {copied && <Alert type="success">{t("copied")}</Alert>}
       {width < 800 ? (
         <HandleError handleError={"Debug PDF only availble for PC"} />
       ) : (
         <>
           {!isModal && (
-            <div className="flex flex-row justify-between">
+            <Box sx={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
               {/* this component used to render all pdf pages in left side */}
               <RenderAllPdfPage
                 pdfBase64Url={pdfDetails.base64}
@@ -251,55 +256,109 @@ const DebugPdf = () => {
                   />
                 </div>
               </div>
-              <div className="w-[220px] bg-base-100">
-                <div className="text-[18px] font-medium py-[10px] px-[12px] border-b-[1px] border-[gray]">
+              <Box sx={{ width: 220, bgcolor: "surface.main" }}>
+                <Box
+                  sx={{
+                    fontSize: "18px",
+                    fontWeight: 500,
+                    py: "10px",
+                    px: "12px",
+                    borderBottom: "1px solid",
+                    borderColor: "outline.main"
+                  }}
+                >
                   PDF details
-                </div>
-                <div className="text-[14px] py-[5px] px-[12px]">
+                </Box>
+                <Box sx={{ fontSize: "14px", py: "5px", px: "12px" }}>
                   Name: {pdfDetails?.name}
-                </div>
-                <div className="text-[14px] py-[5px] px-[12px]">
+                </Box>
+                <Box sx={{ fontSize: "14px", py: "5px", px: "12px" }}>
                   Pdf type: {pdfDetails?.pdftype}
-                </div>
-                <div className="text-[14px] py-[5px] px-[12px]">
+                </Box>
+                <Box sx={{ fontSize: "14px", py: "5px", px: "12px" }}>
                   Total Pages: {pdfDetails?.totalPages}
-                </div>
-                <div className="text-[14px] py-[5px] px-[12px]">
+                </Box>
+                <Box sx={{ fontSize: "14px", py: "5px", px: "12px" }}>
                   Current Page: {pdfDetails?.currentPage}
-                </div>
-                <div className="text-[14px] py-[5px] px-[12px]">
+                </Box>
+                <Box sx={{ fontSize: "14px", py: "5px", px: "12px" }}>
                   Base64 : {pdfDetails?.base64.slice(0, 10)}...
-                  <span
-                    className="op-btn op-btn-outline op-btn-primary op-btn-xs rounded-md w-[25px] h-[25px] text-[12px] m-[2px] "
+                  <IconButton
+                    size="small"
+                    color="primary"
+                    sx={{ width: 25, height: 25, fontSize: "12px", m: "2px" }}
                     onClick={() => copytoclipboard(pdfDetails?.base64)}
                   >
                     <i className="fa-light fa-copy"></i>
-                  </span>
-                </div>
-                <div className="text-[18px] font-medium py-[10px] px-[12px] border-b-[1px] border-[gray]">
+                  </IconButton>
+                </Box>
+                <Box
+                  sx={{
+                    fontSize: "18px",
+                    fontWeight: 500,
+                    py: "10px",
+                    px: "12px",
+                    borderBottom: "1px solid",
+                    borderColor: "outline.main"
+                  }}
+                >
                   Last click
-                </div>
-                <div className="text-[14px] py-[5px] px-[12px]">
+                </Box>
+                <Box sx={{ fontSize: "14px", py: "5px", px: "12px" }}>
                   x co-ordinate: {pdfDetails?.x}
-                </div>
-                <div className="text-[14px] py-[5px] px-[12px]">
+                </Box>
+                <Box sx={{ fontSize: "14px", py: "5px", px: "12px" }}>
                   y co-ordinate: {pdfDetails?.y}
-                </div>
-                <div className="text-[18px] font-medium py-[10px] px-[12px] border-y-[1px] border-[gray]">
+                </Box>
+                <Box
+                  sx={{
+                    fontSize: "18px",
+                    fontWeight: 500,
+                    py: "10px",
+                    px: "12px",
+                    borderTop: "1px solid",
+                    borderBottom: "1px solid",
+                    borderColor: "outline.main"
+                  }}
+                >
                   Annotation
-                </div>
-                <ul className=" list-none p-[10px] h-[500px] overflow-y-auto">
+                </Box>
+                <Box
+                  component="ul"
+                  sx={{
+                    listStyle: "none",
+                    p: "10px",
+                    m: 0,
+                    height: 500,
+                    overflowY: "auto"
+                  }}
+                >
                   {annotations.map((coord, index) => (
                     <li key={index}>
-                      <span className="text-[13px] font-medium">{`Box ${
-                        index + 1
-                      }:`}</span>
-                      <code className="text-[12px] text-base-content select-none">
+                      <Box
+                        component="span"
+                        sx={{ fontSize: "13px", fontWeight: 500 }}
+                      >{`Box ${index + 1}:`}</Box>
+                      <Box
+                        component="code"
+                        sx={{
+                          fontSize: "12px",
+                          color: "text.primary",
+                          userSelect: "none"
+                        }}
+                      >
                         {` ["page":${coord?.page}, "x": ${coord.x}, "y": ${coord.y}, "w": ${coord.width}, "h": ${coord.height}]`}
-                      </code>
-                      <div>
-                        <span
-                          className="op-btn op-btn-outline op-btn-primary op-btn-xs rounded-md w-[23px] h-[20px] text-[12px] m-[2px] "
+                      </Box>
+                      <Box>
+                        <IconButton
+                          size="small"
+                          color="primary"
+                          sx={{
+                            width: 23,
+                            height: 20,
+                            fontSize: "12px",
+                            m: "2px"
+                          }}
                           onClick={() =>
                             copytoclipboard(
                               `"page":${coord?.page}, "x": ${coord.x}, "y": ${coord.y}, "w": ${coord.width}, "h": ${coord.height}`
@@ -307,40 +366,50 @@ const DebugPdf = () => {
                           }
                         >
                           <i className="fa-light fa-copy"></i>
-                        </span>
-                        <span
-                          className="op-btn op-btn-outline op-btn-error op-btn-xs rounded-md w-[23px] h-[20px] text-[12px] m-[2px] "
+                        </IconButton>
+                        <IconButton
+                          size="small"
+                          color="error"
+                          sx={{
+                            width: 23,
+                            height: 20,
+                            fontSize: "12px",
+                            m: "2px"
+                          }}
                           onClick={() => handleDelete(coord.key)}
                         >
                           <i className="fa-light fa-trash-can"></i>
-                        </span>
-                      </div>
+                        </IconButton>
+                      </Box>
                     </li>
                   ))}
-                </ul>
-              </div>
-            </div>
+                </Box>
+              </Box>
+            </Box>
           )}
           <ModalUi title={"Select PDF"} isOpen={isModal}>
-            <form onSubmit={handleSubmit} className="m-[10px]">
-              <input
+            <Box component="form" onSubmit={handleSubmit} sx={{ m: "10px" }}>
+              <TextField
                 type="file"
+                fullWidth
                 onChange={(e) => handleFileChange(e.target.files)}
-                className="op-file-input op-file-input-bordered op-file-input-sm focus:outline-none hover:border-base-content w-full h-[40px] text-xs"
-                accept=".pdf"
-                required
+                slotProps={{
+                  htmlInput: { accept: ".pdf", required: true }
+                }}
               />
-              <button
-                className="op-btn op-btn-primary w-full mt-3 mb-1"
+              <Button
+                variant="contained"
+                fullWidth
                 type="submit"
+                sx={{ mt: 1.5, mb: 0.5 }}
               >
                 Submit
-              </button>
-            </form>
+              </Button>
+            </Box>
           </ModalUi>
         </>
       )}
-    </div>
+    </Box>
   );
 };
 

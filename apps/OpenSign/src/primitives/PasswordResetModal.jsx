@@ -1,6 +1,12 @@
 import { useMemo, useState } from "react";
 import ModalUi from "./ModalUi";
 import { useTranslation } from "react-i18next";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import TextField from "@mui/material/TextField";
+import Button from "@mui/material/Button";
+import IconButton from "@mui/material/IconButton";
+import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 
 /**
  * PasswordResetModal
@@ -132,73 +138,87 @@ export default function PasswordResetModal({
           onClose?.();
         }}
       >
-        <form onSubmit={handleSubmit} className="space-y-3 pt-[15px] p-[20px]">
-          <p className="text-sm text-base-content/60">
+        <Box
+          component="form"
+          onSubmit={handleSubmit}
+          sx={{ pt: "15px", p: "20px", display: "flex", flexDirection: "column", gap: 1.5 }}
+        >
+          <Typography variant="body2" sx={{ color: "text.secondary" }}>
             {t("enter-strong-password")}
-          </p>
-          <label className="op-form-control w-full">
-            <div className="op-label">
-              <span className="op-label-text">{t("new-password")}</span>
-            </div>
-            <div className="flex gap-2">
-              <input
+          </Typography>
+          <Box>
+            <Typography
+              component="label"
+              variant="caption"
+              sx={{ display: "block", mb: 0.5, color: "text.secondary" }}
+            >
+              {t("new-password")}
+            </Typography>
+            <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
+              <TextField
+                fullWidth
+                size="small"
                 type="text"
-                className="op-input op-input-bordered op-input-sm focus:outline-none hover:border-base-content w-full text-xs"
                 placeholder={t("enter-password-or-click-autogenerate")}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 autoFocus
               />
-              <button
+              <IconButton
                 type="button"
-                className="op-btn op-btn-square op-btn-sm"
+                size="small"
                 onClick={handleCopy}
                 title={copied ? "Copied" : "Copy"}
                 aria-label="Copy password"
                 disabled={!password}
+                sx={{ opacity: copied ? 0.7 : 1 }}
               >
-                <i
-                  className={`fa-regular fa-copy ${copied ? "opacity-70" : ""}`}
-                ></i>
-              </button>
-            </div>
-          </label>
+                <ContentCopyIcon fontSize="small" />
+              </IconButton>
+            </Box>
+          </Box>
 
           {/* When everything is valid, show just a right tick */}
-          <ul className="mt-1 ml-2">
+          <Box component="ul" sx={{ mt: 0.5, ml: 1, pl: 2, listStyle: "none" }}>
             {conditions.map((c) => (
-              <li
+              <Typography
                 key={c.key}
-                className={`${c.ok ? "text-success" : "text-error"} text-[12px] leading-snug`}
+                component="li"
+                sx={{
+                  color: c.ok ? "success.main" : "error.main",
+                  fontSize: "12px",
+                  lineHeight: 1.35
+                }}
               >
                 {c.ok ? "✓" : "✗"} {t(c.text)}
-              </li>
+              </Typography>
             ))}
-          </ul>
+          </Box>
 
-          <div className="pt-2 flex flex-row gap-x-2">
-            <button
+          <Box sx={{ pt: 1, display: "flex", flexDirection: "row", gap: 1 }}>
+            <Button
               type="submit"
-              className="op-btn op-btn-primary"
+              variant="contained"
+              color="primary"
               disabled={!allValid || submitting}
             >
               {t("submit")}
-            </button>
-            <button type="button" className="op-btn" onClick={handleAutogen}>
+            </Button>
+            <Button type="button" variant="contained" color="inherit" onClick={handleAutogen}>
               {t("autogenerate")}
-            </button>
-            <button
+            </Button>
+            <Button
               type="button"
-              className="op-btn op-btn-ghost"
+              variant="text"
               onClick={() => {
                 setPassword("");
                 onClose?.();
               }}
             >
               {t("cancel")}
-            </button>
-          </div>
-        </form>
+            </Button>
+          </Box>
+        </Box>
       </ModalUi>
     </>
   );

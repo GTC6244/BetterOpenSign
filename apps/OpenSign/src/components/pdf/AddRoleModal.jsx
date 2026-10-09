@@ -1,6 +1,11 @@
 import React, { useState } from "react";
 import ModalUi from "../../primitives/ModalUi";
 import { useTranslation } from "react-i18next";
+import Box from "@mui/material/Box";
+import TextField from "@mui/material/TextField";
+import Button from "@mui/material/Button";
+import Divider from "@mui/material/Divider";
+import Typography from "@mui/material/Typography";
 
 const AddRoleModal = (props) => {
   const { t } = useTranslation();
@@ -10,9 +15,15 @@ const AddRoleModal = (props) => {
       isOpen={props.isModalRole}
       handleClose={props.handleCloseRoleModal}
     >
-      <div className="text-base-content h-full py-[10px] px-[20px]">
-        <form className="flex flex-col" onSubmit={props.handleAddRole}>
-          <input
+      <Box sx={{ height: "100%", py: 1.25, px: 2.5 }}>
+        <Box
+          component="form"
+          sx={{ display: "flex", flexDirection: "column" }}
+          onSubmit={props.handleAddRole}
+        >
+          <TextField
+            size="small"
+            fullWidth
             value={props.roleName}
             onChange={(e) => props.setRoleName(e.target.value)}
             placeholder={
@@ -20,26 +31,29 @@ const AddRoleModal = (props) => {
                 ? "Role " + (props.signersdata.length + 1)
                 : "Role 1"
             }
-            className="op-input op-input-bordered op-input-sm focus:outline-none hover:border-base-content w-full text-xs mt-1"
+            sx={{ mt: 1 }}
           />
-          <p className="text-[gray] text-[11px] mt-[5px] mb-[10px] ml-[10px]">
+          <Typography
+            sx={{ color: "text.secondary", fontSize: "11px", mt: 0.5, mb: 1.25, ml: 1.25 }}
+          >
             {t("role-ex")}..
-          </p>
-          <div>
-            <div className="h-[1px] w-full bg-[#9f9f9f] mb-[10px]"></div>
-            <button type="submit" className="op-btn op-btn-primary">
+          </Typography>
+          <Box>
+            <Divider sx={{ mb: 1.25 }} />
+            <Button type="submit" variant="contained">
               {t("add")}
-            </button>
-            <button
+            </Button>
+            <Button
               onClick={props.handleCloseRoleModal}
               type="button"
-              className="op-btn op-btn-ghost text-base-content ml-2"
+              variant="text"
+              sx={{ ml: 1 }}
             >
               {t("close")}
-            </button>
-          </div>
-        </form>
-      </div>
+            </Button>
+          </Box>
+        </Box>
+      </Box>
     </ModalUi>
   );
 };

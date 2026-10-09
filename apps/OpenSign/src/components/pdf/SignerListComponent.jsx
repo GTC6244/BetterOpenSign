@@ -1,5 +1,5 @@
-import React from "react";
 import { darkenColor, getFirstLetter } from "../../constant/Utils";
+import Box from "@mui/material/Box";
 
 function SignerListComponent(props) {
   const checkSignerBackColor = (obj) => {
@@ -26,29 +26,82 @@ function SignerListComponent(props) {
   };
 
   return (
-    <div
-      className="rounded-xl mx-1 flex flex-row flex-grow-0 items-center py-[10px] mt-1"
-      style={{ background: checkSignerBackColor(props.obj) }}
+    <Box
+      sx={{
+        borderRadius: "12px",
+        mx: 0.5,
+        display: "flex",
+        flexDirection: "row",
+        flexGrow: 0,
+        alignItems: "center",
+        py: "10px",
+        mt: 0.5,
+        background: checkSignerBackColor(props.obj)
+      }}
     >
-      <div
-        style={{ background: checkUserNameColor(props.obj) }}
-        className="flex flex-shrink-0 w-[30px] h-[30px] rounded-full justify-center items-center mx-1"
+      <Box
+        sx={{
+          background: checkUserNameColor(props.obj),
+          display: "flex",
+          flexShrink: 0,
+          width: "30px",
+          height: "30px",
+          borderRadius: "9999px",
+          justifyContent: "center",
+          alignItems: "center",
+          mx: 0.5
+        }}
       >
-        <span className="text-[12px] text-center font-bold text-black uppercase">
+        <Box
+          component="span"
+          sx={{
+            fontSize: "12px",
+            textAlign: "center",
+            fontWeight: 700,
+            color: "common.black",
+            textTransform: "uppercase"
+          }}
+        >
           {getFirstLetter(
             props.obj?.Name || props.obj?.email || props.obj?.Role
           )}
-        </span>
-      </div>
-      <div className="flex flex-grow-0 flex-col overflow-hidden pr-2">
-        <span className="text-[12px] font-bold truncate whitespace-nowrap">
+        </Box>
+      </Box>
+      <Box
+        sx={{
+          display: "flex",
+          flexGrow: 0,
+          flexDirection: "column",
+          overflow: "hidden",
+          pr: 1
+        }}
+      >
+        <Box
+          component="span"
+          sx={{
+            fontSize: "12px",
+            fontWeight: 700,
+            whiteSpace: "nowrap",
+            overflow: "hidden",
+            textOverflow: "ellipsis"
+          }}
+        >
           {props.obj?.Name || props?.obj?.Role}
-        </span>
-        <span className="text-[10px] font-medium truncate whitespace-nowrap">
+        </Box>
+        <Box
+          component="span"
+          sx={{
+            fontSize: "10px",
+            fontWeight: 500,
+            whiteSpace: "nowrap",
+            overflow: "hidden",
+            textOverflow: "ellipsis"
+          }}
+        >
           {props.obj?.Email || props.obj?.email}
-        </span>
-      </div>
-    </div>
+        </Box>
+      </Box>
+    </Box>
   );
 }
 

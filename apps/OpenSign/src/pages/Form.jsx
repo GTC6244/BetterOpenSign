@@ -36,6 +36,12 @@ import {
   clearAcroFields,
   isPdfPasswordProtected
 } from "../utils/acroFieldExtractor";
+import Button from "@mui/material/Button";
+import TextField from "@mui/material/TextField";
+import Radio from "@mui/material/Radio";
+import Checkbox from "@mui/material/Checkbox";
+import Link from "@mui/material/Link";
+import Box from "@mui/material/Box";
 
 // `Form` render all type of Form on this basis of their provided in path
 function Form() {
@@ -759,18 +765,22 @@ const Forms = (props) => {
                 <label className="mb-2 text-xs text-base-content">
                   {t("password")}
                 </label>
-                <input
+                <TextField
                   type="text"
                   name="password"
                   value={formData.password}
                   onChange={(e) => handleStrInput(e)}
-                  className="w-full op-input op-input-bordered op-input-sm focus:outline-none hover:border-base-content text-xs"
                   placeholder={t("enter-pdf-password")}
-                  onInvalid={(e) =>
-                    e.target.setCustomValidity(t("input-required"))
-                  }
-                  onInput={(e) => e.target.setCustomValidity("")}
                   required
+                  size="small"
+                  fullWidth
+                  slotProps={{
+                    htmlInput: {
+                      onInvalid: (e) =>
+                        e.target.setCustomValidity(t("input-required")),
+                      onInput: (e) => e.target.setCustomValidity("")
+                    }
+                  }}
                 />
                 <p
                   className={`${
@@ -783,9 +793,9 @@ const Forms = (props) => {
                 </p>
               </div>
               <div className="px-6 mb-3">
-                <button type="submit" className="op-btn op-btn-primary">
+                <Button type="submit" variant="contained">
                   {t("submit")}
-                </button>
+                </Button>
               </div>
             </form>
           </ModalUi>
@@ -833,7 +843,16 @@ const Forms = (props) => {
               </label>
               {fileupload.length > 0 ? (
                 <div className="flex gap-1 justify-center items-center">
-                  <div className="flex justify-between items-center op-input op-input-bordered op-input-sm w-full h-full text-[13px]">
+                  <Box
+                    className="flex justify-between items-center w-full h-full text-[13px]"
+                    sx={{
+                      border: 1,
+                      borderColor: "outline.variant",
+                      borderRadius: 1,
+                      px: 1.5,
+                      py: 0.5
+                    }}
+                  >
                     <div className="break-all cursor-default">
                       {t("files-selected")}: {selectedFiles.join(", ")}
                     </div>
@@ -846,7 +865,7 @@ const Forms = (props) => {
                     >
                       <i className="fa-light fa-xmark inline-flex h-7 w-7 items-center justify-center rounded-full hover:bg-red-100 text-red-500" />
                     </div>
-                  </div>
+                  </Box>
                 </div>
               ) : (
                 <div className="flex gap-1 justify-center items-center">
@@ -873,24 +892,29 @@ const Forms = (props) => {
                   : t("document-title")}
                 <span className="text-red-500 text-[13px]">*</span>
               </label>
-              <input
+              <TextField
                 name="Name"
-                className="op-input op-input-bordered op-input-sm focus:outline-none hover:border-base-content w-full text-xs"
+                size="small"
+                fullWidth
                 value={formData.Name}
                 onChange={(e) => handleStrInput(e)}
-                onInvalid={(e) =>
-                  e.target.setCustomValidity(t("input-required"))
-                }
-                onInput={(e) => e.target.setCustomValidity("")}
                 required
+                slotProps={{
+                  htmlInput: {
+                    onInvalid: (e) =>
+                      e.target.setCustomValidity(t("input-required")),
+                    onInput: (e) => e.target.setCustomValidity("")
+                  }
+                }}
               />
             </div>
             {props.title === "New Template" && (
               <div className="text-xs mt-2">
                 <label className="block">{t("description")}</label>
-                <input
+                <TextField
                   name="Description"
-                  className="op-input op-input-bordered op-input-sm focus:outline-none hover:border-base-content w-full text-xs"
+                  size="small"
+                  fullWidth
                   value={formData.Description}
                   onChange={(e) => handleStrInput(e)}
                 />
@@ -911,16 +935,20 @@ const Forms = (props) => {
                 {t("report-heading.Note")}
                 <span className="text-red-500 text-[13px]">*</span>
               </label>
-              <input
+              <TextField
                 name="Note"
-                className="op-input op-input-bordered op-input-sm focus:outline-none hover:border-base-content w-full text-xs"
+                size="small"
+                fullWidth
                 value={formData.Note}
                 onChange={(e) => handleStrInput(e)}
-                onInvalid={(e) =>
-                  e.target.setCustomValidity(t("input-required"))
-                }
-                onInput={(e) => e.target.setCustomValidity("")}
                 required
+                slotProps={{
+                  htmlInput: {
+                    onInvalid: (e) =>
+                      e.target.setCustomValidity(t("input-required")),
+                    onInput: (e) => e.target.setCustomValidity("")
+                  }
+                }}
               />
             </div>
             {props.title === "Sign Yourself" ? (
@@ -980,10 +1008,9 @@ const Forms = (props) => {
                         </label>
                         <div className="flex flex-col md:flex-row md:gap-4">
                           <div className="flex items-center gap-2 ml-2 mb-1">
-                            <input
-                              type="radio"
+                            <Radio
+                              size="small"
                               value={"true"}
-                              className="op-radio op-radio-xs"
                               name="SendinOrder"
                               checked={formData.SendinOrder === "true"}
                               onChange={handleStrInput}
@@ -991,11 +1018,10 @@ const Forms = (props) => {
                             <div className="text-center">{t("yes")}</div>
                           </div>
                           <div className="flex items-center gap-2 ml-2 mb-1">
-                            <input
-                              type="radio"
+                            <Radio
+                              size="small"
                               value={"false"}
                               name="SendinOrder"
-                              className="op-radio op-radio-xs"
                               checked={formData.SendinOrder === "false"}
                               onChange={handleStrInput}
                             />
@@ -1004,9 +1030,8 @@ const Forms = (props) => {
                         </div>
                         {formData.SendinOrder === "true" && (
                           <div className="flex items-center gap-2 ml-2 mt-1 mb-1">
-                            <input
-                              type="checkbox"
-                              className="op-checkbox op-checkbox-xs"
+                            <Checkbox
+                              size="small"
                               name="SendInOrderStrict"
                               checked={formData.SendInOrderStrict === "true"}
                               onChange={(e) =>
@@ -1037,17 +1062,23 @@ const Forms = (props) => {
                                 *
                               </span>
                             </label>
-                            <input
+                            <TextField
                               type="number"
                               value={formData.remindOnceInEvery}
                               name="remindOnceInEvery"
-                              className="op-input op-input-bordered op-input-sm focus:outline-none hover:border-base-content w-full text-xs"
+                              size="small"
+                              fullWidth
                               onChange={handleStrInput}
-                              onInvalid={(e) => reminderCustomWarning(e)}
-                              onInput={(e) => e.target.setCustomValidity("")}
-                              min={1}
-                              max={formData?.TimeToCompleteDays}
                               required
+                              slotProps={{
+                                htmlInput: {
+                                  min: 1,
+                                  max: formData?.TimeToCompleteDays,
+                                  onInvalid: (e) => reminderCustomWarning(e),
+                                  onInput: (e) =>
+                                    e.target.setCustomValidity("")
+                                }
+                              }}
                             />
                           </div>
                         )}
@@ -1102,10 +1133,9 @@ const Forms = (props) => {
                             </label>
                             <div className="flex flex-col md:flex-row md:gap-4">
                               <div className="flex items-center gap-2 ml-2 mb-1">
-                                <input
-                                  type="radio"
+                                <Radio
+                                  size="small"
                                   value={"true"}
-                                  className="op-radio op-radio-xs"
                                   name="SendinOrder"
                                   checked={formData.SendinOrder === "true"}
                                   onChange={handleStrInput}
@@ -1113,11 +1143,10 @@ const Forms = (props) => {
                                 <div className="text-center">{t("yes")}</div>
                               </div>
                               <div className="flex items-center gap-2 ml-2 mb-1">
-                                <input
-                                  type="radio"
+                                <Radio
+                                  size="small"
                                   value={"false"}
                                   name="SendinOrder"
-                                  className="op-radio op-radio-xs"
                                   checked={formData.SendinOrder === "false"}
                                   onChange={handleStrInput}
                                 />
@@ -1126,9 +1155,8 @@ const Forms = (props) => {
                             </div>
                             {formData.SendinOrder === "true" && (
                               <div className="flex items-center gap-2 ml-2 mt-1 mb-1">
-                                <input
-                                  type="checkbox"
-                                  className="op-checkbox op-checkbox-xs"
+                                <Checkbox
+                                  size="small"
                                   name="SendInOrderStrict"
                                   checked={
                                     formData.SendInOrderStrict === "true"
@@ -1159,18 +1187,25 @@ const Forms = (props) => {
                                 *
                               </span>
                             </label>
-                            <input
+                            <TextField
                               type="number"
                               name="TimeToCompleteDays"
-                              className="op-input op-input-bordered op-input-sm focus:outline-none hover:border-base-content w-full text-xs"
+                              size="small"
+                              fullWidth
                               value={formData.TimeToCompleteDays}
                               onChange={(e) => handleStrInput(e)}
-                              onInvalid={(e) =>
-                                e.target.setCustomValidity(t("input-required"))
-                              }
-                              onInput={(e) => e.target.setCustomValidity("")}
-                              min={1}
                               required
+                              slotProps={{
+                                htmlInput: {
+                                  min: 1,
+                                  onInvalid: (e) =>
+                                    e.target.setCustomValidity(
+                                      t("input-required")
+                                    ),
+                                  onInput: (e) =>
+                                    e.target.setCustomValidity("")
+                                }
+                              }}
                             />
                           </div>
                         )}
@@ -1222,17 +1257,22 @@ const Forms = (props) => {
                             {t("remind-once")}
                             <span className="text-red-500 text-[13px]">*</span>
                           </label>
-                          <input
+                          <TextField
                             type="number"
                             value={formData.remindOnceInEvery}
                             name="remindOnceInEvery"
-                            className="op-input op-input-bordered op-input-sm focus:outline-none hover:border-base-content w-full text-xs"
+                            size="small"
+                            fullWidth
                             onChange={handleStrInput}
-                            onInvalid={(e) => reminderCustomWarning(e)}
-                            onInput={(e) => e.target.setCustomValidity("")}
-                            min={1}
-                            max={formData?.TimeToCompleteDays}
                             required
+                            slotProps={{
+                              htmlInput: {
+                                min: 1,
+                                max: formData?.TimeToCompleteDays,
+                                onInvalid: (e) => reminderCustomWarning(e),
+                                onInput: (e) => e.target.setCustomValidity("")
+                              }
+                            }}
                           />
                         </div>
                       )}
@@ -1275,10 +1315,9 @@ const Forms = (props) => {
                       </label>
                       <div className="flex flex-col md:flex-row md:gap-4">
                         <div className="flex items-center gap-2 ml-2 mb-1">
-                          <input
-                            type="radio"
+                          <Radio
+                            size="small"
                             value={"true"}
-                            className="op-radio op-radio-xs"
                             name="IsTourEnabled"
                             checked={formData.IsTourEnabled === "true"}
                             onChange={handleStrInput}
@@ -1286,11 +1325,10 @@ const Forms = (props) => {
                           <div className="text-center">{t("yes")}</div>
                         </div>
                         <div className="flex items-center gap-2 ml-2 mb-1">
-                          <input
-                            type="radio"
+                          <Radio
+                            size="small"
                             value={"false"}
                             name="IsTourEnabled"
-                            className="op-radio op-radio-xs"
                             checked={formData.IsTourEnabled === "false"}
                             onChange={handleStrInput}
                           />
@@ -1322,9 +1360,9 @@ const Forms = (props) => {
                             `flex items-center gap-2 ml-2 mb-1`
                           }
                         >
-                          <input
-                            className="mr-[2px] op-radio op-radio-xs"
-                            type="radio"
+                          <Radio
+                            size="small"
+                            sx={{ mr: "2px" }}
                             onChange={() => handleNotifySignChange(true)}
                             checked={formData.NotifyOnSignatures === true}
                           />
@@ -1335,9 +1373,9 @@ const Forms = (props) => {
                             `flex items-center gap-2 ml-2 mb-1`
                           }
                         >
-                          <input
-                            className="mr-[2px] op-radio op-radio-xs"
-                            type="radio"
+                          <Radio
+                            size="small"
+                            sx={{ mr: "2px" }}
                             onChange={() => handleNotifySignChange(false)}
                             checked={formData.NotifyOnSignatures === false}
                           />
@@ -1347,15 +1385,19 @@ const Forms = (props) => {
                     </div>
                     <div className="text-xs mt-2">
                       <label className="block">{t("redirect-url")}</label>
-                      <input
+                      <TextField
                         name="RedirectUrl"
-                        className="op-input op-input-bordered op-input-sm focus:outline-none hover:border-base-content w-full text-xs"
+                        size="small"
+                        fullWidth
                         value={formData.RedirectUrl}
                         onChange={(e) => handleStrInput(e)}
-                        onInvalid={(e) =>
-                          e.target.setCustomValidity(t("input-required"))
-                        }
-                        onInput={(e) => e.target.setCustomValidity("")}
+                        slotProps={{
+                          htmlInput: {
+                            onInvalid: (e) =>
+                              e.target.setCustomValidity(t("input-required")),
+                            onInput: (e) => e.target.setCustomValidity("")
+                          }
+                        }}
                       />
                     </div>
                     {props.title !== "Sign Yourself" && (
@@ -1383,9 +1425,9 @@ const Forms = (props) => {
                               key={color}
                               className="flex flex-row gap-[5px] items-center"
                             >
-                              <input
-                                className="mr-[2px] op-checkbox op-checkbox-xs"
-                                type="checkbox"
+                              <Checkbox
+                                size="small"
+                                sx={{ mr: "2px" }}
                                 name="penColors"
                                 checked={selectedColors.includes(color)}
                                 onChange={() => handleColorsChange(color)}
@@ -1404,38 +1446,46 @@ const Forms = (props) => {
             )}
 
             {isAdvanceOpt && props.title !== "Sign Yourself" ? (
-              <span
+              <Link
+                component="button"
+                type="button"
+                underline="hover"
                 onClick={() => setIsAdvanceOpt(!isAdvanceOpt)}
-                className={`mt-2.5 op-link op-link-primary text-sm`}
+                className={`mt-2.5 text-sm`}
               >
                 {t("hide-advanced-options")}
-              </span>
+              </Link>
             ) : (
               props.title !== "Sign Yourself" && (
-                <span
+                <Link
+                  component="button"
+                  type="button"
+                  underline="hover"
                   onClick={() => setIsAdvanceOpt(!isAdvanceOpt)}
-                  className={`mt-2.5 op-link op-link-primary text-sm`}
+                  className={`mt-2.5 text-sm`}
                 >
                   {t("advanced-options")}
-                </span>
+                </Link>
               )
             )}
             <div className="flex items-center mt-3 gap-2">
-              <button
+              <Button
                 className={`${
                   isSubmit || !fileupload ? "cursor-progress" : ""
-                } op-btn op-btn-primary`}
+                }`}
+                variant="contained"
                 type="submit"
                 disabled={isSubmit || !fileupload}
               >
                 {t("next")}
-              </button>
-              <div
-                className="op-btn op-btn-ghost text-base-content"
+              </Button>
+              <Button
+                variant="text"
+                color="inherit"
                 onClick={() => handleCancel()}
               >
                 {t("cancel")}
-              </div>
+              </Button>
             </div>
           </form>
         </>

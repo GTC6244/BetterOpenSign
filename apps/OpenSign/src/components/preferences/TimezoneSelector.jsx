@@ -1,8 +1,12 @@
 import { t } from "i18next";
 import React, { useState } from "react";
 import TimezoneSelect from "react-timezone-select";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import { useTheme } from "@mui/material/styles";
 
 const TimezoneSelector = (props) => {
+  const theme = useTheme();
   const [selectedTimezone, setSelectedTimezone] = useState(props?.timezone);
   // Intl.DateTimeFormat().resolvedOptions().timeZone // Default to the user's local timezone
 
@@ -11,33 +15,75 @@ const TimezoneSelector = (props) => {
     props.setTimezone && props.setTimezone(timezone?.value);
   };
 
+  // MD3 theme-driven styles for the react-select based TimezoneSelect
+  const selectStyles = {
+    control: (base, state) => ({
+      ...base,
+      minHeight: 36,
+      fontSize: 11,
+      backgroundColor: theme.palette.background.paper,
+      borderColor: state.isFocused
+        ? theme.palette.primary.main
+        : theme.palette.outline?.main || theme.palette.divider,
+      boxShadow: "none",
+      "&:hover": { borderColor: theme.palette.text.primary }
+    }),
+    valueContainer: (base) => ({ ...base, gap: 2 }),
+    menu: (base) => ({
+      ...base,
+      zIndex: 1300,
+      backgroundColor:
+        theme.palette.surface?.container || theme.palette.background.paper,
+      color: theme.palette.text.primary
+    }),
+    menuList: (base) => ({ ...base, overflow: "hidden" }),
+    option: (base, state) => ({
+      ...base,
+      fontSize: 11,
+      borderRadius: 8,
+      margin: 4,
+      width: "auto",
+      backgroundColor: state.isFocused
+        ? theme.palette.action.hover
+        : "transparent",
+      color: theme.palette.text.primary
+    }),
+    singleValue: (base) => ({
+      ...base,
+      fontSize: 11,
+      color: theme.palette.text.primary
+    }),
+    input: (base) => ({ ...base, color: theme.palette.text.primary }),
+    multiValue: (base) => ({
+      ...base,
+      fontSize: 11,
+      backgroundColor: theme.palette.primary.main,
+      color: theme.palette.primary.contrastText
+    }),
+    multiValueLabel: (base) => ({
+      ...base,
+      color: theme.palette.primary.contrastText
+    }),
+    noOptionsMessage: (base) => ({
+      ...base,
+      color: theme.palette.text.secondary
+    })
+  };
+
   return (
-    <>
-      <div className="max-w-[400px] pr-[20px]">
-        <h1 className="text-[14px] mb-[0.7rem] font-medium">
-          {t("select-timezone")}
-        </h1>
-        <TimezoneSelect
-          value={selectedTimezone}
-          onChange={(timezone) => onChangeTimezone(timezone)}
-          unstyled
-          classNames={{
-            control: () =>
-              "op-input op-input-bordered op-input-sm focus:outline-none hover:border-base-content w-full h-full text-[11px]",
-            valueContainer: () =>
-              "flex flex-row gap-x-[2px] gap-y-[2px] md:gap-y-0 w-full my-[2px]",
-            multiValue: () => "op-badge op-badge-primary h-full text-[11px]",
-            multiValueLabel: () => "mb-[2px]",
-            menu: () =>
-              "mt-1 shadow-md rounded-lg bg-base-200 text-base-content",
-            menuList: () => "shadow-md rounded-lg overflow-hidden",
-            option: () =>
-              "bg-base-200 text-base-content rounded-lg m-1 hover:bg-base-300 p-2",
-            noOptionsMessage: () => "p-2 bg-base-200 rounded-lg m-1 p-2"
-          }}
-        />
-      </div>
-    </>
+    <Box sx={{ maxWidth: 400, pr: "20px" }}>
+      <Typography
+        component="h1"
+        sx={{ fontSize: 14, mb: "0.7rem", fontWeight: 500 }}
+      >
+        {t("select-timezone")}
+      </Typography>
+      <TimezoneSelect
+        value={selectedTimezone}
+        onChange={(timezone) => onChangeTimezone(timezone)}
+        styles={selectStyles}
+      />
+    </Box>
   );
 };
 
