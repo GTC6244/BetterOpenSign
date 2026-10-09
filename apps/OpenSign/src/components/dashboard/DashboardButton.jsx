@@ -2,6 +2,9 @@ import React from "react";
 import { useNavigate } from "react-router";
 import { openInNewTab } from "../../constant/Utils";
 import { useTranslation } from "react-i18next";
+import Card from "@mui/material/Card";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
 
 const DashboardButton = (props) => {
   const navigate = useNavigate();
@@ -20,40 +23,62 @@ const DashboardButton = (props) => {
       }
     }
   }
+  const isClickable = !!(props.Data && props.Data.Redirect_type);
   return (
-    <div
+    <Card
       onClick={() => openReport()}
-      className={`${
-        props.Data && props.Data.Redirect_type
-          ? "cursor-pointer"
-          : "cursor-default"
-      } w-full shadow-md px-3 py-2 op-card bg-base-100`}
+      elevation={3}
+      sx={{
+        width: "100%",
+        px: 1.5,
+        py: 1,
+        bgcolor: "surface.main",
+        cursor: isClickable ? "pointer" : "default"
+      }}
     >
-      <div className="flex flex-row items-center text-base-content">
-        <div className="flex flex-row items-center">
-          <span className="rounded-full bg-base-content bg-opacity-20 w-[60px] h-[60px] self-start flex justify-center items-center">
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "row",
+          alignItems: "center",
+          color: "text.primary"
+        }}
+      >
+        <Box sx={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
+          <Box
+            sx={{
+              borderRadius: "50%",
+              bgcolor: "surface.containerHighest",
+              width: 60,
+              height: 60,
+              alignSelf: "flex-start",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center"
+            }}
+          >
             <i
-              className={`${
-                props.Icon ? props.Icon : "fa-light fa-info"
-              } text-[25px] lg:text-[30px]`}
+              className={`${props.Icon ? props.Icon : "fa-light fa-info"} text-[25px] lg:text-[30px]`}
             ></i>
-          </span>
-        </div>
-        <div className="text-lg ml-3">
-          {t(`sidebar.${props.Label}`)}
+          </Box>
+        </Box>
+        <Box sx={{ ml: 1.5 }}>
+          <Typography sx={{ fontSize: "1.125rem" }}>
+            {t(`sidebar.${props.Label}`)}
+          </Typography>
           {props.Label === "Sign yourself" && (
-            <div className="text-gray-500 text-xs mt-1">
+            <Typography sx={{ color: "text.secondary", fontSize: "0.75rem", mt: 0.5 }}>
               {t("signyour-self-button")}
-            </div>
+            </Typography>
           )}
           {props.Label === "Request signatures" && (
-            <div className="text-gray-500 text-xs mt-1">
+            <Typography sx={{ color: "text.secondary", fontSize: "0.75rem", mt: 0.5 }}>
               {t("requestsign-button")}
-            </div>
+            </Typography>
           )}
-        </div>
-      </div>
-    </div>
+        </Box>
+      </Box>
+    </Card>
   );
 };
 

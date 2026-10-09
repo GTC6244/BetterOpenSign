@@ -16,6 +16,11 @@ import {
   clearAcroFields,
   isPdfPasswordProtected
 } from "../../utils/acroFieldExtractor";
+import Box from "@mui/material/Box";
+import IconButton from "@mui/material/IconButton";
+import Divider from "@mui/material/Divider";
+import Typography from "@mui/material/Typography";
+import Button from "@mui/material/Button";
 
 function PdfTools(props) {
   const { t } = useTranslation();
@@ -196,16 +201,32 @@ function PdfTools(props) {
     props.handleRotationFun(-90);
     props.setIsTour && props.setIsTour(false);
   };
+  const toolBtnSx = {
+    borderRadius: 0,
+    bgcolor: "surface.containerLow",
+    color: "text.secondary",
+    px: 0.5,
+    py: 0.5
+  };
   return (
     <>
-      <span
+      <Box
+        component="span"
         data-tut="pdftools"
-        className="hidden h-max md:flex flex-col gap-1 text-center md:w-[5%] mt-[42px]"
+        sx={{
+          display: { xs: "none", md: "flex" },
+          height: "max-content",
+          flexDirection: "column",
+          gap: 0.5,
+          textAlign: "center",
+          width: { md: "5%" },
+          mt: "42px"
+        }}
       >
         {!props.isDisableEditTools && (
           <>
-            <span
-              className="bg-gray-50 px-[4px] 2xl:py-[10px] cursor-pointer"
+            <IconButton
+              sx={toolBtnSx}
               onClick={() => mergePdfInputRef.current.click()}
               title={t("add-pages")}
             >
@@ -216,83 +237,81 @@ function PdfTools(props) {
                 ref={mergePdfInputRef}
                 onChange={handleFileUpload}
               />
-              <i className="fa-light fa-plus text-gray-500 2xl:text-[25px]"></i>
-            </span>
-            <span
-              className="bg-gray-50 px-[4px] 2xl:py-[10px] cursor-pointer"
+              <i className="fa-light fa-plus 2xl:text-[25px]"></i>
+            </IconButton>
+            <IconButton
+              sx={toolBtnSx}
               onClick={handleDeletePage}
               title={t("delete-page")}
             >
-              <i className="fa-light fa-trash text-gray-500 2xl:text-[25px]"></i>
-            </span>
-            <span
-              className="bg-gray-50 px-[4px] 2xl:py-[10px] cursor-pointer"
+              <i className="fa-light fa-trash 2xl:text-[25px]"></i>
+            </IconButton>
+            <IconButton
+              sx={toolBtnSx}
               onClick={handleReorderPages}
               title={t("reorder-pages")}
             >
-              <i className="fa-light fa-list-ol text-gray-500 2xl:text-[25px]"></i>
-            </span>
+              <i className="fa-light fa-list-ol 2xl:text-[25px]"></i>
+            </IconButton>
           </>
         )}
-        <span
-          className="bg-gray-50 px-[4px] 2xl:py-[10px] cursor-pointer"
-          onClick={handleZoomIn}
-          title={t("zoom-in")}
-        >
-          <i className="fa-light fa-magnifying-glass-plus text-gray-500 2xl:text-[25px]"></i>
-        </span>
+        <IconButton sx={toolBtnSx} onClick={handleZoomIn} title={t("zoom-in")}>
+          <i className="fa-light fa-magnifying-glass-plus 2xl:text-[25px]"></i>
+        </IconButton>
 
         {!props.isDisableEditTools && (
           <>
-            <span
-              className="bg-gray-50 px-[4px] 2xl:py-[10px] cursor-pointer"
+            <IconButton
+              sx={toolBtnSx}
               onClick={handleRotate}
               title={t("rotate-right")}
             >
-              <i className="fa-light fa-rotate-right text-gray-500 2xl:text-[25px]"></i>
-            </span>
-            <span
-              className="bg-gray-50 px-[4px] 2xl:py-[10px] cursor-pointer"
+              <i className="fa-light fa-rotate-right 2xl:text-[25px]"></i>
+            </IconButton>
+            <IconButton
+              sx={toolBtnSx}
               title={t("rotate-left")}
               onClick={handleAntiRotate}
             >
-              <i className="fa-light fa-rotate-left text-gray-500 2xl:text-[25px]"></i>
-            </span>
+              <i className="fa-light fa-rotate-left 2xl:text-[25px]"></i>
+            </IconButton>
           </>
         )}
-        <span
-          className="bg-gray-50 px-[4px] 2xl:py-[10px] cursor-pointer"
-          onClick={handleZoomOut}
-          title={t("zoom-out")}
-        >
-          <i className="fa-light fa-magnifying-glass-minus text-gray-500 2xl:text-[30px]"></i>
-        </span>
-      </span>
+        <IconButton sx={toolBtnSx} onClick={handleZoomOut} title={t("zoom-out")}>
+          <i className="fa-light fa-magnifying-glass-minus 2xl:text-[30px]"></i>
+        </IconButton>
+      </Box>
 
       <ModalUi
         isOpen={isDeletePage}
         title={t("delete-page")}
         handleClose={() => setIsDeletePage(false)}
       >
-        <div className="h-[100%] p-[20px]">
-          <p className="font-medium text-base-content">{t("delete-alert-2")}</p>
-          <p className="pt-3 text-base-content">{t("delete-note")}</p>
-          <div className="h-[1px] bg-[#9f9f9f] w-full my-[15px]"></div>
-          <button
+        <Box sx={{ height: "100%", p: 2.5 }}>
+          <Typography sx={{ fontWeight: 500, color: "text.primary" }}>
+            {t("delete-alert-2")}
+          </Typography>
+          <Typography sx={{ pt: 1.5, color: "text.primary" }}>
+            {t("delete-note")}
+          </Typography>
+          <Divider sx={{ my: 1.875 }} />
+          <Button
             onClick={() => handleDetelePage()}
             type="button"
-            className="op-btn op-btn-primary"
+            variant="contained"
           >
             {t("yes")}
-          </button>
-          <button
+          </Button>
+          <Button
             onClick={() => setIsDeletePage(false)}
             type="button"
-            className="op-btn op-btn-ghost text-base-content ml-1"
+            variant="text"
+            color="inherit"
+            sx={{ ml: 0.5 }}
           >
             {t("no")}
-          </button>
-        </div>
+          </Button>
+        </Box>
       </ModalUi>
       <PageReorderModal
         isOpen={isReorderModal}

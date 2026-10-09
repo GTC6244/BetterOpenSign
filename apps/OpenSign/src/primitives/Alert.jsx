@@ -1,35 +1,50 @@
-import React from "react";
+import MuiAlert from "@mui/material/Alert";
+import Box from "@mui/material/Box";
+
+/**
+ * MD3 alert / snackbar-style banner.
+ *
+ * Preserves the legacy API:
+ *   - `type`: "success" | "info" | "danger" | "warning" (danger → error)
+ *   - `className`: when provided, overrides the default fixed-top positioning.
+ */
+const SEVERITY = {
+  success: "success",
+  info: "info",
+  danger: "error",
+  warning: "warning"
+};
 
 const Alert = ({ children, type, className }) => {
-  const textcolor = type ? theme(type) : theme();
-  function theme(color) {
-    switch (color) {
-      case "success":
-        return "op-alert-success";
-      case "info":
-        return "op-alert-info";
-      case "danger":
-        return "op-alert-error";
-      case "warning":
-        return "op-alert-warning text-black";
-      default:
-        return "";
-    }
-  }
+  if (!children) return null;
+  const severity = SEVERITY[type] || "info";
+
+  const positioned = !className;
+
   return (
-    children && (
-      <div
-        className={`${
-          className
-            ? className
-            : "z-[1000] fixed top-20 left-1/2 transform -translate-x-1/2 text-sm"
-        }  `}
+    <Box
+      className={className || undefined}
+      sx={
+        positioned
+          ? {
+              zIndex: 1300,
+              position: "fixed",
+              top: 80,
+              left: "50%",
+              transform: "translateX(-50%)",
+              maxWidth: "90vw"
+            }
+          : undefined
+      }
+    >
+      <MuiAlert
+        severity={severity}
+        variant="filled"
+        sx={{ borderRadius: 3, alignItems: "center", boxShadow: 3 }}
       >
-        <div className={`op-alert ${textcolor} flex justify-center`}>
-          <span className="px-1">{children}</span>
-        </div>
-      </div>
-    )
+        {children}
+      </MuiAlert>
+    </Box>
   );
 };
 

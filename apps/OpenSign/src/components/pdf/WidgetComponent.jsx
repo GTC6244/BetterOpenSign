@@ -13,6 +13,10 @@ import {
 } from "../../constant/Utils";
 import { useTranslation } from "react-i18next";
 import { useWidgetDrag } from "../../hook/useWidgetDrag";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import TextField from "@mui/material/TextField";
+import MenuItem from "@mui/material/MenuItem";
 
 function WidgetComponent(props) {
   const { t } = useTranslation();
@@ -154,54 +158,84 @@ function WidgetComponent(props) {
     <>
       {isMobile ? (
         !props.isMailSend && (
-          <div id="navbar" className="fixed z-[99] bottom-0 right-0 w-full">
+          <Box
+            id="navbar"
+            sx={{
+              position: "fixed",
+              zIndex: 99,
+              bottom: 0,
+              right: 0,
+              width: "100%"
+            }}
+          >
             {props.isSigners && (
-              <div className="w-full mb-[5px] flex justify-center items-center gap-1">
-                <div className="w-full ml-[5px]" onClick={() => handleModal()}>
-                  <select
+              <Box
+                sx={{
+                  width: "100%",
+                  mb: 0.625,
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  gap: 0.5
+                }}
+              >
+                <Box sx={{ width: "100%", ml: 0.625 }} onClick={() => handleModal()}>
+                  <TextField
+                    select
                     data-tut="recipientArea"
-                    className="w-full op-select op-select-bordered  pointer-events-none"
-                    value={handleSelectRecipient()}
-                    style={{
-                      backgroundColor:
-                        props.roleName === "prefill"
-                          ? "#edf6fc"
-                          : handleBlockColor() || "#edf6fc"
+                    size="small"
+                    fullWidth
+                    value={handleSelectRecipient() || ""}
+                    sx={{
+                      pointerEvents: "none",
+                      "& .MuiInputBase-root": {
+                        backgroundColor:
+                          props.roleName === "prefill"
+                            ? "#edf6fc"
+                            : handleBlockColor() || "#edf6fc"
+                      }
                     }}
                   >
-                    <option value={handleSelectRecipient()}>
+                    <MenuItem value={handleSelectRecipient() || ""}>
                       {handleSelectRecipient()}
-                    </option>
-                  </select>
-                </div>
+                    </MenuItem>
+                  </TextField>
+                </Box>
 
-                <div className="w-[18%]">
+                <Box sx={{ width: "18%" }}>
                   {props.handleAddSigner ? (
-                    <button
+                    <Button
                       data-tut="reactourAddbtn"
                       onClick={() => props.handleAddSigner()}
-                      className="op-btn op-btn-accent"
+                      variant="contained"
+                      color="secondary"
                     >
                       <i className="fa-light fa-plus "></i>
-                    </button>
+                    </Button>
                   ) : (
                     props.setIsAddSigner && (
-                      <button
+                      <Button
                         data-tut="addRecipient"
                         onClick={() => props.setIsAddSigner(true)}
-                        className="op-btn op-btn-accent"
+                        variant="contained"
+                        color="secondary"
                       >
                         <i className="fa-light fa-plus"></i>
-                      </button>
+                      </Button>
                     )
                   )}
-                </div>
-              </div>
+                </Box>
+              </Box>
             )}
 
-            <div
+            <Box
               data-tut="addWidgets"
-              className="bg-base-100 border-[2px] border-t-primary"
+              sx={{
+                bgcolor: "surface.main",
+                border: "2px solid",
+                borderColor: "divider",
+                borderTopColor: "primary.main"
+              }}
             >
               <div className="flex whitespace-nowrap overflow-x-scroll pt-[10px] pb-[5px] pr-[5px]">
                 <WidgetList
@@ -213,26 +247,53 @@ function WidgetComponent(props) {
                   addPositionOfSignature={props.addPositionOfSignature}
                 />
               </div>
-            </div>
-          </div>
+            </Box>
+          </Box>
         )
       ) : (
-        <div
+        <Box
           data-tut={props.dataTut}
-          className={`${
-            props.isMailSend ? "bg-opacity-50 pointer-events-none" : ""
-          } hidden md:block h-full bg-base-100`}
+          className={props.isMailSend ? "bg-opacity-50 pointer-events-none" : ""}
+          sx={{
+            display: { xs: "none", md: "block" },
+            height: "100%",
+            bgcolor: "surface.main"
+          }}
         >
-          <div className="mx-2 pr-2 pt-2 pb-1 text-[15px] text-base-content font-semibold border-b-[1px] border-base-300">
+          <Box
+            sx={{
+              mx: 1,
+              pr: 1,
+              pt: 1,
+              pb: 0.5,
+              fontSize: "15px",
+              color: "text.primary",
+              fontWeight: 600,
+              borderBottom: "1px solid",
+              borderColor: "divider"
+            }}
+          >
             <span>
               {t("widgets")}
               {props?.isSignYourself && (
                 <sup onClick={() => props.setIsTour && props.setIsTour(true)}>
-                  <i className="ml-1 cursor-pointer fa-light fa-question rounded-full border-[1px] border-base-content text-[11px] py-[1px] px-[3px]"></i>
+                  <Box
+                    component="i"
+                    className="cursor-pointer fa-light fa-question"
+                    sx={{
+                      ml: 0.5,
+                      borderRadius: "9999px",
+                      border: "1px solid",
+                      borderColor: "text.primary",
+                      fontSize: "11px",
+                      py: "1px",
+                      px: "3px"
+                    }}
+                  ></Box>
                 </sup>
               )}
             </span>
-          </div>
+          </Box>
           <div
             className="p-[12px] grid lg:grid-cols-2 gap-x-2 lg:gap-y-1.5 pt-3"
             data-tut="addWidgets"
@@ -247,7 +308,7 @@ function WidgetComponent(props) {
               addPositionOfSignature={props.addPositionOfSignature}
             />
           </div>
-        </div>
+        </Box>
       )}
       {isSignersModal && (
         <ModalUi

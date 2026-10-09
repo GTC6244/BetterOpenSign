@@ -21,6 +21,13 @@ import ModalUi from "../primitives/ModalUi";
 import Loader from "../primitives/Loader";
 import { useTranslation } from "react-i18next";
 import SelectLanguage from "../components/pdf/SelectLanguage";
+import Box from "@mui/material/Box";
+import Paper from "@mui/material/Paper";
+import Button from "@mui/material/Button";
+import TextField from "@mui/material/TextField";
+import Typography from "@mui/material/Typography";
+import Link from "@mui/material/Link";
+import LinearProgress from "@mui/material/LinearProgress";
 
 function UserProfile() {
   const navigate = useNavigate();
@@ -298,84 +305,173 @@ function UserProfile() {
   return (
     <React.Fragment>
       {isLoader ? (
-        <div className="h-[100vh] flex justify-center items-center">
+        <Box
+          sx={{
+            height: "100vh",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center"
+          }}
+        >
           <Loader />
-        </div>
+        </Box>
       ) : (
-        <div className="flex justify-center items-center w-full relative">
-          <div className="bg-base-100 text-base-content flex flex-col justify-center shadow-md rounded-box w-[450px]">
-            <div className="flex flex-col justify-center items-center my-4">
-              <div className="w-[200px] h-[200px] overflow-hidden rounded-full">
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            width: "100%",
+            position: "relative"
+          }}
+        >
+          <Paper
+            elevation={2}
+            sx={{
+              bgcolor: "background.paper",
+              color: "text.primary",
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              borderRadius: 4,
+              width: 450
+            }}
+          >
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+                alignItems: "center",
+                my: 2
+              }}
+            >
+              <Box
+                sx={{
+                  width: 200,
+                  height: 200,
+                  overflow: "hidden",
+                  borderRadius: "50%"
+                }}
+              >
                 <img
                   className="object-contain w-full h-full"
                   src={Image === "" ? dp : Image}
                   alt="dp"
                 />
-              </div>
+              </Box>
               {editmode && (
-                <input
+                <TextField
                   type="file"
-                  className="op-file-input op-file-input-bordered op-file-input-sm max-w-[270px] mt-4 text-sm"
-                  accept="image/png, image/gif, image/jpeg"
+                  size="small"
                   onChange={fileUpload}
+                  sx={{ maxWidth: 270, mt: 2 }}
+                  slotProps={{
+                    htmlInput: { accept: "image/png, image/gif, image/jpeg" }
+                  }}
                 />
               )}
               {percentage !== 0 && (
-                <div className="flex items-center gap-x-2">
-                  <div className="h-2 rounded-full w-[200px] md:w-[400px] bg-gray-200">
-                    <div
-                      className="h-2 rounded-full bg-blue-500"
-                      style={{ width: `${percentage}%` }}
-                    ></div>
-                  </div>
-                  <span className="text-base-contentk text-sm">
-                    {percentage}%
-                  </span>
-                </div>
+                <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                  <LinearProgress
+                    variant="determinate"
+                    value={percentage}
+                    sx={{
+                      height: 8,
+                      borderRadius: 9999,
+                      width: { xs: 200, md: 400 }
+                    }}
+                  />
+                  <Typography variant="body2">{percentage}%</Typography>
+                </Box>
               )}
-              <div className="text-base font-semibold pt-4">
+              <Typography sx={{ fontWeight: 600, pt: 2 }}>
                 {localStorage.getItem("_user_role")}
-              </div>
-            </div>
-            <ul className="w-full flex flex-col p-2 text-sm">
-              <li
-                className={`flex justify-between items-center border-y-[1px] border-gray-300 break-all ${
-                  editmode ? "py-1.5" : "py-2"
-                }`}
+              </Typography>
+            </Box>
+            <Box
+              component="ul"
+              sx={{
+                width: "100%",
+                display: "flex",
+                flexDirection: "column",
+                p: 1,
+                m: 0,
+                listStyle: "none",
+                fontSize: "0.875rem"
+              }}
+            >
+              <Box
+                component="li"
+                sx={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  borderTop: 1,
+                  borderBottom: 1,
+                  borderColor: "divider",
+                  wordBreak: "break-all",
+                  py: editmode ? 0.75 : 1
+                }}
               >
-                <span className="font-semibold">{t("name")}:</span>{" "}
+                <Box component="span" sx={{ fontWeight: 600 }}>
+                  {t("name")}:
+                </Box>{" "}
                 {editmode ? (
-                  <input
+                  <TextField
                     type="text"
                     value={name}
-                    className="op-input op-input-bordered op-input-sm w-[180px] focus:outline-none hover:border-base-content text-sm"
+                    size="small"
+                    sx={{ width: 180 }}
                     onChange={(e) => SetName(e.target.value)}
                   />
                 ) : (
                   <span>{localStorage.getItem("username")}</span>
                 )}
-              </li>
-              <li
-                className={`flex justify-between items-center border-b-[1px] border-gray-300 break-all ${
-                  editmode ? "py-1.5" : "py-2"
-                }`}
+              </Box>
+              <Box
+                component="li"
+                sx={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  borderBottom: 1,
+                  borderColor: "divider",
+                  wordBreak: "break-all",
+                  py: editmode ? 0.75 : 1
+                }}
               >
-                <span className="font-semibold">{t("phone")}:</span>{" "}
+                <Box component="span" sx={{ fontWeight: 600 }}>
+                  {t("phone")}:
+                </Box>{" "}
                 {editmode ? (
-                  <input
+                  <TextField
                     type="text"
-                    className="op-input op-input-bordered op-input-sm w-[180px] focus:outline-none hover:border-base-content text-sm"
+                    size="small"
+                    sx={{ width: 180 }}
                     onChange={(e) => SetPhone(e.target.value)}
                     value={Phone}
                   />
                 ) : (
                   <span>{UserProfile && UserProfile.phone}</span>
                 )}
-              </li>
-              <li className="flex justify-between items-center border-b-[1px] border-gray-300 py-2 break-all">
-                <span
+              </Box>
+              <Box
+                component="li"
+                sx={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  borderBottom: 1,
+                  borderColor: "divider",
+                  py: 1,
+                  wordBreak: "break-all"
+                }}
+              >
+                <Box
+                  component="span"
                   data-tooltip-id="email-tooltip"
-                  className="font-semibold flex gap-1"
+                  sx={{ fontWeight: 600, display: "flex", gap: 0.5 }}
                 >
                   {t("email")} :{" "}
                   {editmode && (
@@ -384,103 +480,163 @@ function UserProfile() {
                       maxWidth="max-w-[250px]"
                     />
                   )}
-                </span>
+                </Box>
                 <span>{UserProfile && UserProfile.email}</span>
-              </li>
-              <li
-                className={`flex justify-between items-center border-b-[1px] border-gray-300 break-all ${
-                  editmode ? "py-1.5" : "py-2"
-                }`}
+              </Box>
+              <Box
+                component="li"
+                sx={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  borderBottom: 1,
+                  borderColor: "divider",
+                  wordBreak: "break-all",
+                  py: editmode ? 0.75 : 1
+                }}
               >
-                <span className="font-semibold">{t("company")}:</span>{" "}
+                <Box component="span" sx={{ fontWeight: 600 }}>
+                  {t("company")}:
+                </Box>{" "}
                 {editmode ? (
-                  <input
+                  <TextField
                     type="text"
                     value={company}
-                    className="op-input op-input-bordered op-input-sm w-[180px] focus:outline-none hover:border-base-content text-sm"
+                    size="small"
+                    sx={{ width: 180 }}
                     onChange={(e) => setCompany(e.target.value)}
                   />
                 ) : (
                   <span>{extendUser?.[0].Company}</span>
                 )}
-              </li>
-              <li
-                className={`flex justify-between items-center border-b-[1px] border-gray-300 break-all ${
-                  editmode ? "py-1.5" : "py-2"
-                }`}
+              </Box>
+              <Box
+                component="li"
+                sx={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  borderBottom: 1,
+                  borderColor: "divider",
+                  wordBreak: "break-all",
+                  py: editmode ? 0.75 : 1
+                }}
               >
-                <span className="font-semibold">{t("job-title")}:</span>{" "}
+                <Box component="span" sx={{ fontWeight: 600 }}>
+                  {t("job-title")}:
+                </Box>{" "}
                 {editmode ? (
-                  <input
+                  <TextField
                     type="text"
                     value={jobTitle}
-                    className="op-input op-input-bordered op-input-sm w-[180px] focus:outline-none hover:border-base-content text-sm"
+                    size="small"
+                    sx={{ width: 180 }}
                     onChange={(e) => setJobTitle(e.target.value)}
                   />
                 ) : (
                   <span>{extendUser?.[0]?.JobTitle}</span>
                 )}
-              </li>
-              <li className="flex justify-between items-center border-b-[1px] border-gray-300 py-2 break-all">
-                <span className="font-semibold">{t("is-email-verified")}:</span>{" "}
+              </Box>
+              <Box
+                component="li"
+                sx={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  borderBottom: 1,
+                  borderColor: "divider",
+                  py: 1,
+                  wordBreak: "break-all"
+                }}
+              >
+                <Box component="span" sx={{ fontWeight: 600 }}>
+                  {t("is-email-verified")}:
+                </Box>{" "}
                 <span>
                   {isEmailVerified ? (
                     t("verified")
                   ) : (
                     <span>
                       {t("not-verified")} (
-                      <span
+                      <Link
+                        component="button"
+                        type="button"
+                        underline="hover"
                         onClick={() => handleVerifyBtn()}
-                        className="hover:underline text-blue-600 cursor-pointer"
+                        sx={{ cursor: "pointer" }}
                       >
                         {t("verify")}
-                      </span>
+                      </Link>
                       )
                     </span>
                   )}
                 </span>
-              </li>
-              <li
-                className={`flex justify-between items-center border-b-[1px] border-gray-300 break-all ${
-                  editmode ? "py-1.5" : "py-2"
-                }`}
+              </Box>
+              <Box
+                component="li"
+                sx={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  borderBottom: 1,
+                  borderColor: "divider",
+                  wordBreak: "break-all",
+                  py: editmode ? 0.75 : 1
+                }}
               >
-                <span className="font-semibold">{t("language")}:</span>{" "}
+                <Box component="span" sx={{ fontWeight: 600 }}>
+                  {t("language")}:
+                </Box>{" "}
                 <SelectLanguage
                   isProfile={true}
                   updateExtUser={updateExtUser}
                 />
-              </li>
-            </ul>
-            <div className="flex flex-col md:flex-row justify-center gap-2 pt-2 pb-3 md:pt-3 md:pb-4 mx-2 md:mx-0">
-              <button
+              </Box>
+            </Box>
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: { xs: "column", md: "row" },
+                justifyContent: "center",
+                gap: 1,
+                pt: { xs: 1, md: 1.5 },
+                pb: { xs: 1.5, md: 2 },
+                mx: { xs: 1, md: 0 }
+              }}
+            >
+              <Button
                 type="button"
+                variant="contained"
                 onClick={(e) => {
-                    editmode ? handleSubmit(e) : setEditMode(true);
+                  editmode ? handleSubmit(e) : setEditMode(true);
                 }}
-                className="op-btn op-btn-primary md:w-[100px]"
+                sx={{ width: { md: 100 } }}
               >
                 {editmode ? t("save") : t("edit")}
-              </button>
-              <button
+              </Button>
+              <Button
                 type="button"
+                variant={editmode ? "text" : "contained"}
+                color={editmode ? "primary" : "secondary"}
                 onClick={() =>
                   editmode ? handleCancel() : navigate("/changepassword")
                 }
-                className={
-                      `op-btn ${editmode ? "op-btn-ghost w-[100px]" : "op-btn-secondary"}`
-                }
+                sx={editmode ? { width: 100 } : undefined}
               >
                 {editmode ? t("cancel") : t("change-password")}
-              </button>
-              <button
+              </Button>
+              <Link
+                component="button"
+                type="button"
+                color="secondary"
+                underline="hover"
                 onClick={() => handleDeleteAccountBtn()}
-                className="op-link op-link-accent text-sm mx-2"
+                sx={{ fontSize: "0.875rem", mx: 1, cursor: "pointer" }}
               >
                 {t("delete-account")}
-              </button>
-            </div>
-          </div>
+              </Link>
+            </Box>
+          </Paper>
           {isdeleteModal && (
             <ModalUi
               isOpen
@@ -488,34 +644,61 @@ function UserProfile() {
               handleClose={handleCloseDeleteModal}
             >
               {isDelLoader ? (
-                <div className="h-[100px] flex justify-center items-center">
+                <Box
+                  sx={{
+                    height: 100,
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center"
+                  }}
+                >
                   <Loader />
-                </div>
+                </Box>
               ) : (
                 <>
                   {deleteUserRes ? (
-                    <div className="h-[100px] p-[20px] flex justify-center items-center text-base-content text-sm md:text-base">
+                    <Box
+                      sx={{
+                        height: 100,
+                        p: 2.5,
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        color: "text.primary",
+                        fontSize: { xs: "0.875rem", md: "1rem" }
+                      }}
+                    >
                       {deleteUserRes}
-                    </div>
+                    </Box>
                   ) : (
                     <form onSubmit={(e) => handleDeleteAccount(e)}>
-                      <div className="px-6 py-3 text-base-content text-sm md:text-base">
+                      <Box
+                        sx={{
+                          px: 3,
+                          py: 1.5,
+                          color: "text.primary",
+                          fontSize: { xs: "0.875rem", md: "1rem" }
+                        }}
+                      >
                         {t("delete-account-que")}
-                      </div>
-                      <div className="px-6 mb-3">
-                        <button
+                      </Box>
+                      <Box sx={{ px: 3, mb: 1.5, display: "flex", gap: 1 }}>
+                        <Button
                           type="submit"
-                          className="op-btn op-btn-primary w-[100px]"
+                          variant="contained"
+                          sx={{ width: 100 }}
                         >
                           {t("yes")}
-                        </button>
-                        <button
-                          className="op-btn op-btn-secondary ml-2 w-[100px]"
+                        </Button>
+                        <Button
+                          variant="contained"
+                          color="secondary"
                           onClick={handleCloseDeleteModal}
+                          sx={{ width: 100 }}
                         >
                           {t("cancel")}
-                        </button>
-                      </div>
+                        </Button>
+                      </Box>
                     </form>
                   )}
                 </>
@@ -529,43 +712,60 @@ function UserProfile() {
               handleClose={handleCloseVerifyModal}
             >
               {otpLoader ? (
-                <div className="h-[150px] flex justify-center items-center">
+                <Box
+                  sx={{
+                    height: 150,
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center"
+                  }}
+                >
                   <Loader />
-                </div>
+                </Box>
               ) : (
                 <form onSubmit={(e) => handleVerifyEmail(e)}>
-                  <div className="px-6 py-3 text-base-content">
-                    <label className="mb-2">{t("enter-otp")}</label>
-                    <input
-                      onInvalid={(e) =>
-                        e.target.setCustomValidity(t("input-required"))
-                      }
-                      onInput={(e) => e.target.setCustomValidity("")}
-                      required
+                  <Box sx={{ px: 3, py: 1.5, color: "text.primary" }}>
+                    <Typography
+                      component="label"
+                      sx={{ mb: 1, display: "block" }}
+                    >
+                      {t("enter-otp")}
+                    </Typography>
+                    <TextField
+                      fullWidth
+                      size="small"
                       type="tel"
-                      pattern="[0-9]{4}"
-                      className="w-full op-input op-input-bordered op-input-sm focus:outline-none hover:border-base-content text-xs"
                       placeholder={t("otp-placeholder")}
                       value={otp}
                       onChange={(e) => setOtp(e.target.value)}
+                      slotProps={{
+                        htmlInput: {
+                          required: true,
+                          pattern: "[0-9]{4}",
+                          onInvalid: (e) =>
+                            e.target.setCustomValidity(t("input-required")),
+                          onInput: (e) => e.target.setCustomValidity("")
+                        }
+                      }}
                     />
-                  </div>
-                  <div className="px-6 mb-3">
-                    <button type="submit" className="op-btn op-btn-primary">
+                  </Box>
+                  <Box sx={{ px: 3, mb: 1.5, display: "flex", gap: 1 }}>
+                    <Button type="submit" variant="contained">
                       {t("verify")}
-                    </button>
-                    <button
-                      className="op-btn op-btn-secondary ml-2"
+                    </Button>
+                    <Button
+                      variant="contained"
+                      color="secondary"
                       onClick={(e) => handleResend(e)}
                     >
                       {t("resend")}
-                    </button>
-                  </div>
+                    </Button>
+                  </Box>
                 </form>
               )}
             </ModalUi>
           )}
-        </div>
+        </Box>
       )}
     </React.Fragment>
   );

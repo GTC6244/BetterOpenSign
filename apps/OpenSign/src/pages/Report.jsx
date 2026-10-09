@@ -11,6 +11,7 @@ import TemplatesReport from "../reports/template/TemplatesReport";
 import DocumentsReport from "../reports/document/DocumentsReport";
 import { templateReportTour } from "../json/ReportTour";
 import { withSessionValidation } from "../utils";
+import Box from "@mui/material/Box";
 
 const Report = () => {
   const { id } = useParams();
@@ -318,9 +319,16 @@ const Report = () => {
   return (
     <>
       {isLoader ? (
-        <div className="h-[100vh] flex justify-center items-center">
+        <Box
+          sx={{
+            height: "100vh",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center"
+          }}
+        >
           <Loader />
-        </div>
+        </Box>
       ) : (
         <>
           {id === "contacts" ? (

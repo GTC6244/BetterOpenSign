@@ -1,6 +1,14 @@
 import React, { useEffect, useState, useRef } from "react";
 import ModalUi from "../../primitives/ModalUi";
 import { useTranslation } from "react-i18next";
+import Box from "@mui/material/Box";
+import Stack from "@mui/material/Stack";
+import Typography from "@mui/material/Typography";
+import IconButton from "@mui/material/IconButton";
+import Button from "@mui/material/Button";
+import Divider from "@mui/material/Divider";
+import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
+import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
 
 export default function PageReorderModal({
   isOpen,
@@ -52,43 +60,53 @@ export default function PageReorderModal({
     order.every((n, i) => n === initialOrderRef.current[i]);
 
   return (
-    <ModalUi isOpen={isOpen} handleClose={handleClose} title={t("reorder-pages")}> 
-      <div className="p-[20px] flex flex-col gap-2 text-base-content">
-        {order.map((num, i) => (
-          <div key={num} className="flex items-center justify-between">
-            <span>
-              {t("page")} {num}
-            </span>
-            <div className="flex gap-1">
-              <button
-                className="op-btn op-btn-xs op-btn-ghost text-base-content"
-                disabled={i === 0}
-                onClick={() => move(i, -1)}
-              >
-                <i className="fa-light fa-arrow-up"></i>
-              </button>
-              <button
-                className="op-btn op-btn-xs op-btn-ghost text-base-content"
-                disabled={i === order.length - 1}
-                onClick={() => move(i, 1)}
-              >
-                <i className="fa-light fa-arrow-down"></i>
-              </button>
-            </div>
-          </div>
-        ))}
-        <div className="h-[1px] bg-[#9f9f9f] w-full my-[15px]"></div>
-        <button onClick={handleSave} type="button" className="op-btn op-btn-primary" disabled={isUnchanged}>
-          {t("save")}
-        </button>
-        <button
-          onClick={handleClose}
-          type="button"
-          className="op-btn op-btn-ghost text-base-content ml-1"
-        >
-          {t("close")}
-        </button>
-      </div>
+    <ModalUi isOpen={isOpen} handleClose={handleClose} title={t("reorder-pages")}>
+      <Box sx={{ p: 2.5 }}>
+        <Stack spacing={1}>
+          {order.map((num, i) => (
+            <Box
+              key={num}
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between"
+              }}
+            >
+              <Typography component="span">
+                {t("page")} {num}
+              </Typography>
+              <Box sx={{ display: "flex", gap: 0.5 }}>
+                <IconButton
+                  size="small"
+                  disabled={i === 0}
+                  onClick={() => move(i, -1)}
+                >
+                  <ArrowUpwardIcon fontSize="small" />
+                </IconButton>
+                <IconButton
+                  size="small"
+                  disabled={i === order.length - 1}
+                  onClick={() => move(i, 1)}
+                >
+                  <ArrowDownwardIcon fontSize="small" />
+                </IconButton>
+              </Box>
+            </Box>
+          ))}
+          <Divider sx={{ my: 1.5 }} />
+          <Button
+            onClick={handleSave}
+            type="button"
+            variant="contained"
+            disabled={isUnchanged}
+          >
+            {t("save")}
+          </Button>
+          <Button onClick={handleClose} type="button" variant="text">
+            {t("close")}
+          </Button>
+        </Stack>
+      </Box>
     </ModalUi>
   );
 }

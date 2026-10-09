@@ -71,6 +71,9 @@ import { resetWidgetState, setPrefillImg } from "../redux/reducers/widgetSlice";
 import ShareButton from "../primitives/ShareButton";
 import { useWindowSize } from "../hook/useWindowSize";
 import { useScroll } from "../context/ScrollPdfContext";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Divider from "@mui/material/Divider";
 
 const TemplatePlaceholder = () => {
   const { t } = useTranslation();
@@ -1805,20 +1808,26 @@ const TemplatePlaceholder = () => {
             {data.signerEmail}
           </span>
           <div className="flex flex-row items-center gap-3 ">
-            <button
+            <Button
               onClick={() => copytoclipboard(data.url)}
               type="button"
-              className="flex flex-row items-center op-link op-link-primary"
+              variant="text"
+              size="small"
+              sx={{ minWidth: 0, textTransform: "none" }}
             >
               <i className="fa-light fa-copy" />
               <span className=" hidden md:block ml-1 ">{t("copy-link")}</span>
-            </button>
+            </Button>
             <ShareButton
               title={t("sign-url")}
               text={t("sign-url")}
               url={data.url}
             >
-              <i className="fa-light fa-share-from-square op-link op-link-secondary no-underline"></i>
+              <Box
+                component="i"
+                className="fa-light fa-share-from-square no-underline"
+                sx={{ color: "secondary.main" }}
+              ></Box>
             </ShareButton>
           </div>
         </div>
@@ -1855,7 +1864,10 @@ const TemplatePlaceholder = () => {
       ) : handleError ? (
         <HandleError handleError={handleError} />
       ) : (
-        <div className="relative op-card overflow-hidden flex flex-col md:flex-row justify-between bg-base-300">
+        <Box
+          className="relative overflow-hidden flex flex-col md:flex-row justify-between"
+          sx={{ bgcolor: "surface.container" }}
+        >
           {isUiLoading && (
             <div className="absolute h-full w-full flex flex-col justify-center items-center z-[999] bg-[#e6f2f2]/80">
               <Loader />
@@ -1958,15 +1970,16 @@ const TemplatePlaceholder = () => {
                   <p>{t("template-created-alert")}</p>
                   <div className="h-[1px] w-full my-[15px] bg-[#9f9f9f]"></div>
                   <div className="flex gap-1 flex-col md:flex-row">
-                    <button
+                    <Button
                       onClick={() => {
                         handleUseButton();
                       }}
                       type="button"
-                      className="op-btn op-btn-sm op-btn-primary"
+                      variant="contained"
+                      size="small"
                     >
                       {t("use-template")}
-                    </button>
+                    </Button>
                   </div>
                 </div>
               </ModalUi>
@@ -1978,13 +1991,13 @@ const TemplatePlaceholder = () => {
                 <div className="h-full p-[20px]">
                   <p>{t("template-creation-alert-1")}</p>
                   <div className="h-[1px] w-full my-[15px] bg-[#9f9f9f]"></div>
-                  <button
+                  <Button
                     onClick={() => setIsShowEmail(false)}
                     type="button"
-                    className="op-btn op-btn-primary"
+                    variant="contained"
                   >
                     {t("ok")}
-                  </button>
+                  </Button>
                 </div>
               </ModalUi>
               <DropdownWidgetOption
@@ -2209,7 +2222,7 @@ const TemplatePlaceholder = () => {
               </div>
             </div>
           )}
-        </div>
+        </Box>
       )}
       <div data-tut="reactourAddbtn--observe">
         <AddRoleModal
@@ -2377,16 +2390,17 @@ const TemplatePlaceholder = () => {
                     />
                   </p>
                   <div className="flex justify-center mt-2">
-                    <button
+                    <Button
                       onClick={() => {
                         setIsSend(false);
                         navigate("/report/1MwEuxLEkF");
                       }}
                       type="button"
-                      className="op-btn op-btn-ghost text-base-content"
+                      variant="text"
+                      color="inherit"
                     >
                       {t("close")}
-                    </button>
+                    </Button>
                   </div>
                 </div>
               ) : (
@@ -2412,7 +2426,7 @@ const TemplatePlaceholder = () => {
                     }
                   >
                     {currUserId && (
-                      <button
+                      <Button
                         onClick={() =>
                           handleRecipientSign(
                             documentDetails?.objectId,
@@ -2420,20 +2434,22 @@ const TemplatePlaceholder = () => {
                           )
                         }
                         type="button"
-                        className="op-btn op-btn-primary mr-1"
+                        variant="contained"
+                        sx={{ mr: 1 }}
                       >
                         {t("sign-now")}
-                      </button>
+                      </Button>
                     )}
-                    <button
+                    <Button
                       onClick={() => {
                         navigate("/report/1MwEuxLEkF");
                       }}
                       type="button"
-                      className="op-btn op-btn-ghost text-base-content"
+                      variant="text"
+                      color="inherit"
                     >
                       {currUserId ? t("no") : t("close")}
-                    </button>
+                    </Button>
                   </div>
                 )}
             </div>
@@ -2441,29 +2457,32 @@ const TemplatePlaceholder = () => {
               mailStatus !== "emailnotverified" &&
               currUserId &&
               pdfDetails[0]?.SendinOrder && (
-                <div className="op-divider text-base-content mx-[0%] my-1 font-medium">
-                  {t("or")}
-                </div>
+                <Divider sx={{ my: 1, fontWeight: 500 }}>{t("or")}</Divider>
               )}
             {mailStatus !== "success" &&
               mailStatus !== "emailnotverified" &&
               currUserId &&
               pdfDetails[0]?.SendinOrder && (
-                <div
-                  className="op-btn op-btn-outline w-[50%] md:w-[35%] mt-1 group"
+                <Button
+                  variant="outlined"
+                  className="w-[50%] md:w-[35%] mt-1"
                   onClick={() => {
                     setIsSend(false);
                     setIsMailModal(true);
                   }}
+                  startIcon={
+                    <Box
+                      component="i"
+                      className="fa-regular fa-envelope"
+                      sx={{ fontSize: "19px", color: "primary.main" }}
+                    />
+                  }
                 >
-                  <i className="fa-regular fa-envelope text-[19px] op-text-primary group-hover:text-base-100 "></i>{" "}
                   <span>{t("send-to-email")}</span>
-                </div>
+                </Button>
               )}
           </div>
-          {!mailStatus && (
-            <div className="op-divider text-base-content mx-[0%] mt-3"></div>
-          )}
+          {!mailStatus && <Divider sx={{ mt: 3 }} />}
         </div>
       </ModalUi>
     </>

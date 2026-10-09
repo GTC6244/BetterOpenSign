@@ -8,6 +8,13 @@ import {
   SignedData,
   IssuerAndSerialNumber
 } from "pkijs";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Card from "@mui/material/Card";
+import Typography from "@mui/material/Typography";
+import Collapse from "@mui/material/Collapse";
+import CircularProgress from "@mui/material/CircularProgress";
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 
 const VerifyDocument = () => {
   const { t } = useTranslation();
@@ -601,7 +608,18 @@ const VerifyDocument = () => {
   };
 
   return (
-    <div className="container mx-auto p-6 bg-base-100 shadow-xl rounded-lg mt-10">
+    <Box
+      sx={{
+        maxWidth: 1152,
+        mx: "auto",
+        p: 3,
+        mt: 5,
+        bgcolor: "background.paper",
+        color: "text.primary",
+        boxShadow: 3,
+        borderRadius: 3
+      }}
+    >
       <style>{`
         .checkmark__circle {
           stroke-dasharray: 166;
@@ -654,35 +672,66 @@ const VerifyDocument = () => {
           }
         }
       `}</style>
-      <h1 className="text-3xl font-bold mb-6 text-center text-base-content">
+      <Typography
+        variant="h4"
+        sx={{ fontWeight: 700, mb: 3, textAlign: "center" }}
+      >
         {t("verify-document-signature")}
-      </h1>
+      </Typography>
 
-      <div className="mb-6 p-6 border border-base-300 rounded-lg bg-base-200/30 shadow-sm">
-        <label
+      <Box
+        sx={{
+          mb: 3,
+          p: 3,
+          border: 1,
+          borderColor: "divider",
+          borderRadius: 2,
+          bgcolor: "surface.containerLow",
+          boxShadow: 1
+        }}
+      >
+        <Typography
+          component="label"
           htmlFor="document-upload"
-          className="block text-lg font-medium text-base-content mb-2"
+          sx={{ display: "block", fontSize: "1.125rem", fontWeight: 500, mb: 1 }}
         >
           {t("select-pdf-document")}
-        </label>
-        <input
-          type="file"
-          id="document-upload"
-          accept=".pdf"
-          onChange={handleFileChange}
-          className="file-input file-input-bordered file-input-primary w-full max-w-xs"
-        />
+        </Typography>
+        <Button
+          variant="outlined"
+          component="label"
+          htmlFor="document-upload"
+          sx={{ maxWidth: "20rem" }}
+        >
+          {t("select-pdf-document")}
+          <input
+            type="file"
+            id="document-upload"
+            accept=".pdf"
+            onChange={handleFileChange}
+            hidden
+          />
+        </Button>
         {selectedFile && (
-          <p className="mt-2 text-sm text-base-content w-full truncate">
+          <Typography
+            sx={{
+              mt: 1,
+              fontSize: "0.875rem",
+              width: "100%",
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              textOverflow: "ellipsis"
+            }}
+          >
             {t("selected-file")}: {selectedFile.name}
-          </p>
+          </Typography>
         )}
-      </div>
+      </Box>
 
-      <div className="text-center mb-6">
-        <button
+      <Box sx={{ textAlign: "center", mb: 3 }}>
+        <Button
+          variant="contained"
           onClick={handleVerifyDocument}
-          className="op-btn op-btn-primary op-btn-md"
           disabled={
             !selectedFile ||
             verificationResult === t("verification-in-progress")
@@ -690,22 +739,47 @@ const VerifyDocument = () => {
         >
           {/* Removed jsrsasignStatus === 'loading' condition for spinner */}
           {verificationResult === t("verification-in-progress") ? (
-            <span className="loading loading-spinner"></span>
+            <CircularProgress size={20} color="inherit" />
           ) : (
             t("verify-signature")
           )}
-        </button>
-      </div>
+        </Button>
+      </Box>
 
       {verificationResult &&
         verificationResult !== t("verification-in-progress") && (
-          <div className="mt-8 p-6 border border-base-300 rounded-lg bg-base-200 shadow-md min-h-[120px] flex flex-col items-center justify-center">
-            <h2 className="text-2xl font-bold mb-4 text-base-content text-center">
+          <Box
+            sx={{
+              mt: 4,
+              p: 3,
+              border: 1,
+              borderColor: "divider",
+              borderRadius: 2,
+              bgcolor: "surface.container",
+              boxShadow: 2,
+              minHeight: 120,
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center"
+            }}
+          >
+            <Typography
+              variant="h5"
+              sx={{ fontWeight: 700, mb: 2, textAlign: "center" }}
+            >
               {t("verification-status")}
-            </h2>
+            </Typography>
             {verificationResult ===
               "Document Verified: All signatures have been successfully validated." && (
-              <div className="flex flex-col items-center my-4">
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  my: 2
+                }}
+              >
                 <svg
                   className="checkmark"
                   xmlns="http://www.w3.org/2000/svg"
@@ -724,13 +798,22 @@ const VerifyDocument = () => {
                     d="M14.1 27.2l7.1 7.2 16.7-16.8"
                   />
                 </svg>
-              </div>
+              </Box>
             )}
-            <p className="text-lg text-base-content mb-4 text-center">
+            <Typography
+              sx={{ fontSize: "1.125rem", mb: 2, textAlign: "center" }}
+            >
               {verificationResult}
-            </p>
+            </Typography>
             {detailedResults.length > 0 && (
-              <div className="w-full space-y-6">
+              <Box
+                sx={{
+                  width: "100%",
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: 3
+                }}
+              >
                 {detailedResults.map((res, index) => {
                   const signerInfo = parseCertificateInfo(
                     res.certificateSubject
@@ -740,192 +823,397 @@ const VerifyDocument = () => {
                   );
 
                   return (
-                    <div
-                      key={index}
-                      className="bg-white border border-gray-200 rounded-xl shadow-lg overflow-hidden"
-                    >
+                    <Card key={index} sx={{ overflow: "hidden", boxShadow: 3 }}>
                       {/* Header Section */}
-                      <div className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white p-6">
-                        <div className="flex items-center space-x-3">
-                          <span className="text-2xl">🔏</span>
-                          <div>
-                            <h4 className="text-xl font-bold">
+                      <Box
+                        sx={{
+                          bgcolor: "primary.main",
+                          color: "primary.contrastText",
+                          p: 3
+                        }}
+                      >
+                        <Box
+                          sx={{ display: "flex", alignItems: "center", gap: 1.5 }}
+                        >
+                          <Box component="span" sx={{ fontSize: "1.5rem" }}>
+                            🔏
+                          </Box>
+                          <Box>
+                            <Typography
+                              variant="h6"
+                              sx={{ fontWeight: 700 }}
+                            >
                               Signature Details
-                            </h4>
-                            <p className="text-blue-100 text-sm">
+                            </Typography>
+                            <Typography
+                              sx={{ fontSize: "0.875rem", opacity: 0.85 }}
+                            >
                               Digital Certificate Information
-                            </p>
-                          </div>
-                        </div>
-                      </div>
+                            </Typography>
+                          </Box>
+                        </Box>
+                      </Box>
 
                       {/* Basic Info Section */}
-                      <div className="p-6 border-b border-gray-100">
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                          <div>
-                            <span className="text-sm font-medium text-gray-500 uppercase tracking-wide">
+                      <Box
+                        sx={{
+                          p: 3,
+                          borderBottom: 1,
+                          borderColor: "divider"
+                        }}
+                      >
+                        <Box
+                          sx={{
+                            display: "grid",
+                            gridTemplateColumns: { xs: "1fr", md: "1fr 1fr" },
+                            gap: 2
+                          }}
+                        >
+                          <Box>
+                            <Typography
+                              variant="caption"
+                              sx={{
+                                fontWeight: 500,
+                                color: "text.secondary",
+                                textTransform: "uppercase",
+                                letterSpacing: "0.03em"
+                              }}
+                            >
                               Field Name
-                            </span>
-                            <p className="mt-1 text-lg font-semibold text-gray-900 font-mono">
+                            </Typography>
+                            <Typography
+                              sx={{
+                                mt: 0.5,
+                                fontSize: "1.125rem",
+                                fontWeight: 600,
+                                fontFamily: "monospace"
+                              }}
+                            >
                               {res.name}
-                            </p>
-                          </div>
-                          <div>
-                            <span className="text-sm font-medium text-gray-500 uppercase tracking-wide">
+                            </Typography>
+                          </Box>
+                          <Box>
+                            <Typography
+                              variant="caption"
+                              sx={{
+                                fontWeight: 500,
+                                color: "text.secondary",
+                                textTransform: "uppercase",
+                                letterSpacing: "0.03em"
+                              }}
+                            >
                               Overall Status
-                            </span>
-                            <div className="mt-1 flex items-center space-x-2">
-                              <span
-                                className={`text-lg ${isSuccessStatus(res.status) ? "text-green-600" : "text-red-600"}`}
+                            </Typography>
+                            <Box
+                              sx={{
+                                mt: 0.5,
+                                display: "flex",
+                                alignItems: "center",
+                                gap: 1
+                              }}
+                            >
+                              <Box
+                                component="span"
+                                sx={{
+                                  fontSize: "1.125rem",
+                                  color: isSuccessStatus(res.status)
+                                    ? "success.main"
+                                    : "error.main"
+                                }}
                               >
                                 {isSuccessStatus(res.status) ? "✅" : "❌"}
-                              </span>
-                              <span className="text-lg font-semibold text-gray-900">
+                              </Box>
+                              <Typography
+                                sx={{ fontSize: "1.125rem", fontWeight: 600 }}
+                              >
                                 {res.status}
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
+                              </Typography>
+                            </Box>
+                          </Box>
+                        </Box>
+                      </Box>
 
                       {/* Signer Information Section */}
                       {Object.keys(signerInfo).length > 0 && (
-                        <div className="border-b border-gray-100">
-                          <button
+                        <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+                          <Box
+                            component="button"
                             onClick={() => toggleSection(index, "signer")}
-                            className="w-full px-6 py-4 text-left hover:bg-gray-50 transition-colors duration-200 focus:outline-none focus:bg-gray-50"
+                            sx={{
+                              width: "100%",
+                              px: 3,
+                              py: 2,
+                              textAlign: "left",
+                              border: "none",
+                              bgcolor: "transparent",
+                              cursor: "pointer",
+                              color: "inherit",
+                              transition: "background-color 0.2s",
+                              "&:hover": { bgcolor: "action.hover" }
+                            }}
                           >
-                            <div className="flex items-center justify-between">
-                              <div className="flex items-center space-x-3">
-                                <span className="text-xl">📇</span>
-                                <h5 className="text-lg font-semibold text-gray-900">
-                                  Signer Information
-                                </h5>
-                              </div>
-                              <svg
-                                className={`w-5 h-5 text-gray-400 transition-transform duration-200 ${
-                                  collapsedSections[`${index}-signer`]
-                                    ? "transform rotate-180"
-                                    : ""
-                                }`}
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
+                            <Box
+                              sx={{
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "space-between"
+                              }}
+                            >
+                              <Box
+                                sx={{
+                                  display: "flex",
+                                  alignItems: "center",
+                                  gap: 1.5
+                                }}
                               >
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  strokeWidth={2}
-                                  d="M19 9l-7 7-7-7"
-                                />
-                              </svg>
-                            </div>
-                          </button>
-                          {!collapsedSections[`${index}-signer`] && (
-                            <div className="px-6 pb-6">
-                              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                <Box component="span" sx={{ fontSize: "1.25rem" }}>
+                                  📇
+                                </Box>
+                                <Typography
+                                  variant="h6"
+                                  sx={{ fontSize: "1.125rem", fontWeight: 600 }}
+                                >
+                                  Signer Information
+                                </Typography>
+                              </Box>
+                              <KeyboardArrowDownIcon
+                                sx={{
+                                  color: "text.secondary",
+                                  transition: "transform 0.2s",
+                                  transform: collapsedSections[`${index}-signer`]
+                                    ? "rotate(180deg)"
+                                    : "none"
+                                }}
+                              />
+                            </Box>
+                          </Box>
+                          <Collapse
+                            in={!collapsedSections[`${index}-signer`]}
+                          >
+                            <Box sx={{ px: 3, pb: 3 }}>
+                              <Box
+                                sx={{
+                                  display: "grid",
+                                  gridTemplateColumns: {
+                                    xs: "1fr",
+                                    md: "1fr 1fr",
+                                    lg: "1fr 1fr 1fr"
+                                  },
+                                  gap: 2
+                                }}
+                              >
                                 {Object.entries(signerInfo).map(
                                   ([label, value]) => (
-                                    <div
+                                    <Box
                                       key={label}
-                                      className="bg-gray-50 rounded-lg p-4"
+                                      sx={{
+                                        bgcolor: "surface.variant",
+                                        borderRadius: 2,
+                                        p: 2
+                                      }}
                                     >
-                                      <span className="text-xs font-medium text-gray-500 uppercase tracking-wide">
+                                      <Typography
+                                        variant="caption"
+                                        sx={{
+                                          fontWeight: 500,
+                                          color: "text.secondary",
+                                          textTransform: "uppercase",
+                                          letterSpacing: "0.03em"
+                                        }}
+                                      >
                                         {label}
-                                      </span>
-                                      <p className="mt-1 text-sm font-mono text-gray-900 break-all">
+                                      </Typography>
+                                      <Typography
+                                        sx={{
+                                          mt: 0.5,
+                                          fontSize: "0.875rem",
+                                          fontFamily: "monospace",
+                                          wordBreak: "break-all"
+                                        }}
+                                      >
                                         {value}
-                                      </p>
-                                    </div>
+                                      </Typography>
+                                    </Box>
                                   )
                                 )}
-                              </div>
-                            </div>
-                          )}
-                        </div>
+                              </Box>
+                            </Box>
+                          </Collapse>
+                        </Box>
                       )}
 
                       {/* Issuer Information Section */}
                       {Object.keys(issuerInfo).length > 0 && (
-                        <div className="border-b border-gray-100">
-                          <button
+                        <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+                          <Box
+                            component="button"
                             onClick={() => toggleSection(index, "issuer")}
-                            className="w-full px-6 py-4 text-left hover:bg-gray-50 transition-colors duration-200 focus:outline-none focus:bg-gray-50"
+                            sx={{
+                              width: "100%",
+                              px: 3,
+                              py: 2,
+                              textAlign: "left",
+                              border: "none",
+                              bgcolor: "transparent",
+                              cursor: "pointer",
+                              color: "inherit",
+                              transition: "background-color 0.2s",
+                              "&:hover": { bgcolor: "action.hover" }
+                            }}
                           >
-                            <div className="flex items-center justify-between">
-                              <div className="flex items-center space-x-3">
-                                <span className="text-xl">🏢</span>
-                                <h5 className="text-lg font-semibold text-gray-900">
-                                  Issuer Details
-                                </h5>
-                              </div>
-                              <svg
-                                className={`w-5 h-5 text-gray-400 transition-transform duration-200 ${
-                                  collapsedSections[`${index}-issuer`]
-                                    ? "transform rotate-180"
-                                    : ""
-                                }`}
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
+                            <Box
+                              sx={{
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "space-between"
+                              }}
+                            >
+                              <Box
+                                sx={{
+                                  display: "flex",
+                                  alignItems: "center",
+                                  gap: 1.5
+                                }}
                               >
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  strokeWidth={2}
-                                  d="M19 9l-7 7-7-7"
-                                />
-                              </svg>
-                            </div>
-                          </button>
-                          {!collapsedSections[`${index}-issuer`] && (
-                            <div className="px-6 pb-6">
-                              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                <Box component="span" sx={{ fontSize: "1.25rem" }}>
+                                  🏢
+                                </Box>
+                                <Typography
+                                  variant="h6"
+                                  sx={{ fontSize: "1.125rem", fontWeight: 600 }}
+                                >
+                                  Issuer Details
+                                </Typography>
+                              </Box>
+                              <KeyboardArrowDownIcon
+                                sx={{
+                                  color: "text.secondary",
+                                  transition: "transform 0.2s",
+                                  transform: collapsedSections[`${index}-issuer`]
+                                    ? "rotate(180deg)"
+                                    : "none"
+                                }}
+                              />
+                            </Box>
+                          </Box>
+                          <Collapse
+                            in={!collapsedSections[`${index}-issuer`]}
+                          >
+                            <Box sx={{ px: 3, pb: 3 }}>
+                              <Box
+                                sx={{
+                                  display: "grid",
+                                  gridTemplateColumns: {
+                                    xs: "1fr",
+                                    md: "1fr 1fr",
+                                    lg: "1fr 1fr 1fr"
+                                  },
+                                  gap: 2
+                                }}
+                              >
                                 {Object.entries(issuerInfo).map(
                                   ([label, value]) => (
-                                    <div
+                                    <Box
                                       key={label}
-                                      className="bg-gray-50 rounded-lg p-4"
+                                      sx={{
+                                        bgcolor: "surface.variant",
+                                        borderRadius: 2,
+                                        p: 2
+                                      }}
                                     >
-                                      <span className="text-xs font-medium text-gray-500 uppercase tracking-wide">
+                                      <Typography
+                                        variant="caption"
+                                        sx={{
+                                          fontWeight: 500,
+                                          color: "text.secondary",
+                                          textTransform: "uppercase",
+                                          letterSpacing: "0.03em"
+                                        }}
+                                      >
                                         {label}
-                                      </span>
-                                      <p className="mt-1 text-sm font-mono text-gray-900 break-all">
+                                      </Typography>
+                                      <Typography
+                                        sx={{
+                                          mt: 0.5,
+                                          fontSize: "0.875rem",
+                                          fontFamily: "monospace",
+                                          wordBreak: "break-all"
+                                        }}
+                                      >
                                         {value}
-                                      </p>
-                                    </div>
+                                      </Typography>
+                                    </Box>
                                   )
                                 )}
-                              </div>
-                            </div>
-                          )}
-                        </div>
+                              </Box>
+                            </Box>
+                          </Collapse>
+                        </Box>
                       )}
 
                       {/* Certificate Validity Section */}
                       {res.certificateValidity && (
-                        <div className="p-6 bg-gray-50">
-                          <div className="flex items-center space-x-3 mb-4">
-                            <span className="text-xl">🕒</span>
-                            <h5 className="text-lg font-semibold text-gray-900">
+                        <Box sx={{ p: 3, bgcolor: "surface.containerLow" }}>
+                          <Box
+                            sx={{
+                              display: "flex",
+                              alignItems: "center",
+                              gap: 1.5,
+                              mb: 2
+                            }}
+                          >
+                            <Box component="span" sx={{ fontSize: "1.25rem" }}>
+                              🕒
+                            </Box>
+                            <Typography
+                              variant="h6"
+                              sx={{ fontSize: "1.125rem", fontWeight: 600 }}
+                            >
                               Certificate Validity
-                            </h5>
-                          </div>
-                          <div className="bg-white rounded-lg p-4 border">
-                            <div className="flex items-center space-x-2">
-                              <span
-                                className={`text-lg ${isCertificateValid(res.certificateValidity) ? "text-green-600" : "text-red-600"}`}
+                            </Typography>
+                          </Box>
+                          <Box
+                            sx={{
+                              bgcolor: "background.paper",
+                              borderRadius: 2,
+                              p: 2,
+                              border: 1,
+                              borderColor: "divider"
+                            }}
+                          >
+                            <Box
+                              sx={{
+                                display: "flex",
+                                alignItems: "center",
+                                gap: 1
+                              }}
+                            >
+                              <Box
+                                component="span"
+                                sx={{
+                                  fontSize: "1.125rem",
+                                  color: isCertificateValid(
+                                    res.certificateValidity
+                                  )
+                                    ? "success.main"
+                                    : "error.main"
+                                }}
                               >
                                 {isCertificateValid(res.certificateValidity)
                                   ? "✅"
                                   : "❌"}
-                              </span>
-                              <span className="text-sm font-mono text-gray-900">
+                              </Box>
+                              <Typography
+                                sx={{
+                                  fontSize: "0.875rem",
+                                  fontFamily: "monospace"
+                                }}
+                              >
                                 {res.certificateValidity}
-                              </span>
-                            </div>
-                          </div>
-                        </div>
+                              </Typography>
+                            </Box>
+                          </Box>
+                        </Box>
                       )}
 
                       {/* Technical Details Section (if any) */}
@@ -936,137 +1224,356 @@ const VerifyDocument = () => {
                         res.errorDetails ||
                         res.certificateSubject ||
                         res.certificateIssuer) && (
-                        <div className="p-6 bg-gray-50 border-t">
-                          <details className="group">
-                            <summary className="flex items-center justify-between cursor-pointer text-sm font-medium text-gray-700 hover:text-gray-900">
-                              <span>🔧 Technical Details</span>
-                              <svg
-                                className="w-4 h-4 transition-transform group-open:rotate-180"
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
-                              >
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  strokeWidth={2}
-                                  d="M19 9l-7 7-7-7"
-                                />
-                              </svg>
-                            </summary>
-                            <div className="mt-4 space-y-3">
+                        <Box
+                          sx={{
+                            p: 3,
+                            bgcolor: "surface.containerLow",
+                            borderTop: 1,
+                            borderColor: "divider"
+                          }}
+                        >
+                          <Box component="details" className="group">
+                            <Box
+                              component="summary"
+                              sx={{
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "space-between",
+                                cursor: "pointer",
+                                fontSize: "0.875rem",
+                                fontWeight: 500,
+                                color: "text.secondary",
+                                "&:hover": { color: "text.primary" }
+                              }}
+                            >
+                              <Box component="span">🔧 Technical Details</Box>
+                              <KeyboardArrowDownIcon
+                                fontSize="small"
+                                className="group-open:rotate-180"
+                                sx={{ transition: "transform 0.2s" }}
+                              />
+                            </Box>
+                            <Box
+                              sx={{
+                                mt: 2,
+                                display: "flex",
+                                flexDirection: "column",
+                                gap: 1.5
+                              }}
+                            >
                               {/* Raw Certificate Data */}
                               {res.certificateSubject && (
-                                <div className="bg-white rounded p-3 border">
-                                  <span className="text-xs font-medium text-gray-500 uppercase tracking-wide block mb-1">
+                                <Box
+                                  sx={{
+                                    bgcolor: "background.paper",
+                                    borderRadius: 1,
+                                    p: 1.5,
+                                    border: 1,
+                                    borderColor: "divider"
+                                  }}
+                                >
+                                  <Typography
+                                    variant="caption"
+                                    sx={{
+                                      fontWeight: 500,
+                                      color: "text.secondary",
+                                      textTransform: "uppercase",
+                                      letterSpacing: "0.03em",
+                                      display: "block",
+                                      mb: 0.5
+                                    }}
+                                  >
                                     Raw Certificate Subject
-                                  </span>
-                                  <code className="text-xs text-gray-800 break-all bg-gray-100 p-2 rounded block">
+                                  </Typography>
+                                  <Box
+                                    component="code"
+                                    sx={{
+                                      fontSize: "0.75rem",
+                                      wordBreak: "break-all",
+                                      bgcolor: "surface.variant",
+                                      p: 1,
+                                      borderRadius: 1,
+                                      display: "block"
+                                    }}
+                                  >
                                     {res.certificateSubject}
-                                  </code>
-                                </div>
+                                  </Box>
+                                </Box>
                               )}
                               {res.certificateIssuer && (
-                                <div className="bg-white rounded p-3 border">
-                                  <span className="text-xs font-medium text-gray-500 uppercase tracking-wide block mb-1">
+                                <Box
+                                  sx={{
+                                    bgcolor: "background.paper",
+                                    borderRadius: 1,
+                                    p: 1.5,
+                                    border: 1,
+                                    borderColor: "divider"
+                                  }}
+                                >
+                                  <Typography
+                                    variant="caption"
+                                    sx={{
+                                      fontWeight: 500,
+                                      color: "text.secondary",
+                                      textTransform: "uppercase",
+                                      letterSpacing: "0.03em",
+                                      display: "block",
+                                      mb: 0.5
+                                    }}
+                                  >
                                     Raw Certificate Issuer
-                                  </span>
-                                  <code className="text-xs text-gray-800 break-all bg-gray-100 p-2 rounded block">
+                                  </Typography>
+                                  <Box
+                                    component="code"
+                                    sx={{
+                                      fontSize: "0.75rem",
+                                      wordBreak: "break-all",
+                                      bgcolor: "surface.variant",
+                                      p: 1,
+                                      borderRadius: 1,
+                                      display: "block"
+                                    }}
+                                  >
                                     {res.certificateIssuer}
-                                  </code>
-                                </div>
+                                  </Box>
+                                </Box>
                               )}
                               {res.calculatedDocumentHash &&
                                 res.calculatedDocumentHash !==
                                   t("not-available") &&
                                 res.calculatedDocumentHash !==
                                   t("not-calculated") && (
-                                  <div className="bg-white rounded p-3 border">
-                                    <span className="text-xs font-medium text-gray-500 uppercase tracking-wide block mb-1">
+                                  <Box
+                                    sx={{
+                                      bgcolor: "background.paper",
+                                      borderRadius: 1,
+                                      p: 1.5,
+                                      border: 1,
+                                      borderColor: "divider"
+                                    }}
+                                  >
+                                    <Typography
+                                      variant="caption"
+                                      sx={{
+                                        fontWeight: 500,
+                                        color: "text.secondary",
+                                        textTransform: "uppercase",
+                                        letterSpacing: "0.03em",
+                                        display: "block",
+                                        mb: 0.5
+                                      }}
+                                    >
                                       Calculated Document Hash
-                                    </span>
-                                    <code className="text-xs text-gray-800 break-all bg-gray-100 p-2 rounded block">
+                                    </Typography>
+                                    <Box
+                                      component="code"
+                                      sx={{
+                                        fontSize: "0.75rem",
+                                        wordBreak: "break-all",
+                                        bgcolor: "surface.variant",
+                                        p: 1,
+                                        borderRadius: 1,
+                                        display: "block"
+                                      }}
+                                    >
                                       {res.calculatedDocumentHash}
-                                    </code>
-                                  </div>
+                                    </Box>
+                                  </Box>
                                 )}
                               {res.messageDigestInSignature &&
                                 res.messageDigestInSignature !==
                                   t("not-available") &&
                                 res.messageDigestInSignature !==
                                   t("not-found-in-signature") && (
-                                  <div className="bg-white rounded p-3 border">
-                                    <span className="text-xs font-medium text-gray-500 uppercase tracking-wide block mb-1">
+                                  <Box
+                                    sx={{
+                                      bgcolor: "background.paper",
+                                      borderRadius: 1,
+                                      p: 1.5,
+                                      border: 1,
+                                      borderColor: "divider"
+                                    }}
+                                  >
+                                    <Typography
+                                      variant="caption"
+                                      sx={{
+                                        fontWeight: 500,
+                                        color: "text.secondary",
+                                        textTransform: "uppercase",
+                                        letterSpacing: "0.03em",
+                                        display: "block",
+                                        mb: 0.5
+                                      }}
+                                    >
                                       Message Digest in Signature
-                                    </span>
-                                    <code className="text-xs text-gray-800 break-all bg-gray-100 p-2 rounded block">
+                                    </Typography>
+                                    <Box
+                                      component="code"
+                                      sx={{
+                                        fontSize: "0.75rem",
+                                        wordBreak: "break-all",
+                                        bgcolor: "surface.variant",
+                                        p: 1,
+                                        borderRadius: 1,
+                                        display: "block"
+                                      }}
+                                    >
                                       {res.messageDigestInSignature}
-                                    </code>
-                                  </div>
+                                    </Box>
+                                  </Box>
                                 )}
                               {res.hashComparisonResult &&
                                 res.hashComparisonResult !==
                                   t("not-performed") && (
-                                  <div className="bg-white rounded p-3 border">
-                                    <span className="text-xs font-medium text-gray-500 uppercase tracking-wide block mb-1">
+                                  <Box
+                                    sx={{
+                                      bgcolor: "background.paper",
+                                      borderRadius: 1,
+                                      p: 1.5,
+                                      border: 1,
+                                      borderColor: "divider"
+                                    }}
+                                  >
+                                    <Typography
+                                      variant="caption"
+                                      sx={{
+                                        fontWeight: 500,
+                                        color: "text.secondary",
+                                        textTransform: "uppercase",
+                                        letterSpacing: "0.03em",
+                                        display: "block",
+                                        mb: 0.5
+                                      }}
+                                    >
                                       Hash Comparison
-                                    </span>
-                                    <span className="text-sm text-gray-800">
+                                    </Typography>
+                                    <Typography sx={{ fontSize: "0.875rem" }}>
                                       {res.hashComparisonResult}
-                                    </span>
-                                  </div>
+                                    </Typography>
+                                  </Box>
                                 )}
                               {res.authenticatedAttributesSignatureResult &&
                                 res.authenticatedAttributesSignatureResult !==
                                   t("not-performed") && (
-                                  <div className="bg-white rounded p-3 border">
-                                    <span className="text-xs font-medium text-gray-500 uppercase tracking-wide block mb-1">
+                                  <Box
+                                    sx={{
+                                      bgcolor: "background.paper",
+                                      borderRadius: 1,
+                                      p: 1.5,
+                                      border: 1,
+                                      borderColor: "divider"
+                                    }}
+                                  >
+                                    <Typography
+                                      variant="caption"
+                                      sx={{
+                                        fontWeight: 500,
+                                        color: "text.secondary",
+                                        textTransform: "uppercase",
+                                        letterSpacing: "0.03em",
+                                        display: "block",
+                                        mb: 0.5
+                                      }}
+                                    >
                                       Attributes Signature Verification
-                                    </span>
-                                    <span className="text-sm text-gray-800">
+                                    </Typography>
+                                    <Typography sx={{ fontSize: "0.875rem" }}>
                                       {
                                         res.authenticatedAttributesSignatureResult
                                       }
-                                    </span>
-                                  </div>
+                                    </Typography>
+                                  </Box>
                                 )}
                               {res.errorDetails && (
-                                <div className="bg-red-50 border border-red-200 rounded p-3">
-                                  <span className="text-xs font-medium text-red-600 uppercase tracking-wide block mb-1">
+                                <Box
+                                  sx={{
+                                    bgcolor: "error.container",
+                                    border: 1,
+                                    borderColor: "error.main",
+                                    borderRadius: 1,
+                                    p: 1.5
+                                  }}
+                                >
+                                  <Typography
+                                    variant="caption"
+                                    sx={{
+                                      fontWeight: 500,
+                                      color: "error.main",
+                                      textTransform: "uppercase",
+                                      letterSpacing: "0.03em",
+                                      display: "block",
+                                      mb: 0.5
+                                    }}
+                                  >
                                     Error Details
-                                  </span>
-                                  <span className="text-sm text-red-800">
+                                  </Typography>
+                                  <Typography
+                                    sx={{
+                                      fontSize: "0.875rem",
+                                      color: "error.onContainer"
+                                    }}
+                                  >
                                     {res.errorDetails}
-                                  </span>
-                                </div>
+                                  </Typography>
+                                </Box>
                               )}
-                            </div>
-                          </details>
-                        </div>
+                            </Box>
+                          </Box>
+                        </Box>
                       )}
-                    </div>
+                    </Card>
                   );
                 })}
-              </div>
+              </Box>
             )}
-          </div>
+          </Box>
         )}
       {verificationResult === t("verification-in-progress") && (
-        <div className="mt-8 p-4 border border-base-300 rounded-lg bg-base-200 min-h-[100px] flex justify-center items-center">
-          <span className="loading loading-lg loading-dots"></span>
-        </div>
+        <Box
+          sx={{
+            mt: 4,
+            p: 2,
+            border: 1,
+            borderColor: "divider",
+            borderRadius: 2,
+            bgcolor: "surface.container",
+            minHeight: 100,
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center"
+          }}
+        >
+          <CircularProgress />
+        </Box>
       )}
 
       {!verificationResult && !selectedFile && (
-        <div className="mt-8 p-4 border border-base-300 rounded-lg bg-base-200 min-h-[100px] flex justify-center items-center">
-          {" "}
-          {/* Added flex for centering */}
-          <p className="text-base-content/60 italic text-center">
+        <Box
+          sx={{
+            mt: 4,
+            p: 2,
+            border: 1,
+            borderColor: "divider",
+            borderRadius: 2,
+            bgcolor: "surface.container",
+            minHeight: 100,
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center"
+          }}
+        >
+          <Typography
+            sx={{
+              color: "text.secondary",
+              fontStyle: "italic",
+              textAlign: "center"
+            }}
+          >
             {t("verification-results-will-appear-here")}
-          </p>
-        </div>
+          </Typography>
+        </Box>
       )}
-    </div>
+    </Box>
   );
 };
 

@@ -2,6 +2,10 @@ import { useState, useEffect, useMemo, useRef } from "react";
 import ModalUi from "./ModalUi";
 import Loader from "./Loader";
 import { Trans, useTranslation } from "react-i18next";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import TextField from "@mui/material/TextField";
+import Button from "@mui/material/Button";
 
 const DeleteUserModal = ({
   isOpen,
@@ -53,70 +57,92 @@ const DeleteUserModal = ({
       handleClose={() => !deleting && handleClose()}
     >
       {deleting ? (
-        <div className="h-[100px] flex justify-center items-center">
+        <Box
+          sx={{
+            height: 100,
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center"
+          }}
+        >
           <Loader />
-        </div>
+        </Box>
       ) : (
         <>
           {deleteRes ? (
-            <div className="h-[100px] flex justify-center items-center text-sm md:text-base">
-              {deleteRes}
-            </div>
-          ) : (
-            <form
-              className="px-6 mb-3 mt-2 text-base-content text-sm md:text-base"
-              onSubmit={(e) => handleSubmit(e)}
+            <Box
+              sx={{
+                height: 100,
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                fontSize: { xs: "0.875rem", md: "1rem" }
+              }}
             >
-              <p className="text-base-content">
+              {deleteRes}
+            </Box>
+          ) : (
+            <Box
+              component="form"
+              onSubmit={(e) => handleSubmit(e)}
+              sx={{ px: 3, mt: 1, mb: 1.5, color: "text.primary" }}
+            >
+              <Typography sx={{ fontSize: { xs: "0.875rem", md: "1rem" } }}>
                 {t("delete-account-que-user")}
-              </p>
-              <label className="mt-2 mb-0">
-                <p className="text-xs text-base-content cursor-text mb-1">
+              </Typography>
+              <Box sx={{ mt: 1 }}>
+                <Typography
+                  variant="caption"
+                  component="p"
+                  sx={{ mb: 0.5, color: "text.primary" }}
+                >
                   <Trans
                     i18nKey={"please-type-to-confirm"}
                     values={{ userEmail }}
                     components={{ 1: <b /> }}
                   />
-                </p>
-                <input
+                </Typography>
+                <TextField
+                  fullWidth
+                  size="small"
                   type="text"
+                  inputRef={inputRef}
                   value={confirmEmail}
                   onChange={(e) => setConfirmEmail(e.target.value?.trim())}
-                  className="op-input op-input-bordered op-input-sm focus:outline-none hover:border-base-content w-full text-xs"
-                  aria-invalid={!isMatch && confirmEmail.length > 0}
                   required
+                  error={!isMatch && confirmEmail.length > 0}
+                  helperText={
+                    !isMatch && confirmEmail.length > 0
+                      ? t("email-does-not-match")
+                      : error
+                        ? error
+                        : " "
+                  }
                 />
-                <div className="op-label h-5">
-                  {!isMatch && confirmEmail.length > 0 ? (
-                    <span className="op-label-text-alt text-error">
-                      {t("email-does-not-match")}
-                    </span>
-                  ) : (
-                    <span className="op-label-text-alt">
-                      {error ? error : <>&nbsp;</>}
-                    </span>
-                  )}
-                </div>
-              </label>
+              </Box>
 
-              <div className="mt-1">
-                <button
+              <Box sx={{ mt: 1, display: "flex", gap: 1 }}>
+                <Button
                   type="submit"
-                  className="op-btn op-btn-primary w-[100px]"
+                  variant="contained"
+                  color="primary"
+                  sx={{ width: 100 }}
                   disabled={!isMatch || deleting}
                   aria-disabled={!isMatch || deleting}
                   title={!isMatch ? t("type-exact-email-delete") : t("delete")}
                 >
                   {t("delete")}
-                </button>
-                <button
-                  className="op-btn op-btn-secondary ml-2 w-[100px]"
+                </Button>
+                <Button
+                  variant="contained"
+                  color="secondary"
+                  sx={{ width: 100 }}
                   onClick={handleClose}
                 >
                   {t("cancel")}
-                </button>
-              </div>
-            </form>
+                </Button>
+              </Box>
+            </Box>
           )}
         </>
       )}

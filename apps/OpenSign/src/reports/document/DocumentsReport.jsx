@@ -37,6 +37,23 @@ import { RenderReportCell } from "../../primitives/RenderReportCell";
 import CustomizeMail from "../../components/pdf/CustomizeMail";
 import { useSelector } from "react-redux";
 import EmailEditor from "../../components/emaileditor";
+import Button from "@mui/material/Button";
+import IconButton from "@mui/material/IconButton";
+import TextField from "@mui/material/TextField";
+import Box from "@mui/material/Box";
+import Stack from "@mui/material/Stack";
+import Divider from "@mui/material/Divider";
+import Paper from "@mui/material/Paper";
+import Table from "@mui/material/Table";
+import TableHead from "@mui/material/TableHead";
+import TableBody from "@mui/material/TableBody";
+import TableRow from "@mui/material/TableRow";
+import TableCell from "@mui/material/TableCell";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
+import Chip from "@mui/material/Chip";
+import Card from "@mui/material/Card";
+import MuiLink from "@mui/material/Link";
 
 const DocumentsReport = (props) => {
   const copyUrlRef = useRef(null);
@@ -98,6 +115,8 @@ const DocumentsReport = (props) => {
   const [currUserId, setCurrUserId] = useState(false);
   const [documentDetails, setDocumentDetails] = useState();
   const [objInfoModal, setObjInfoModal] = useState({ title: "", info: "" });
+  // presentation-only anchor for the MD3 signer-status filter menu
+  const [filterAnchor, setFilterAnchor] = useState(null);
   const startIndex = (currentPage - 1) * props.docPerPage;
   const { isMoreDocs, setIsNextRecord } = props;
 
@@ -699,23 +718,30 @@ const DocumentsReport = (props) => {
     const audit = doc?.AuditTrail?.find((x) => x.UserPtr.Email === email);
 
     return (
-      <div className="flex flex-row gap-2 justify-center items-center">
-        <div className="flex justify-center items-center bg-base-300 text-base-content shadow-md op-card w-[65px] h-[32px] cursor-default">
-          {audit?.Activity ? audit?.Activity : "Awaited"}
-        </div>
+      <Stack direction="row" spacing={1} justifyContent="center" alignItems="center">
+        <Chip
+          label={audit?.Activity ? audit?.Activity : "Awaited"}
+          size="small"
+          sx={{
+            bgcolor: "surface.containerHighest",
+            color: "text.primary",
+            width: 65,
+            height: 32,
+            boxShadow: 1,
+            cursor: "default"
+          }}
+        />
 
-        <button
-          onClick={() => handleNextBtn(user, doc)}
-          className={
-            audit?.Activity !== "Signed"
-              ? "op-btn op-btn-primary op-btn-sm"
-              : " text-transparent cursor-default pointer-events-none"
-          }
-          disabled={audit?.Activity === "Signed"}
-        >
-          {audit?.Activity !== "Signed" && "Resend"}
-        </button>
-      </div>
+        {audit?.Activity !== "Signed" && (
+          <Button
+            variant="contained"
+            size="small"
+            onClick={() => handleNextBtn(user, doc)}
+          >
+            Resend
+          </Button>
+        )}
+      </Stack>
     );
   };
   // `handleQuickSendClose` is trigger when bulk send component trigger close event
@@ -1017,32 +1043,55 @@ const DocumentsReport = (props) => {
     }
     return shareLinkList.map((data, ind) => {
       return (
-        <div
-          className="flex flex-row justify-between items-center mb-1"
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "center",
+            mb: 0.5
+          }}
           key={ind}
         >
           {copied && <Alert type="success">{t("copied")}</Alert>}
-          <span className="w-[220px] md:w-[300px] whitespace-nowrap overflow-hidden text-ellipsis  ">
+          <Box
+            component="span"
+            sx={{
+              width: { xs: 220, md: 300 },
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              textOverflow: "ellipsis"
+            }}
+          >
             {data.signerEmail}
-          </span>
-          <div className="flex flex-row items-center gap-3 ">
-            <button
+          </Box>
+          <Stack direction="row" alignItems="center" spacing={1.5}>
+            <Button
               onClick={() => copytoclipboard(data.url)}
               type="button"
-              className="flex flex-row items-center op-link op-link-primary"
+              variant="text"
+              startIcon={<i className="fa-light fa-copy" />}
             >
-              <i className="fa-light fa-copy" />
-              <span className=" hidden md:block ml-1 ">{t("copy-link")}</span>
-            </button>
+              <Box
+                component="span"
+                sx={{ display: { xs: "none", md: "block" } }}
+              >
+                {t("copy-link")}
+              </Box>
+            </Button>
             <ShareButton
               title={t("sign-url")}
               text={t("sign-url")}
               url={data.url}
             >
-              <i className="fa-light fa-share-from-square op-link op-link-secondary no-underline"></i>
+              <Box
+                component="i"
+                className="fa-light fa-share-from-square"
+                sx={{ color: "secondary.main" }}
+              ></Box>
             </ShareButton>
-          </div>
-        </div>
+          </Stack>
+        </Box>
       );
     });
   };
@@ -1060,9 +1109,12 @@ const DocumentsReport = (props) => {
     const isPrefill = item?.Placeholders?.some((x) => x?.Role === "prefill");
     if (isPrefill) {
       return (
-        <span className="flex text-sm mt-3 text-red-500">
+        <Box
+          component="span"
+          sx={{ display: "flex", fontSize: "0.875rem", mt: 1.5, color: "error.main" }}
+        >
           {t("save-as-temp-warn")}
-        </span>
+        </Box>
       );
     }
   };
@@ -1071,105 +1123,147 @@ const DocumentsReport = (props) => {
     setObjInfoModal({ title, info });
   };
   return (
-    <div className="relative">
+    <Box sx={{ position: "relative" }}>
       {Object.keys(actLoader)?.length > 0 && (
-        <div className="absolute w-full h-full flex justify-center items-center bg-black/30 rounded-box z-30">
+        <Box
+          sx={{
+            position: "absolute",
+            width: "100%",
+            height: "100%",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            bgcolor: "rgba(0,0,0,0.3)",
+            borderRadius: 2,
+            zIndex: 30
+          }}
+        >
           <Loader />
-        </div>
+        </Box>
       )}
-      <div className="p-2 w-full bg-base-100 text-base-content op-card shadow-lg">
+      <Card sx={{ p: 1, width: "100%", bgcolor: "surface.main", color: "text.primary", boxShadow: 3 }}>
         {alertMsg.message && (
           <Alert type={alertMsg.type}>{alertMsg.message}</Alert>
         )}
-        <div
+        <Box
           ref={titleRef}
-          className="flex flex-row items-center justify-between my-2 mx-3 text-[20px] md:text-[23px]"
+          sx={{
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "space-between",
+            my: 1,
+            mx: 1.5,
+            fontSize: { xs: "20px", md: "23px" }
+          }}
         >
-          <div className="font-light">
+          <Box sx={{ fontWeight: 300 }}>
             {t(`report-name.${props.ReportName}`)}{" "}
             {props.report_help && (
-              <span className="text-xs md:text-[13px] font-normal">
+              <Box component="span" sx={{ fontSize: { xs: "0.75rem", md: "13px" }, fontWeight: 400 }}>
                 <Tooltip
                   id="report_help"
                   message={t(`report-help.${props.ReportName}`)}
                 />
-              </span>
+              </Box>
             )}
-          </div>
-          <div className="flex flex-row justify-center items-center gap-3 mb-2">
+          </Box>
+          <Stack direction="row" justifyContent="center" alignItems="center" spacing={1.5} sx={{ mb: 1 }}>
             {/* Search input for report bigger in width */}
             {titleElement?.width > 500 && (
-              <div className="flex">
-                <input
+              <Box sx={{ display: "flex" }}>
+                <TextField
                   type="search"
+                  size="small"
                   value={props.searchTerm}
                   onChange={props.handleSearchChange}
                   placeholder={t("search-documents")}
                   onPaste={props.handleSearchPaste}
-                  className="op-input op-input-bordered op-input-sm focus:outline-none hover:border-base-content w-64 text-xs"
+                  sx={{ width: 256 }}
+                  inputProps={{ sx: { fontSize: "0.75rem" } }}
                 />
-              </div>
+              </Box>
             )}
             {/* search icon/magnifer icon  */}
             {titleElement?.width < 500 && (
-              <button
-                className="flex justify-center items-center focus:outline-none rounded-md text-[18px]"
+              <IconButton
                 aria-label="Search"
+                sx={{ fontSize: "18px", color: "text.primary" }}
                 onClick={() =>
                   props.setMobileSearchOpen(!props.mobileSearchOpen)
                 }
               >
                 <i className="fa-light fa-magnifying-glass"></i>
-              </button>
+              </IconButton>
             )}
             {props.openColumnModal && (
-              <button
-                className="flex justify-center items-center focus:outline-none rounded-md text-[18px]"
+              <IconButton
                 aria-label="Columns"
+                sx={{ fontSize: "18px", color: "text.primary" }}
                 onClick={props.openColumnModal}
               >
                 <i className="fa-light fa-table-columns"></i>
-              </button>
+              </IconButton>
             )}
             {props?.ReportName === "In-progress documents" && (
-              <div className="op-dropdown op-dropdown-end">
-                <div
-                  tabIndex={0}
-                  role="button"
-                  className="focus:outline-none rounded-md text-[18px]"
+              <>
+                <IconButton
+                  aria-label="Filter"
+                  sx={{ fontSize: "18px", color: "text.primary" }}
+                  onClick={(e) => setFilterAnchor(e.currentTarget)}
                 >
                   <i className="fa-light fa-filter"></i>
-                </div>
-                <ul
-                  tabIndex="-1"
-                  className="op-dropdown-content op-menu op-menu-sm shadow-black/20 bg-base-100 text-base-content rounded-box z-[70] w-52 p-2 shadow-sm"
+                </IconButton>
+                <Menu
+                  anchorEl={filterAnchor}
+                  open={Boolean(filterAnchor)}
+                  onClose={() => setFilterAnchor(null)}
+                  anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+                  transformOrigin={{ vertical: "top", horizontal: "right" }}
                 >
-                  <li onClick={() => props.handleSignerStatusFilter("all")}>
-                    <a>{t("all-signer-status")}</a>
-                  </li>
-                  <li onClick={() => props.handleSignerStatusFilter("viewed")}>
-                    <a>{t("viewed")}</a>
-                  </li>
-                  <li onClick={() => props.handleSignerStatusFilter("signed")}>
-                    <a>{t("signed")}</a>
-                  </li>
-                </ul>
-              </div>
+                  <MenuItem
+                    onClick={() => {
+                      props.handleSignerStatusFilter("all");
+                      setFilterAnchor(null);
+                    }}
+                  >
+                    {t("all-signer-status")}
+                  </MenuItem>
+                  <MenuItem
+                    onClick={() => {
+                      props.handleSignerStatusFilter("viewed");
+                      setFilterAnchor(null);
+                    }}
+                  >
+                    {t("viewed")}
+                  </MenuItem>
+                  <MenuItem
+                    onClick={() => {
+                      props.handleSignerStatusFilter("signed");
+                      setFilterAnchor(null);
+                    }}
+                  >
+                    {t("signed")}
+                  </MenuItem>
+                </Menu>
+              </>
             )}
-          </div>
-        </div>
+          </Stack>
+        </Box>
         {/* Search input for report smalle in width */}
         {titleElement?.width < 500 && props.mobileSearchOpen && (
-          <div className="top-full left-0 w-full px-3 pt-1 pb-3">
-            <input
+          <Box sx={{ width: "100%", px: 1.5, pt: 0.5, pb: 1.5 }}>
+            <TextField
               type="search"
+              size="small"
+              fullWidth
               value={props.searchTerm}
               onChange={props.handleSearchChange}
               placeholder={t("search-documents")}
               onPaste={props.handleSearchPaste}
-              className="op-input op-input-bordered op-input-sm focus:outline-none hover:border-base-content w-full text-xs"
+              inputProps={{ sx: { fontSize: "0.75rem" } }}
             />
-          </div>
+          </Box>
         )}
         <div
           className={`overflow-auto w-full border-b ${
@@ -1182,27 +1276,39 @@ const DocumentsReport = (props) => {
               : ""
           }`}
         >
-          <table className="op-table border-collapse w-full mb-4">
-            <thead className="text-[14px] text-center">
-              <tr className="border-y-[1px]">
+          <Table sx={{ borderCollapse: "collapse", width: "100%", mb: 2 }}>
+            <TableHead>
+              <TableRow sx={{ borderTop: 1, borderBottom: 1, borderColor: "divider" }}>
                 {props.heading?.map((item, i) => (
-                  <th key={i} className="p-2">
+                  <TableCell
+                    key={i}
+                    align="center"
+                    sx={{ p: 1, fontSize: "14px", color: "text.primary" }}
+                  >
                     {props.columnLabels?.[item] ||
                       t(`report-heading.${item}`, { defaultValue: item })}
-                  </th>
+                  </TableCell>
                 ))}
                 {props.actions?.length > 0 && (
-                  <th className="p-2 text-transparent pointer-events-none">
+                  <TableCell
+                    align="center"
+                    sx={{
+                      p: 1,
+                      fontSize: "14px",
+                      color: "transparent",
+                      pointerEvents: "none"
+                    }}
+                  >
                     {t("action")}
-                  </th>
+                  </TableCell>
                 )}
-              </tr>
-            </thead>
-            <tbody className="text-[12px]">
+              </TableRow>
+            </TableHead>
+            <TableBody sx={{ fontSize: "12px" }}>
               {props.List?.length > 0 &&
                 !props.searchLoader &&
                 currentList.map((item, index) => (
-                  <tr
+                  <TableRow
                     className={`${
                       currentList?.length === props.docPerPage
                         ? "last:border-none"
@@ -1224,39 +1330,97 @@ const DocumentsReport = (props) => {
                       />
                     ))}
                     {/* actions */}
-                    <td className="px-2 py-2">
-                      <div className="text-base-content min-w-max flex flex-row gap-x-2 gap-y-1 justify-start items-center">
+                    <TableCell sx={{ px: 1, py: 1 }}>
+                      <Box
+                        sx={{
+                          color: "text.primary",
+                          minWidth: "max-content",
+                          display: "flex",
+                          flexDirection: "row",
+                          columnGap: 1,
+                          rowGap: 0.5,
+                          justifyContent: "flex-start",
+                          alignItems: "center"
+                        }}
+                      >
                         {props.actions?.length > 0 &&
                           props.actions.map((act, index) => (
                             <React.Fragment key={index}>
-                              {handleBtnVisibility(act, item) && (
-                                <div
-                                  data-dropdown-root="1"
-                                  role="button"
-                                  data-tut={act?.selector}
-                                  onClick={() => handleActionBtn(act, item)}
-                                  title={t(`btnLabel.${act.hoverLabel}`)}
-                                  className={
-                                    act.action !== "option"
-                                      ? `${act?.btnColor || ""} op-btn op-btn-sm mr-1`
-                                      : "text-base-content focus:outline-none text-lg mr-2 relative"
-                                  }
-                                >
-                                  <i className={act.btnIcon}></i>
-                                  {act.btnLabel && (
-                                    <span className="uppercase font-medium">
-                                      {t(`btnLabel.${act.btnLabel}`)}
-                                    </span>
-                                  )}
-                                  {/* doc report */}
-                                  {isOption[item.objectId] &&
-                                    act.action === "option" && (
-                                      <ul className="absolute -right-1 top-auto z-[70] w-max op-dropdown-content op-menu op-menu-sm shadow-black/20 shadow bg-base-100 text-base-content rounded-box">
+                              {handleBtnVisibility(act, item) &&
+                                (act.action !== "option" ? (
+                                  <Button
+                                    variant="contained"
+                                    size="small"
+                                    data-dropdown-root="1"
+                                    data-tut={act?.selector}
+                                    onClick={() => handleActionBtn(act, item)}
+                                    title={t(`btnLabel.${act.hoverLabel}`)}
+                                    className={act?.btnColor || undefined}
+                                    sx={{ mr: 0.5, minWidth: 0 }}
+                                  >
+                                    <i className={act.btnIcon}></i>
+                                    {act.btnLabel && (
+                                      <Box
+                                        component="span"
+                                        sx={{
+                                          textTransform: "uppercase",
+                                          fontWeight: 500,
+                                          ml: 0.5
+                                        }}
+                                      >
+                                        {t(`btnLabel.${act.btnLabel}`)}
+                                      </Box>
+                                    )}
+                                  </Button>
+                                ) : (
+                                  <Box
+                                    data-dropdown-root="1"
+                                    role="button"
+                                    data-tut={act?.selector}
+                                    onClick={() => handleActionBtn(act, item)}
+                                    title={t(`btnLabel.${act.hoverLabel}`)}
+                                    sx={{
+                                      color: "text.primary",
+                                      fontSize: "1.125rem",
+                                      mr: 1,
+                                      position: "relative",
+                                      cursor: "pointer"
+                                    }}
+                                  >
+                                    <i className={act.btnIcon}></i>
+                                    {act.btnLabel && (
+                                      <Box
+                                        component="span"
+                                        sx={{
+                                          textTransform: "uppercase",
+                                          fontWeight: 500
+                                        }}
+                                      >
+                                        {t(`btnLabel.${act.btnLabel}`)}
+                                      </Box>
+                                    )}
+                                    {/* doc report */}
+                                    {isOption[item.objectId] && (
+                                      <Paper
+                                        elevation={4}
+                                        sx={{
+                                          position: "absolute",
+                                          right: -4,
+                                          top: "auto",
+                                          zIndex: 70,
+                                          width: "max-content",
+                                          bgcolor: "surface.main",
+                                          color: "text.primary",
+                                          borderRadius: 2,
+                                          py: 0.5
+                                        }}
+                                      >
                                         {act.subaction?.map(
                                           (subact) =>
                                             !restrictBtn(item, subact) && (
-                                              <li
+                                              <MenuItem
                                                 key={subact.btnId}
+                                                dense
                                                 onClick={() =>
                                                   handleActionBtn(subact, item)
                                                 }
@@ -1264,68 +1428,104 @@ const DocumentsReport = (props) => {
                                                   `btnLabel.${subact.hoverLabel}`
                                                 )}
                                               >
-                                                <span>
-                                                  <i
-                                                    className={`${subact.btnIcon} mr-1.5`}
-                                                  ></i>
-                                                  {subact.btnLabel && (
-                                                    <span className="text-[13px] capitalize font-medium">
-                                                      {t(
-                                                        `btnLabel.${subact.btnLabel}`
-                                                      )}
-                                                    </span>
-                                                  )}
-                                                </span>
-                                              </li>
+                                                <i
+                                                  className={`${subact.btnIcon} mr-1.5`}
+                                                ></i>
+                                                {subact.btnLabel && (
+                                                  <Box
+                                                    component="span"
+                                                    sx={{
+                                                      fontSize: "13px",
+                                                      textTransform: "capitalize",
+                                                      fontWeight: 500
+                                                    }}
+                                                  >
+                                                    {t(
+                                                      `btnLabel.${subact.btnLabel}`
+                                                    )}
+                                                  </Box>
+                                                )}
+                                              </MenuItem>
                                             )
                                         )}
-                                      </ul>
+                                      </Paper>
                                     )}
-                                </div>
-                              )}
+                                  </Box>
+                                ))}
                             </React.Fragment>
                           ))}
-                      </div>
+                      </Box>
                       {isModal["recreatedocument_" + item.objectId] && (
                         <ModalUi isOpen handleClose={handleCloseModal}>
                           {actLoader[item.objectId] && (
-                            <div className="absolute h-full w-full flex justify-center items-center rounded-box bg-black/30">
+                            <Box
+                              sx={{
+                                position: "absolute",
+                                height: "100%",
+                                width: "100%",
+                                display: "flex",
+                                justifyContent: "center",
+                                alignItems: "center",
+                                borderRadius: 2,
+                                bgcolor: "rgba(0,0,0,0.3)"
+                              }}
+                            >
                               <Loader />
-                            </div>
+                            </Box>
                           )}
-                          <h3 className="text-base-content font-bold text-lg pt-[15px] px-[20px]">
+                          <Box
+                            component="h3"
+                            sx={{
+                              color: "text.primary",
+                              fontWeight: 700,
+                              fontSize: "1.125rem",
+                              pt: "15px",
+                              px: "20px"
+                            }}
+                          >
                             {t("fix-&-resend-document")}
-                          </h3>
+                          </Box>
                           {error ? (
-                            <div className="p-[15px] md:p-[20px]">{error}</div>
+                            <Box sx={{ p: { xs: "15px", md: "20px" } }}>{error}</Box>
                           ) : (
-                            <div className="p-[15px] md:p-[20px]">
-                              <div className="text-lg font-normal text-center">
+                            <Box sx={{ p: { xs: "15px", md: "20px" } }}>
+                              <Box sx={{ fontSize: "1.125rem", fontWeight: 400, textAlign: "center" }}>
                                 <img
                                   src={recreatedoc}
                                   alt="recreate-doc"
                                   className="mx-auto w-[200px] h-auto"
                                 />
-                                <p className="text-sm md:text-base md:px-2 mt-2">
+                                <Box component="p" sx={{ fontSize: { xs: "0.875rem", md: "1rem" }, px: { md: 1 }, mt: 1 }}>
                                   {t("do-you-want-recreate-document?")}
-                                </p>
-                              </div>
-                              <hr className="bg-[#ccc] mt-2.5" />
-                              <div className="flex items-center justify-center mt-[14px] md:mt-[16px] gap-2 text-white">
-                                <button
+                                </Box>
+                              </Box>
+                              <Divider sx={{ mt: 1.25 }} />
+                              <Box
+                                sx={{
+                                  display: "flex",
+                                  alignItems: "center",
+                                  justifyContent: "center",
+                                  mt: { xs: "14px", md: "16px" },
+                                  gap: 1
+                                }}
+                              >
+                                <Button
+                                  variant="contained"
                                   onClick={() => handleRecreateDoc(item)}
-                                  className="op-btn op-btn-primary focus:outline-none text-sm relative px-4"
+                                  sx={{ px: 2 }}
                                 >
                                   {t("start-editing")}
-                                </button>
-                                <button
+                                </Button>
+                                <Button
+                                  variant="contained"
+                                  color="secondary"
                                   onClick={handleCloseModal}
-                                  className="op-btn op-btn-secondary focus:outline-none text-sm relative px-8"
+                                  sx={{ px: 4 }}
                                 >
                                   {t("cancel")}
-                                </button>
-                              </div>
-                            </div>
+                                </Button>
+                              </Box>
+                            </Box>
                           )}
                         </ModalUi>
                       )}
@@ -1340,22 +1540,35 @@ const DocumentsReport = (props) => {
                           handleClose={handleCloseTemplate}
                         >
                           {isSuccess[item.objectId] ? (
-                            <div className="mx-[10px] my-[15px]">
-                              <p className="text-base text-center">
+                            <Box sx={{ mx: "10px", my: "15px" }}>
+                              <Box component="p" sx={{ fontSize: "1rem", textAlign: "center" }}>
                                 {t("how-would-you-like-to-proceed?")}
-                              </p>
-                              <div className="flex flex-wrap gap-1 items-center justify-center mt-2">
-                                <button
-                                  className="op-btn-primary op-btn op-btn-sm focus:outline-none text-sm relative"
+                              </Box>
+                              <Box
+                                sx={{
+                                  display: "flex",
+                                  flexWrap: "wrap",
+                                  gap: 0.5,
+                                  alignItems: "center",
+                                  justifyContent: "center",
+                                  mt: 1
+                                }}
+                              >
+                                <Button
+                                  variant="contained"
+                                  size="small"
+                                  startIcon={<i className="fa-light fa-plus"></i>}
                                   onClick={() =>
                                     handleUseTemplate(templateId, item)
                                   }
                                 >
-                                  <i className="fa-light fa-plus"></i>{" "}
                                   {t("btnLabel.Use")}
-                                </button>
-                                <button
-                                  className="op-btn-secondary op-btn op-btn-sm focus:outline-none text-sm relative"
+                                </Button>
+                                <Button
+                                  variant="contained"
+                                  color="secondary"
+                                  size="small"
+                                  startIcon={<i className="fa-light fa-plus"></i>}
                                   onClick={() =>
                                     handleBulkSendTemplate(
                                       templateId,
@@ -1363,56 +1576,66 @@ const DocumentsReport = (props) => {
                                     )
                                   }
                                 >
-                                  <i className="fa-light fa-plus"></i>{" "}
-                                  {
-                                        `${t(`btnLabel.Quick send`)}`
-                                  }
-                                </button>
-                                <button
-                                  className="op-btn-secondary op-btn op-btn-sm focus:outline-none text-sm relative"
+                                  {`${t(`btnLabel.Quick send`)}`}
+                                </Button>
+                                <Button
+                                  variant="contained"
+                                  color="secondary"
+                                  size="small"
+                                  startIcon={<i className="fa-light fa-pen"></i>}
                                   onClick={() =>
                                     navigate(`/template/${templateId}`)
                                   }
                                 >
-                                  <i className="fa-light fa-pen"></i>{" "}
                                   {t(`btnLabel.Edit`)}
-                                </button>
-                              </div>
-                              <Link
+                                </Button>
+                              </Box>
+                              <MuiLink
+                                component={Link}
                                 to="/report/6TeaPr321t"
-                                className="cursor-pointer underline text-sm w-full flex justify-center mt-2"
+                                sx={{
+                                  cursor: "pointer",
+                                  fontSize: "0.875rem",
+                                  width: "100%",
+                                  display: "flex",
+                                  justifyContent: "center",
+                                  mt: 1
+                                }}
                               >
                                 {t("go-to-manage-templates")}
-                              </Link>
-                            </div>
+                              </MuiLink>
+                            </Box>
                           ) : (
-                            <div className="m-[20px]">
+                            <Box sx={{ m: "20px" }}>
                               {error ? (
                                 <>{error}</>
                               ) : (
                                 <>
-                                  <div className="text-lg font-normal text-base-content">
+                                  <Box sx={{ fontSize: "1.125rem", fontWeight: 400, color: "text.primary" }}>
                                     {t("save-as-template-?")}
                                     {handleWarning(item)}
-                                  </div>
-                                  <hr className="bg-[#ccc] mt-3" />
-                                  <div className="flex items-center mt-3 gap-2 text-white">
-                                    <button
+                                  </Box>
+                                  <Divider sx={{ mt: 1.5 }} />
+                                  <Box sx={{ display: "flex", alignItems: "center", mt: 1.5, gap: 1 }}>
+                                    <Button
+                                      variant="contained"
                                       onClick={() => handleSaveAsTemplate(item)}
-                                      className="op-btn op-btn-primary w-[100px]"
+                                      sx={{ width: 100 }}
                                     >
                                       {t("yes")}
-                                    </button>
-                                    <button
+                                    </Button>
+                                    <Button
+                                      variant="contained"
+                                      color="secondary"
                                       onClick={handleCloseTemplate}
-                                      className="op-btn op-btn-secondary w-[100px]"
+                                      sx={{ width: 100 }}
                                     >
                                       {t("no")}
-                                    </button>
-                                  </div>
+                                    </Button>
+                                  </Box>
                                 </>
                               )}
-                            </div>
+                            </Box>
                           )}
                         </ModalUi>
                       )}
@@ -1443,24 +1666,25 @@ const DocumentsReport = (props) => {
                           reduceWidth={"md:max-w-[450px]"}
                           handleClose={handleCloseModal}
                         >
-                          <form
-                            className="px-4 py-2 flex flex-col w-full"
+                          <Box
+                            component="form"
+                            sx={{ px: 2, py: 1, display: "flex", flexDirection: "column", width: "100%" }}
                             onSubmit={(e) => handleUpdateExpiry(e, item)}
                           >
-                            <div className="text-sm mb-2">
-                              <span className="font-medium mr-1">
+                            <Box sx={{ fontSize: "0.875rem", mb: 1 }}>
+                              <Box component="span" sx={{ fontWeight: 500, mr: 0.5 }}>
                                 {t("current-expiry-date")}:
-                              </span>
+                              </Box>
                               {item?.ExpiryDate?.iso
                                 ? formatDateToDdMmmYyyy(
                                     new Date(item?.ExpiryDate?.iso)
                                   )
                                 : t("no-data")}
-                            </div>
-                            <label className="mr-2">
+                            </Box>
+                            <Box component="label" sx={{ mr: 1 }}>
                               {t("expiry-date")} {"(dd-mm-yyyy)"}
-                            </label>
-                            <div className="w-full">
+                            </Box>
+                            <Box sx={{ width: "100%" }}>
                               <DatePicker
                                 selectDate={{
                                   date: expiryDate,
@@ -1473,16 +1697,13 @@ const DocumentsReport = (props) => {
                                 showClear={false}
                                 dateClassName="text-sm md:text-base"
                               />
-                            </div>
-                            <div className="flex justify-start mb-1 mt-3">
-                              <button
-                                type="submit"
-                                className="op-btn op-btn-primary"
-                              >
+                            </Box>
+                            <Box sx={{ display: "flex", justifyContent: "flex-start", mb: 0.5, mt: 1.5 }}>
+                              <Button type="submit" variant="contained">
                                 {t("update")}
-                              </button>
-                            </div>
-                          </form>
+                              </Button>
+                            </Box>
+                          </Box>
                         </ModalUi>
                       )}
                       {isDeleteModal[item.objectId] && (
@@ -1491,26 +1712,27 @@ const DocumentsReport = (props) => {
                           title={t("delete-document")}
                           handleClose={handleClose}
                         >
-                          <div className="m-[20px]">
-                            <div className="text-lg font-normal text-base-content">
+                          <Box sx={{ m: "20px" }}>
+                            <Box sx={{ fontSize: "1.125rem", fontWeight: 400, color: "text.primary" }}>
                               {t("delete-document-alert")}
-                            </div>
-                            <hr className="bg-[#ccc] mt-4" />
-                            <div className="flex items-center mt-3 gap-2 text-white">
-                              <button
+                            </Box>
+                            <Divider sx={{ mt: 2 }} />
+                            <Box sx={{ display: "flex", alignItems: "center", mt: 1.5, gap: 1 }}>
+                              <Button
+                                variant="contained"
                                 onClick={() => handleDelete(item)}
-                                className="op-btn op-btn-primary"
                               >
                                 {t("yes")}
-                              </button>
-                              <button
+                              </Button>
+                              <Button
+                                variant="contained"
+                                color="secondary"
                                 onClick={handleClose}
-                                className="op-btn op-btn-secondary"
                               >
                                 {t("no")}
-                              </button>
-                            </div>
-                          </div>
+                              </Button>
+                            </Box>
+                          </Box>
                         </ModalUi>
                       )}
                       {isBulkSend[item.objectId] && (
@@ -1525,25 +1747,26 @@ const DocumentsReport = (props) => {
                           handleClose={() => setIsBulkSend({})}
                         >
                           {isLoader[item.objectId] ? (
-                            <div className="w-full h-[100px] flex justify-center items-center z-30">
+                            <Box sx={{ width: "100%", height: 100, display: "flex", justifyContent: "center", alignItems: "center", zIndex: 30 }}>
                               <Loader />
-                            </div>
+                            </Box>
                           ) : (
                             <>
                               {!extClass?.[0]?.UserId?.emailVerified ? (
-                                <div className="mx-[20px] mt-[15px] mb-[20px]">
+                                <Box sx={{ mx: "20px", mt: "15px", mb: "20px" }}>
                                   <Trans
                                     i18nKey="email-not-verified-send"
                                     components={{
                                       1: (
-                                        <Link
+                                        <MuiLink
+                                          component={Link}
                                           to="/profile"
-                                          className="text-blue-700 underline cursor-pointer"
+                                          sx={{ cursor: "pointer" }}
                                         />
                                       )
                                     }}
                                   />
-                                </div>
+                                </Box>
                               ) : (
                                 <BulkSendUi
                                   Placeholders={placeholders}
@@ -1566,16 +1789,35 @@ const DocumentsReport = (props) => {
                             setCopied(false);
                           }}
                         >
-                          <div className="m-[20px]">
+                          <Box sx={{ m: "20px" }}>
                             {shareUrls.map((share, i) => (
-                              <div
+                              <Box
                                 key={i}
-                                className="text-sm font-normal text-base-content flex my-2 justify-between items-center"
+                                sx={{
+                                  fontSize: "0.875rem",
+                                  fontWeight: 400,
+                                  color: "text.primary",
+                                  display: "flex",
+                                  my: 1,
+                                  justifyContent: "space-between",
+                                  alignItems: "center"
+                                }}
                               >
-                                <span className="w-[150px] mr-[5px] md:mr-0 md:w-[300px] whitespace-nowrap overflow-hidden text-ellipsis text-sm font-semibold">
+                                <Box
+                                  component="span"
+                                  sx={{
+                                    width: { xs: 150, md: 300 },
+                                    mr: { xs: "5px", md: 0 },
+                                    whiteSpace: "nowrap",
+                                    overflow: "hidden",
+                                    textOverflow: "ellipsis",
+                                    fontSize: "0.875rem",
+                                    fontWeight: 600
+                                  }}
+                                >
                                   {share.email}
-                                </span>
-                                <div className="flex items-center gap-2">
+                                </Box>
+                                <Stack direction="row" alignItems="center" spacing={1}>
                                   <ShareButton
                                     title={t("sign-url")}
                                     text={t("sign-url")}
@@ -1585,22 +1827,23 @@ const DocumentsReport = (props) => {
                                     <i className="fa-light fa-share-from-square"></i>
                                     {t("btnLabel.Share")}
                                   </ShareButton>
-                                  <button
-                                    className="op-btn op-btn-primary op-btn-outline op-btn-xs md:op-btn-sm"
+                                  <Button
+                                    variant="outlined"
+                                    size="small"
+                                    startIcon={<i className="fa-light fa-copy" />}
                                     onClick={() =>
                                       copybtn(share.url, share.email)
                                     }
                                   >
-                                    <i className="fa-light fa-copy" />
                                     {copied[share.email]
                                       ? t("copied")
                                       : t("copy")}
-                                  </button>
-                                </div>
-                              </div>
+                                  </Button>
+                                </Stack>
+                              </Box>
                             ))}
-                            <p ref={copyUrlRef} className="hidden"></p>
-                          </div>
+                            <Box component="p" ref={copyUrlRef} sx={{ display: "none" }}></Box>
+                          </Box>
                         </ModalUi>
                       )}
                       {isRevoke[item.objectId] && (
@@ -1609,34 +1852,40 @@ const DocumentsReport = (props) => {
                           title={t("revoke-document")}
                           handleClose={handleClose}
                         >
-                          <div className="m-[20px]">
-                            <div className="text-sm md:text-lg font-normal text-base-content">
+                          <Box sx={{ m: "20px" }}>
+                            <Box sx={{ fontSize: { xs: "0.875rem", md: "1.125rem" }, fontWeight: 400, color: "text.primary" }}>
                               {t("revoke-document-alert")}
-                            </div>
-                            <div className="mt-2">
-                              <textarea
+                            </Box>
+                            <Box sx={{ mt: 1 }}>
+                              <TextField
+                                multiline
                                 rows={3}
+                                fullWidth
+                                size="small"
                                 placeholder="Reason (optional)"
-                                className="px-4 op-textarea op-textarea-bordered text-base-content focus:outline-none hover:border-base-content w-full text-xs"
                                 value={reason}
                                 onChange={(e) => setReason(e.target.value)}
-                              ></textarea>
-                            </div>
-                            <div className="flex items-center mt-3 gap-2">
-                              <button
+                                inputProps={{ sx: { fontSize: "0.75rem" } }}
+                              />
+                            </Box>
+                            <Box sx={{ display: "flex", alignItems: "center", mt: 1.5, gap: 1 }}>
+                              <Button
+                                variant="contained"
                                 onClick={() => handleRevoke(item)}
-                                className="op-btn op-btn-primary px-6"
+                                sx={{ px: 3 }}
                               >
                                 {t("yes")}
-                              </button>
-                              <button
+                              </Button>
+                              <Button
+                                variant="contained"
+                                color="secondary"
                                 onClick={handleClose}
-                                className="op-btn op-btn-secondary px-6"
+                                sx={{ px: 3 }}
                               >
                                 {t("no")}
-                              </button>
-                            </div>
-                          </div>
+                              </Button>
+                            </Box>
+                          </Box>
                         </ModalUi>
                       )}
                       {isResendMail[item.objectId] && (
@@ -1647,41 +1896,44 @@ const DocumentsReport = (props) => {
                           }
                           handleClose={handleResendClose}
                         >
-                            <div className="overflow-y-auto max-h-[340px] md:max-h-[400px]">
+                            <Box sx={{ overflowY: "auto", maxHeight: { xs: 340, md: 400 } }}>
                               {item?.Placeholders?.filter(
                                 (user) => user?.Role !== "prefill"
                               )?.map((user) => (
                                 <React.Fragment key={user.Id}>
                                   {isNextStep[user.Id] && (
-                                    <div className="relative">
+                                    <Box sx={{ position: "relative" }}>
                                       {actLoader[user.Id] && (
-                                        <div className="absolute w-full h-full flex justify-center items-center bg-black bg-opacity-30 z-[60]">
+                                        <Box sx={{ position: "absolute", width: "100%", height: "100%", display: "flex", justifyContent: "center", alignItems: "center", bgcolor: "rgba(0,0,0,0.3)", zIndex: 60 }}>
                                           <Loader />
-                                        </div>
+                                        </Box>
                                       )}
-                                      <form
+                                      <Box
+                                        component="form"
                                         onSubmit={(e) =>
                                           handleResendMail(e, item, user)
                                         }
-                                        className="w-full flex flex-col gap-2 p-3 text-base-content relative"
+                                        sx={{ width: "100%", display: "flex", flexDirection: "column", gap: 1, p: 1.5, color: "text.primary", position: "relative" }}
                                       >
-                                        <div className="absolute right-5 text-xs z-40">
+                                        <Box sx={{ position: "absolute", right: 20, fontSize: "0.75rem", zIndex: 40 }}>
                                           <Tooltip
                                             id={`${user.Id}_help`}
                                             message={t("resend-mail-help")}
                                           />
-                                        </div>
-                                        <div className="w-full flex flex-col gap-2 text-base-content relative">
-                                          <div>
-                                            <label
-                                              className="text-xs ml-1"
+                                        </Box>
+                                        <Box sx={{ width: "100%", display: "flex", flexDirection: "column", gap: 1, color: "text.primary", position: "relative" }}>
+                                          <Box>
+                                            <Box
+                                              component="label"
+                                              sx={{ fontSize: "0.75rem", ml: 0.5 }}
                                               htmlFor="mailsubject"
                                             >
                                               {t("subject")}{" "}
-                                            </label>
-                                            <input
+                                            </Box>
+                                            <TextField
                                               id="mailsubject"
-                                              className="op-input op-input-bordered op-input-sm focus:outline-none hover:border-base-content w-full text-xs"
+                                              size="small"
+                                              fullWidth
                                               value={mail.subject}
                                               onChange={(e) =>
                                                 handleSubjectChange(
@@ -1698,23 +1950,26 @@ const DocumentsReport = (props) => {
                                                 e.target.setCustomValidity("")
                                               }
                                               required
+                                              inputProps={{ sx: { fontSize: "0.75rem" } }}
                                             />
-                                          </div>
-                                          <div>
-                                            <label
-                                              className="flex justify-between text-sm ml-1"
+                                          </Box>
+                                          <Box>
+                                            <Box
+                                              component="label"
+                                              sx={{ display: "flex", justifyContent: "space-between", fontSize: "0.875rem", ml: 0.5 }}
                                               htmlFor="mailbody"
                                             >
-                                              <span>{t("body")} </span>
-                                              <button
-                                                className="op-link op-link-primary"
+                                              <Box component="span">{t("body")} </Box>
+                                              <MuiLink
+                                                component="button"
+                                                type="button"
                                                 onClick={(e) => handleSwitch(e)}
                                               >
                                                 {emailEditorType === "basic"
                                                   ? t("switch-to-advanced")
                                                   : t("switch-to-basic")}
-                                              </button>
-                                            </label>
+                                              </MuiLink>
+                                            </Box>
                                             <EmailEditor
                                               type={emailEditorType}
                                               values={mail.body || ""}
@@ -1727,33 +1982,30 @@ const DocumentsReport = (props) => {
                                               }
                                               smallscreen
                                             />
-                                          </div>
-                                        </div>
-                                          <button
-                                            type="submit"
-                                            className="op-btn op-btn-primary"
-                                          >
-                                            {t("resend")}
-                                          </button>
-                                      </form>
-                                    </div>
+                                          </Box>
+                                        </Box>
+                                        <Button type="submit" variant="contained">
+                                          {t("resend")}
+                                        </Button>
+                                      </Box>
+                                    </Box>
                                   )}
                                   {Object?.keys(isNextStep) <= 0 && (
-                                    <div className="flex justify-between items-center gap-2 my-2 px-3">
-                                      <div className="text-base-content">
+                                    <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 1, my: 1, px: 1.5 }}>
+                                      <Box sx={{ color: "text.primary" }}>
                                         {user?.signerPtr?.Name || "-"}{" "}
                                         {`<${
                                           user?.email
                                             ? user.email
                                             : user.signerPtr.Email
                                         }>`}
-                                      </div>
+                                      </Box>
                                       <>{fetchUserStatus(user, item)}</>
-                                    </div>
+                                    </Box>
                                   )}
                                 </React.Fragment>
                               ))}
-                            </div>
+                            </Box>
                         </ModalUi>
                       )}
                       <ModalUi
@@ -1761,32 +2013,36 @@ const DocumentsReport = (props) => {
                         isOpen={isModal["rename_" + item.objectId]}
                         handleClose={handleCloseModal}
                       >
-                        <div className="flex flex-col px-4 pb-3 pt-2">
-                          <div className="flex flex-col gap-2">
-                            <input
-                              maxLength={200}
-                              autoFocus={true}
+                        <Box sx={{ display: "flex", flexDirection: "column", px: 2, pb: 1.5, pt: 1 }}>
+                          <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
+                            <TextField
+                              size="small"
+                              fullWidth
+                              autoFocus
                               type="text"
                               defaultValue={renameDoc || item.Name}
                               onChange={(e) => setRenameDoc(e.target.value)}
-                              className="op-input op-input-bordered op-input-sm w-full focus:outline-none hover:border-base-content text-[10px]"
+                              inputProps={{ maxLength: 200, sx: { fontSize: "10px" } }}
                             />
-                          </div>
-                          <div className="flex flex-row gap-2 pt-3 mt-3 border-t-[1.5px] border-gray-500">
-                            <button
-                              className="w-[100px] op-btn op-btn-primary op-btn-md"
+                          </Box>
+                          <Box sx={{ display: "flex", flexDirection: "row", gap: 1, pt: 1.5, mt: 1.5, borderTop: "1.5px solid", borderColor: "outline.variant" }}>
+                            <Button
+                              variant="contained"
+                              sx={{ width: 100 }}
                               onClick={() => handleRenameDoc(item)}
                             >
                               {t("save")}
-                            </button>
-                            <button
-                              className="w-[100px] op-btn op-btn-secondary op-btn-md"
+                            </Button>
+                            <Button
+                              variant="contained"
+                              color="secondary"
+                              sx={{ width: 100 }}
                               onClick={handleCloseModal}
                             >
                               {t("cancel")}
-                            </button>
-                          </div>
-                        </div>
+                            </Button>
+                          </Box>
+                        </Box>
                       </ModalUi>
                       {isDownloadModal[item.objectId] && (
                         <DownloadPdfZip
@@ -1796,92 +2052,104 @@ const DocumentsReport = (props) => {
                           isDocId={false}
                         />
                       )}
-                    </td>
-                  </tr>
+                    </TableCell>
+                  </TableRow>
                 ))}
-            </tbody>
-          </table>
+            </TableBody>
+          </Table>
           {(props.searchLoader || props.List?.length <= 0) && (
-            <div
-              className={`${
-                isDashboard ? "h-[317px]" : ""
-              } flex flex-col items-center justify-center w-ful bg-base-100 text-base-content rounded-xl py-4`}
+            <Box
+              className={isDashboard ? "h-[317px]" : ""}
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                width: "100%",
+                bgcolor: "surface.main",
+                color: "text.primary",
+                borderRadius: 3,
+                py: 2
+              }}
             >
               {props.searchLoader ? (
                 <>
                   <Loader />
-                  <div className="text-sm ">{t("loading-mssg")}</div>
+                  <Box sx={{ fontSize: "0.875rem" }}>{t("loading-mssg")}</Box>
                 </>
               ) : (
                 <>
-                  <div className="w-[60px] h-[60px] overflow-hidden">
+                  <Box sx={{ width: 60, height: 60, overflow: "hidden" }}>
                     <img
                       className="w-full h-full object-contain"
                       src={pad}
                       alt={t("no-data-available")}
                     />
-                  </div>
-                  <div className="text-sm font-semibold">
+                  </Box>
+                  <Box sx={{ fontSize: "0.875rem", fontWeight: 600 }}>
                     {t("no-data-available")}
-                  </div>
+                  </Box>
                 </>
               )}
-            </div>
+            </Box>
           )}
         </div>
-        <div className="op-join flex flex-wrap items-center p-2">
+        <Box sx={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 0.5, p: 1 }}>
           {props.List.length > props.docPerPage && (
-            <button
+            <Button
+              variant="outlined"
+              size="small"
               onClick={() => paginateBack()}
-              className="op-join-item op-btn op-btn-sm"
             >
               {t("prev")}
-            </button>
+            </Button>
           )}
           {pageNumbers.map((x, i) => (
-            <button
+            <Button
               key={i}
+              variant={x === currentPage ? "contained" : "outlined"}
+              size="small"
               onClick={() => setCurrentPage(x)}
               disabled={x === "..."}
-              className={`${
-                x === currentPage ? "op-btn-active" : ""
-              } op-join-item op-btn op-btn-sm`}
+              sx={{ minWidth: 40 }}
             >
               {x}
-            </button>
+            </Button>
           ))}
           {props.List.length > props.docPerPage && (
-            <button
+            <Button
+              variant="outlined"
+              size="small"
               onClick={() => paginateFront()}
-              className="op-join-item op-btn op-btn-sm"
             >
               {t("next")}
-            </button>
+            </Button>
           )}
-        </div>
+        </Box>
         <ModalUi
           isOpen={resendErrMail}
           id="error-modal"
           title={t("error")}
           handleClose={() => setResendErrMail("")}
         >
-          <div className="mx-[20px] mb-[20px] mt-[10px]">
+          <Box sx={{ mx: "20px", mb: "20px", mt: "10px" }}>
             {resendErrMail === "emailnotverified" ? (
               <Trans
                 i18nKey="email-not-verified-send"
                 components={{
                   1: (
-                    <Link
+                    <MuiLink
+                      component={Link}
                       to="/profile"
-                      className="text-blue-700 underline cursor-pointer"
+                      sx={{ cursor: "pointer" }}
                     />
                   )
                 }}
               />
             ) : (
-              <p>{resendErrMail}</p>
+              <Box component="p">{resendErrMail}</Box>
             )}
-          </div>
+          </Box>
         </ModalUi>
         <CustomizeMail
           setIsMailModal={setIsMailModal}
@@ -1917,97 +2185,99 @@ const DocumentsReport = (props) => {
             navigate("/report/1MwEuxLEkF");
           }}
         >
-          <div className="h-[100%] p-[20px] text-base-content">
+          <Box sx={{ height: "100%", p: "20px", color: "text.primary" }}>
             {mailStatus === "success" ? (
-              <div className="text-center mb-[10px]">
+              <Box sx={{ textAlign: "center", mb: "10px" }}>
                 <LottieWithLoader />
                 {documentDetails?.SendinOrder ? (
-                  <p>
+                  <Box component="p">
                     {currUserId
                       ? t("placeholder-mail-alert-you")
                       : t("placeholder-mail-alert", {
                           name: signerList[0]?.Name
                         })}
-                  </p>
+                  </Box>
                 ) : (
-                  <p>{t("placeholder-alert-4")}</p>
+                  <Box component="p">{t("placeholder-alert-4")}</Box>
                 )}
-                {currUserId && <p>{t("placeholder-alert-5")}</p>}
-              </div>
+                {currUserId && <Box component="p">{t("placeholder-alert-5")}</Box>}
+              </Box>
             ) : mailStatus === "quotareached" ? (
-              <div className="flex flex-col gap-y-3">
-                <div className="my-3">{handleShareList()}</div>
-              </div>
+              <Box sx={{ display: "flex", flexDirection: "column", rowGap: 1.5 }}>
+                <Box sx={{ my: 1.5 }}>{handleShareList()}</Box>
+              </Box>
             ) : mailStatus === "emailnotverified" ? (
-              <p>
+              <Box component="p">
                 <Trans
                   i18nKey="email-not-verified-send"
                   components={{
                     1: (
-                      <a
+                      <MuiLink
                         href="/profile"
-                        className="text-blue-700 underline cursor-pointer"
+                        sx={{ cursor: "pointer" }}
                       />
                     )
                   }}
                 />
-              </p>
+              </Box>
             ) : (
-              <div className="mb-[10px]">
+              <Box sx={{ mb: "10px" }}>
                 {mailStatus === "dailyquotareached" ? (
-                  <p>{t("daily-quota-reached")}</p>
+                  <Box component="p">{t("daily-quota-reached")}</Box>
                 ) : (
-                  <p>{t("placeholder-alert-6")}</p>
+                  <Box component="p">{t("placeholder-alert-6")}</Box>
                 )}
                 {currUserId && (
-                  <p className="mt-1">{t("placeholder-alert-5")}</p>
+                  <Box component="p" sx={{ mt: 0.5 }}>{t("placeholder-alert-5")}</Box>
                 )}
-              </div>
+              </Box>
             )}
             {!mailStatus && (
-              <div className="w-full h-[1px] bg-[#9f9f9f] my-[15px]"></div>
+              <Divider sx={{ my: "15px" }} />
             )}
             {mailStatus !== "quotareached" && (
-              <div
-                className={
+              <Box
+                sx={
                   mailStatus === "success" || mailStatus === "emailnotverified"
-                    ? "flex justify-center mt-1"
-                    : ""
+                    ? { display: "flex", justifyContent: "center", mt: 0.5 }
+                    : undefined
                 }
               >
                 {currUserId && (
-                  <button
+                  <Button
+                    variant="contained"
                     onClick={() =>
                       handleRecipientSign(documentDetails?.objectId, currUserId)
                     }
                     type="button"
-                    className="op-btn op-btn-primary mr-1"
+                    sx={{ mr: 0.5 }}
                   >
                     {t("yes")}
-                  </button>
+                  </Button>
                 )}
-                <button
+                <Button
+                  variant="text"
                   onClick={() => {
                     handleRecipientSign(documentDetails?.objectId, currUserId);
                   }}
                   type="button"
-                  className="op-btn op-btn-ghost text-base-content"
+                  sx={{ color: "text.primary" }}
                 >
                   {currUserId ? t("no") : t("close")}
-                </button>
-              </div>
+                </Button>
+              </Box>
             )}
-          </div>
+          </Box>
         </ModalUi>
         <ModalUi
           title={t(`report-heading.${objInfoModal.title}`)}
           isOpen={objInfoModal.title}
           handleClose={() => setObjInfoModal({ title: "", info: "" })}
         >
-          <div className="p-[20px]">{objInfoModal.info || "-"}</div>
+          <Box sx={{ p: "20px" }}>{objInfoModal.info || "-"}</Box>
         </ModalUi>
-      </div>
-    </div>
+      </Card>
+    </Box>
   );
 };
 

@@ -3,6 +3,7 @@ import SelectSigners from "../components/shared/fields/SelectSigners";
 import AddContact from "./AddContact";
 import ModalUi from "./ModalUi";
 import { useTranslation } from "react-i18next";
+import Divider from "@mui/material/Divider";
 
 const LinkUserModal = (props) => {
   const { t } = useTranslation();
@@ -32,9 +33,9 @@ const LinkUserModal = (props) => {
       />
       {isContact && (
         <>
-          <div className="op-divider text-base-content mx-[25%] my-1">
+          <Divider sx={{ mx: "25%", my: 0.5, color: "text.primary" }}>
             {t("or")}
-          </div>
+          </Divider>
           <AddContact {...props} details={props.handleAddUser} />
         </>
       )}

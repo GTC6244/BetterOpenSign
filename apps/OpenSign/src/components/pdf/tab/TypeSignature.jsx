@@ -1,21 +1,38 @@
 import { useTranslation } from "react-i18next";
+import Box from "@mui/material/Box";
+import TextField from "@mui/material/TextField";
+import Typography from "@mui/material/Typography";
 
 function TypeSignature(props) {
   const { t } = useTranslation();
   return (
-    <div>
-      <div className="flex justify-between items-center tabWidth rounded-[4px]">
-        <span className="ml-[5px] text-[12px] text-base-content">
+    <Box>
+      <Box
+        className="tabWidth"
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          borderRadius: "4px"
+        }}
+      >
+        <Typography
+          component="span"
+          sx={{
+            ml: "5px",
+            fontSize: "12px",
+            color: "text.primary",
+            whiteSpace: "nowrap"
+          }}
+        >
           {props?.currWidgetsDetails?.type === "initials"
             ? t("initial-teb")
             : t("signature-tab")}
           :
-        </span>
-        <input
-          maxLength={props?.currWidgetsDetails?.type === "initials" ? 3 : 30}
-          style={{ fontFamily: props?.fontSelect, color: props?.penColor }}
-          type="text"
-          className="bg-transparent ml-1 op-input op-input-bordered op-input-sm focus:outline-none hover:border-base-content w-full text-[20px]"
+        </Typography>
+        <TextField
+          variant="standard"
+          fullWidth
           placeholder={
             props?.currWidgetsDetails?.type === "initials"
               ? t("initial-type")
@@ -28,37 +45,58 @@ function TypeSignature(props) {
               props?.convertToImg(props?.fontSelect, e.target.value);
             }
           }}
+          slotProps={{
+            htmlInput: {
+              maxLength:
+                props?.currWidgetsDetails?.type === "initials" ? 3 : 30,
+              style: {
+                fontFamily: props?.fontSelect,
+                color: props?.penColor,
+                fontSize: "20px"
+              }
+            }
+          }}
+          sx={{ ml: 0.5 }}
         />
-      </div>
-      <div className="border-[1px] border-[#d6d3d3] mt-[10px] rounded-[4px] tabWidth">
+      </Box>
+      <Box
+        className="tabWidth"
+        sx={{
+          border: "1px solid",
+          borderColor: "outline.variant",
+          mt: "10px",
+          borderRadius: "4px"
+        }}
+      >
         {props?.fontOptions.map((font, ind) => {
           return (
-            <div
+            <Box
               key={ind}
-              style={{
-                cursor: "pointer",
-                fontFamily: font.value,
-                backgroundColor:
-                  props?.fontSelect === font.value && "rgb(206 225 247)"
-              }}
               onClick={() => {
                 props?.setFontSelect(font.value);
                 props?.convertToImg(font.value, props?.typedSignature);
               }}
+              sx={{
+                cursor: "pointer",
+                fontFamily: font.value,
+                bgcolor:
+                  props?.fontSelect === font.value
+                    ? "action.selected"
+                    : "transparent"
+              }}
             >
-              <div
-                className="py-[5px] px-[10px] text-[20px]"
-                style={{ color: props?.penColor }}
+              <Box
+                sx={{ py: "5px", px: "10px", fontSize: "20px", color: props?.penColor }}
               >
                 {props?.typedSignature
                   ? props?.typedSignature
                   : t("Your-Signature")}
-              </div>
-            </div>
+              </Box>
+            </Box>
           );
         })}
-      </div>
-    </div>
+      </Box>
+    </Box>
   );
 }
 

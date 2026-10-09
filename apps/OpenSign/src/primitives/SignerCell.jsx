@@ -2,6 +2,17 @@ import { useTranslation } from "react-i18next";
 import { formatDateTime, getSignerEmail } from "../constant/Utils";
 import { useState } from "react";
 import ModalUi from "./ModalUi";
+import Box from "@mui/material/Box";
+import Link from "@mui/material/Link";
+import Chip from "@mui/material/Chip";
+import IconButton from "@mui/material/IconButton";
+import Typography from "@mui/material/Typography";
+import Table from "@mui/material/Table";
+import TableHead from "@mui/material/TableHead";
+import TableBody from "@mui/material/TableBody";
+import TableRow from "@mui/material/TableRow";
+import TableCell from "@mui/material/TableCell";
+import CloseIcon from "@mui/icons-material/Close";
 
 // Signer is used in report to show signer list conditionally
 const SignerCell = ({ reportName, item, handleRemovePrefill }) => {
@@ -25,6 +36,12 @@ const SignerCell = ({ reportName, item, handleRemovePrefill }) => {
   };
   const handleViewSigners = (item) => {
     setIsModal({ ["view_" + item.objectId]: true });
+  };
+  // Map signer activity to an MD3 chip color role
+  const activityColor = (activity) => {
+    if (activity === "SIGNED") return "primary";
+    if (activity === "VIEWED") return "success";
+    return "default";
   };
   // `formatStatusRow` is used to format status row
   const formatStatusRow = (item) => {
@@ -57,54 +74,76 @@ const SignerCell = ({ reportName, item, handleRemovePrefill }) => {
     return (
       <>
         {displaySigners?.map((x, i) => (
-          <div
+          <Box
             key={i}
-            className={`text-sm flex flex-row gap-2 items-center ${
-              i !== displaySigners.length - 1 ? "mb-2" : ""
-            }`}
+            sx={{
+              fontSize: "0.875rem",
+              display: "flex",
+              flexDirection: "row",
+              gap: 1,
+              alignItems: "center",
+              mb: i !== displaySigners.length - 1 ? 1 : 0
+            }}
           >
             {!isCompletedReport && (
-              <button
+              <Chip
+                size="small"
+                variant="outlined"
+                color={activityColor(x.Activity)}
+                label={x?.Activity?.toUpperCase() || "-"}
                 onClick={() => setIsModal({ [`${item.objectId}_${i}`]: true })}
-                className={`${
-                  x.Activity === "SIGNED"
-                    ? "op-border-primary op-text-primary"
-                    : x.Activity === "VIEWED"
-                      ? "border-green-400 text-green-400"
-                      : "border-base-content text-base-content"
-                } focus:outline-none border-2 w-[60px] h-[30px] text-[11px] rounded-full`}
-              >
-                {x?.Activity?.toUpperCase() || "-"}
-              </button>
+                sx={{
+                  width: 60,
+                  height: 30,
+                  fontSize: "11px",
+                  borderRadius: 9999,
+                  borderWidth: 2
+                }}
+              />
             )}
-            <div className="text-[12px]">{x?.Email || "-"}</div>
+            <Box sx={{ fontSize: "12px" }}>{x?.Email || "-"}</Box>
             {!isCompletedReport && isModal[`${item.objectId}_${i}`] && (
               <ModalUi
                 isOpen
                 title={t("document-logs")}
                 handleClose={handleCloseModal}
               >
-                <div className="pl-3 first:mt-2 border-t-[1px] border-gray-600 text-[12px] py-2">
-                  <p className="font-bold"> {x?.Email}</p>
-                  <p>{t("viewed-on", { ViewedOn: x?.ViewedOn })}</p>
-                  <p>{t("signed-on", { SignedOn: x?.SignedOn })}</p>
-                </div>
+                <Box
+                  sx={{
+                    pl: 1.5,
+                    mt: 1,
+                    borderTop: "1px solid",
+                    borderColor: "outline.main",
+                    fontSize: "12px",
+                    py: 1
+                  }}
+                >
+                  <Typography sx={{ fontWeight: 700 }}> {x?.Email}</Typography>
+                  <Typography>
+                    {t("viewed-on", { ViewedOn: x?.ViewedOn })}
+                  </Typography>
+                  <Typography>
+                    {t("signed-on", { SignedOn: x?.SignedOn })}
+                  </Typography>
+                </Box>
               </ModalUi>
             )}
-          </div>
+          </Box>
         ))}
         {/* Show More / Hide button */}
         {signers?.length > 3 && (
-          <button
+          <Link
+            component="button"
+            underline="always"
             onClick={() =>
               setIsShowAllSigners({
                 [item.objectId]: !isShowAllSigners[item.objectId]
               })
             }
-            className="ml-2 mt-1 text-xs font-medium text-blue-500 underline focus:outline-none"
+            sx={{ ml: 1, mt: 0.5, fontSize: "0.75rem", fontWeight: 500 }}
           >
             {isShowAllSigners[item.objectId] ? t("hide") : t("show-more")}
-          </button>
+          </Link>
         )}
       </>
     );
@@ -121,12 +160,14 @@ const SignerCell = ({ reportName, item, handleRemovePrefill }) => {
   return (
     <td className="p-2 text-center">
       {shouldRender ? (
-        <button
+        <Link
+          component="button"
+          color="primary"
+          underline="hover"
           onClick={() => handleViewSigners(item)}
-          className="op-link op-link-primary"
         >
           {t("view")}
-        </button>
+        </Link>
       ) : (
         "-"
       )}
@@ -139,42 +180,55 @@ const SignerCell = ({ reportName, item, handleRemovePrefill }) => {
           handleClose={() => handleCloseModal()}
         >
           {!isTemplateReport && (
-            <div
-              className="op-btn op-btn-sm op-btn-circle op-btn-ghost text-base-content absolute right-2 top-1 z-40"
+            <IconButton
+              size="small"
               onClick={() => handleCloseModal()}
+              sx={{
+                position: "absolute",
+                right: 8,
+                top: 4,
+                zIndex: 40,
+                color: "text.primary"
+              }}
             >
-              ✕
-            </div>
+              <CloseIcon fontSize="small" />
+            </IconButton>
           )}
-          <table className="op-table w-full overflow-auto">
-            <thead className="h-[38px] sticky top-0 text-base-content text-sm pt-[15px] px-[20px]">
-              <tr>
+          <Table size="small" sx={{ width: "100%" }}>
+            <TableHead>
+              <TableRow>
                 {isTemplateReport && (
-                  <th className="p-2 pl-3 w-[30%]">{t("roles")}</th>
+                  <TableCell sx={{ width: "30%", pl: 1.5 }}>
+                    {t("roles")}
+                  </TableCell>
                 )}
-                <th className="pl-3 py-2">
+                <TableCell sx={{ pl: 1.5 }}>
                   {isTemplateReport ? t("email") : t("signers")}
-                </th>
-              </tr>
-            </thead>
-            <tbody>
+                </TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
               {item?.Placeholders?.map(
                 (x, i) =>
                   x.Role !== "prefill" && (
-                    <tr key={i} className="text-sm font-medium">
+                    <TableRow key={i}>
                       {isTemplateReport && (
-                        <td className="text-[12px] p-2 pl-3 w-[30%]">
+                        <TableCell
+                          sx={{ fontSize: "12px", width: "30%", pl: 1.5 }}
+                        >
                           {x.Role && x.Role}
-                        </td>
+                        </TableCell>
                       )}
-                      <td className="pl-3 text-[12px] py-2 break-all">
+                      <TableCell
+                        sx={{ pl: 1.5, fontSize: "12px", wordBreak: "break-all" }}
+                      >
                         {x?.email || getSignerEmail(x, item?.Signers) || "-"}
-                      </td>
-                    </tr>
+                      </TableCell>
+                    </TableRow>
                   )
               )}
-            </tbody>
-          </table>
+            </TableBody>
+          </Table>
         </ModalUi>
       )}
     </td>

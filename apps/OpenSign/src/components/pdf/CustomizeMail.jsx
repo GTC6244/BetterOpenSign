@@ -10,6 +10,9 @@ import {
 import { useTranslation } from "react-i18next";
 import Loader from "../../primitives/Loader";
 import { useNavigate } from "react-router";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Link from "@mui/material/Link";
 
 const statusMap = {
   success: "success",
@@ -99,16 +102,36 @@ function CustomizeMail(props) {
   return (
     <>
       {isLoader ? (
-        <div className="absolute w-full h-full flex justify-center items-center bg-black/30 rounded-box z-30">
+        <Box
+          sx={{
+            position: "absolute",
+            width: "100%",
+            height: "100%",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            bgcolor: "rgba(0,0,0,0.3)",
+            borderRadius: 2,
+            zIndex: 30
+          }}
+        >
           <Loader />
-        </div>
+        </Box>
       ) : (
         <ModalUi
           isOpen={props?.isMailModal}
           title={t("send-mail")}
           handleClose={() => handleCloseSendmailModal()}
         >
-          <div className="max-h-96 overflow-y-scroll scroll-hide p-[20px] text-base-content">
+          <Box
+            className="scroll-hide"
+            sx={{
+              maxHeight: "24rem",
+              overflowY: "scroll",
+              p: 2.5,
+              color: "text.primary"
+            }}
+          >
             {!isCustomize && <span>{t("placeholder-alert-3")}</span>}
             {
                 isCustomize && (
@@ -122,52 +145,84 @@ function CustomizeMail(props) {
                       handleSwitch={handleSwitch}
                       emailEditorType={props.emailEditorType}
                     />
-                    <div
-                      className="flex justify-end items-center gap-1 mt-2 op-link op-link-primary"
+                    <Box
+                      sx={{
+                        display: "flex",
+                        justifyContent: "flex-end",
+                        alignItems: "center",
+                        gap: 0.5,
+                        mt: 1,
+                        cursor: "pointer"
+                      }}
                       onClick={() => handleReset()}
                     >
-                      <span>{t("reset-to-default")}</span>
-                    </div>
+                      <Link component="span" underline="hover">
+                        {t("reset-to-default")}
+                      </Link>
+                    </Box>
                   </>
                 )
             }
-            <div className="flex flex-row items-center gap-2 md:gap-6 mt-2">
-              <div className="flex flex-row gap-2">
-                <button
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+                gap: { xs: 1, md: 3 },
+                mt: 1
+              }}
+            >
+              <Box sx={{ display: "flex", flexDirection: "row", gap: 1 }}>
+                <Button
                   onClick={() => handleEmailSendToSigners()}
-                  className="op-btn op-btn-primary font-[500] text-sm shadow"
+                  variant="contained"
+                  sx={{ fontWeight: 500, fontSize: "0.875rem" }}
                 >
                   {t("send")}
-                </button>
+                </Button>
                 {isCustomize && (
-                  <button
+                  <Button
                     onClick={() => setIsCustomize(false)}
-                    className="op-btn op-btn-ghost font-[500] text-sm"
+                    variant="text"
+                    color="inherit"
+                    sx={{ fontWeight: 500, fontSize: "0.875rem" }}
                   >
                     {t("close")}
-                  </button>
+                  </Button>
                 )}
-              </div>
+              </Box>
               {
                   !isCustomize && (
-                    <span
-                      className="op-link op-link-accent text-sm"
+                    <Link
+                      component="span"
+                      underline="hover"
+                      color="secondary"
+                      sx={{ fontSize: "0.875rem", cursor: "pointer" }}
                       onClick={() => setIsCustomize(true)}
                     >
                       {t("customize-email")}
-                    </span>
+                    </Link>
                   )
               }
-            </div>
+            </Box>
 
-            <div className="flex justify-center items-center mt-3">
-              <span className="h-[1px] w-[20%] bg-[#ccc]"></span>
-              <span className="ml-[5px] mr-[5px]">{t("or")}</span>
-              <span className="h-[1px] w-[20%] bg-[#ccc]"></span>
-            </div>
-            <div className="my-3">{props?.handleShareList()}</div>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                mt: 1.5
+              }}
+            >
+              <Box sx={{ height: "1px", width: "20%", bgcolor: "outline.variant" }} />
+              <Box component="span" sx={{ mx: 0.625 }}>
+                {t("or")}
+              </Box>
+              <Box sx={{ height: "1px", width: "20%", bgcolor: "outline.variant" }} />
+            </Box>
+            <Box sx={{ my: 1.5 }}>{props?.handleShareList()}</Box>
             <p id="copyUrl" ref={props?.copyUrlRef} className="hidden"></p>
-          </div>
+          </Box>
         </ModalUi>
       )}
     </>

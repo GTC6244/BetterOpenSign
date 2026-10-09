@@ -1,8 +1,16 @@
-import React from "react";
+import CircularProgress from "@mui/material/CircularProgress";
+import Box from "@mui/material/Box";
 
-const Loader = () => {
+/**
+ * MD3 circular progress indicator (replaces the DaisyUI infinity spinner).
+ */
+const Loader = ({ size = 56, color = "primary" }) => {
   return (
-    <div className="op-loading op-loading-infinity w-[4rem] text-neutral"></div>
+    <Box
+      sx={{ display: "inline-flex", alignItems: "center", justifyContent: "center" }}
+    >
+      <CircularProgress size={size} color={color} thickness={4} />
+    </Box>
   );
 };
 

@@ -1,9 +1,23 @@
-import { useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
-import "../styles/signature.css";
+import Dialog from "@mui/material/Dialog";
+import DialogTitle from "@mui/material/DialogTitle";
+import IconButton from "@mui/material/IconButton";
+import Box from "@mui/material/Box";
+import CloseIcon from "@mui/icons-material/Close";
 import Loader from "./Loader";
 import Tooltip from "./Tooltip";
 
+/**
+ * MD3 dialog (replaces the DaisyUI `op-modal`).
+ *
+ * The public API is unchanged so existing callers keep working:
+ *   id, children, title, isOpen, handleClose, showHeader, showClose,
+ *   reduceWidth, position, crossColor, showScrollBar, isLoader, helpText
+ *
+ * `reduceWidth` historically carried Tailwind width classes; it is forwarded to
+ * the dialog surface as a className so those widths still apply during migration.
+ * `position="bottom"` renders as an MD3 bottom sheet.
+ */
 const ModalUi = ({
   id,
   children,
@@ -20,82 +34,110 @@ const ModalUi = ({
   helpText = ""
 }) => {
   const { t } = useTranslation();
-  const dialogRef = useRef(null);
-  const width = reduceWidth;
-  const isBottom = position === "bottom" ? "items-end pb-2 !bg-black/10" : "";
-  const crossBtnColor = crossColor ?? "text-base-content";
-  const hideScrollBar = !showScrollBar ? "hide-scrollbar" : "";
-
-  // Keep bottom-sheet modals above the mobile virtual keyboard by tracking the
-  // visual viewport (which shrinks when the keyboard opens) and adjusting the
-  // dialog's height/top to match, so the modal never slides behind the keyboard.
-  useEffect(() => {
-    if (!isOpen || position !== "bottom" || !window.visualViewport) return;
-    const vp = window.visualViewport;
-
-    const updatePosition = () => {
-      if (!dialogRef.current) return;
-      dialogRef.current.style.height = `${vp.height}px`;
-      dialogRef.current.style.top = `${vp.offsetTop}px`;
-    };
-
-    updatePosition();
-    vp.addEventListener("resize", updatePosition);
-    vp.addEventListener("scroll", updatePosition);
-
-    return () => {
-      vp.removeEventListener("resize", updatePosition);
-      vp.removeEventListener("scroll", updatePosition);
-    };
-  }, [isOpen, position]);
+  const isBottom = position === "bottom";
 
   return (
-    <>
-      {isOpen && (
-        <dialog
-          ref={dialogRef}
-          id={id || "selectSignerModal"}
-          className={`${isBottom} op-modal op-modal-open`}
-          style={{
-            overlay: { zIndex: 1000 },
-            content: { zIndex: 1001, overflow: "visible" } // Ensure modal doesn't clip content
+    <Dialog
+      id={id || "selectSignerModal"}
+      open={!!isOpen}
+      onClose={() => handleClose && handleClose()}
+      scroll="paper"
+      fullWidth
+      maxWidth={false}
+      sx={{
+        zIndex: 1300,
+        ...(isBottom && {
+          "& .MuiDialog-container": { alignItems: "flex-end" }
+        })
+      }}
+      slotProps={{
+        paper: {
+          className: reduceWidth || undefined,
+          sx: {
+            position: "relative",
+            overflow: "visible",
+            fontSize: "0.875rem",
+            width: reduceWidth ? undefined : { xs: "92vw", md: 500 },
+            maxWidth: "96vw",
+            m: isBottom ? 0 : 2,
+            ...(isBottom && {
+              width: "100%",
+              maxWidth: "100%",
+              borderBottomLeftRadius: 0,
+              borderBottomRightRadius: 0
+            })
+          }
+        }
+      }}
+    >
+      {isLoader && (
+        <Box
+          sx={{
+            position: "absolute",
+            inset: 0,
+            zIndex: 999,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            bgcolor: "rgba(0,0,0,0.3)",
+            borderRadius: "inherit"
           }}
         >
-          {isLoader && (
-            <div className="absolute z-[999] h-full w-full flex justify-center items-center bg-black bg-opacity-30">
-              <Loader />
-            </div>
-          )}
-          <div
-            className={`${width || "md:min-w-[500px]"} op-modal-box p-0 max-h-90 overflow-y-auto ${hideScrollBar} text-sm`}
-          >
-            {showHeader && (
-              <>
-                {title && (
-                  <h3 className="text-base-content text-left font-bold text-lg pt-[15px] px-[20px]">
-                    {title}
-                    {helpText && (
-                      <span className="ml-0.5 text-sm font-medium">
-                        <Tooltip id={title} message={t(helpText)} />
-                      </span>
-                    )}
-                  </h3>
-                )}
-                {showClose && (
-                  <button
-                    className={`${crossBtnColor} op-btn op-btn-sm op-btn-circle op-btn-ghost absolute right-2 top-2 z-40`}
-                    onClick={() => handleClose && handleClose()}
-                  >
-                    ✕
-                  </button>
-                )}
-              </>
-            )}
-            <div>{children}</div>
-          </div>
-        </dialog>
+          <Loader />
+        </Box>
       )}
-    </>
+
+      {showHeader && (title || showClose) && (
+        <>
+          {title && (
+            <DialogTitle
+              sx={{
+                fontWeight: 700,
+                fontSize: "1.125rem",
+                color: "text.primary",
+                pr: 6
+              }}
+            >
+              {title}
+              {helpText && (
+                <Box component="span" sx={{ ml: 0.5, fontSize: "0.875rem" }}>
+                  <Tooltip id={title} message={t(helpText)} />
+                </Box>
+              )}
+            </DialogTitle>
+          )}
+          {showClose && (
+            <IconButton
+              aria-label="close"
+              onClick={() => handleClose && handleClose()}
+              sx={{
+                position: "absolute",
+                right: 8,
+                top: 8,
+                zIndex: 40,
+                color: crossColor || "text.primary"
+              }}
+            >
+              <CloseIcon fontSize="small" />
+            </IconButton>
+          )}
+        </>
+      )}
+
+      <Box
+        sx={{
+          overflowY: "auto",
+          ...(showScrollBar
+            ? {}
+            : {
+                scrollbarWidth: "none",
+                "&::-webkit-scrollbar": { display: "none" }
+              })
+        }}
+      >
+        {children}
+      </Box>
+    </Dialog>
   );
 };
 

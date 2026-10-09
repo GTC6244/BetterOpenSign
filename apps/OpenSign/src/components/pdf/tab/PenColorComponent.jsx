@@ -1,13 +1,16 @@
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
+import Box from "@mui/material/Box";
 
 const ALLOWED_COLORS = ["blue", "red", "black"];
 
-const COLOR_CLASS = {
-  blue: "text-blue-600",
-  red: "text-red-600",
-  black: "text-black",
-  white: "text-white"
+// Pen ink colors — these are the literal ink colors the signer picks, not
+// theme roles, so they map to concrete CSS color keywords.
+const COLOR_VALUE = {
+  blue: "blue",
+  red: "red",
+  black: "black",
+  white: "white"
 };
 
 function PenColorComponent({
@@ -34,29 +37,48 @@ function PenColorComponent({
     return filtered.length ? [...new Set(filtered)] : ALLOWED_COLORS;
   }, [providedColors]);
 
-  const PEN_SIZE = penSize === "sm" ? "text-[14px]" : "text-[16px]";
+  const penFontSize = penSize === "sm" ? "14px" : "16px";
   return (
-    <div
-      className={`flex flex-row items-center m-[5px] ${penSize === "sm" ? "gap-2" : "gap-3"}`}
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "row",
+        alignItems: "center",
+        m: "5px",
+        gap: penSize === "sm" ? 1 : 1.5
+      }}
     >
-      {!hideLabel && <span className="text-base-content">{t("options")}</span>}
+      {!hideLabel && (
+        <Box component="span" sx={{ color: "text.primary" }}>
+          {t("options")}
+        </Box>
+      )}
       {pensList.map((color) => {
         const selected = penColor === color;
         return (
-          <i
+          <Box
+            component="i"
             key={color}
             role="button"
             tabIndex={0}
             aria-label={`Select ${color} pen`}
+            className="fa-light fa-pen-nib"
             onClick={() => {
               setPenColor?.(color);
               convertToImg && convertToImg?.(fontSelect, typedSignature, color);
             }}
-            className={`${COLOR_CLASS[color] || "text-base-content"} ${selected ? "border-current" : "border-white"} border-b-[2px] pb-0.5 cursor-pointer ${PEN_SIZE} fa-light fa-pen-nib`}
-          ></i>
+            sx={{
+              color: COLOR_VALUE[color] || "text.primary",
+              borderBottom: "2px solid",
+              borderColor: selected ? "currentColor" : "transparent",
+              pb: "2px",
+              cursor: "pointer",
+              fontSize: penFontSize
+            }}
+          />
         );
       })}
-    </div>
+    </Box>
   );
 }
 export default PenColorComponent;

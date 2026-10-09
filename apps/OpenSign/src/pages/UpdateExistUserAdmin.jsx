@@ -5,6 +5,12 @@ import { NavLink, useNavigate } from "react-router";
 import Alert from "../primitives/Alert";
 import { useTranslation } from "react-i18next";
 import { emailRegex } from "../constant/const";
+import Box from "@mui/material/Box";
+import Card from "@mui/material/Card";
+import Typography from "@mui/material/Typography";
+import Button from "@mui/material/Button";
+import TextField from "@mui/material/TextField";
+import Link from "@mui/material/Link";
 const UpdateExistUserAdmin = () => {
   const appName =
     "OpenSign™";
@@ -71,52 +77,109 @@ const UpdateExistUserAdmin = () => {
     }
   };
   return (
-    <div className="h-screen flex justify-center">
+    <Box sx={{ height: "100vh", display: "flex", justifyContent: "center" }}>
       {isAlert.msg && <Alert type={isAlert.type}>{isAlert.msg}</Alert>}
       {loader ? (
-        <div className="text-[grey] flex justify-center items-center text-lg md:text-2xl">
+        <Box
+          sx={{
+            color: "text.secondary",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            fontSize: { xs: "1.125rem", md: "1.5rem" }
+          }}
+        >
           <Loader />
-        </div>
+        </Box>
       ) : (
         <>
           {errMsg ? (
-            <div className="text-[grey] flex justify-center items-center text-lg md:text-2xl">
+            <Box
+              sx={{
+                color: "text.secondary",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                fontSize: { xs: "1.125rem", md: "1.5rem" }
+              }}
+            >
               {errMsg}
-            </div>
+            </Box>
           ) : (
-            <div className="w-[95%] md:w-[500px]">
+            <Box sx={{ width: { xs: "95%", md: "500px" } }}>
               <form onSubmit={handleSubmit}>
-                <div className="w-full my-4 op-card bg-base-100 shadow-md outline outline-1 outline-slate-300/50 overflow-hidden">
+                <Card
+                  sx={{
+                    width: "100%",
+                    my: 2,
+                    boxShadow: 3,
+                    overflow: "hidden",
+                    position: "relative"
+                  }}
+                >
                   {isSubmitLoading && (
-                    <div className="absolute z-40 w-full h-full flex justify-center bg-black/30">
+                    <Box
+                      sx={{
+                        position: "absolute",
+                        zIndex: 40,
+                        width: "100%",
+                        height: "100%",
+                        display: "flex",
+                        justifyContent: "center",
+                        bgcolor: "rgba(0,0,0,0.3)"
+                      }}
+                    >
                       <Loader />
-                    </div>
+                    </Box>
                   )}
-                  <h2 className="text-[30px] text-center mt-3 font-medium">
-                    {t("opensign-setup", { appName })}
-                  </h2>
-                  <NavLink
-                    to="https://discord.com/invite/xe9TDuyAyj"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-center text-sm mt-1 text-[blue] cursor-pointer"
+                  <Typography
+                    component="h2"
+                    sx={{
+                      fontSize: "30px",
+                      textAlign: "center",
+                      mt: 1.5,
+                      fontWeight: 500
+                    }}
                   >
-                    {t("join-discord")}
-                    <i
-                      aria-hidden="true"
-                      className="fa-brands fa-discord ml-1"
-                    ></i>
-                    {/* <span className="fa-sr-only">OpenSign&apos;s Discord</span> */}
-                  </NavLink>
-                  <div className="px-6 py-3 text-xs">
-                    <label>
+                    {t("opensign-setup", { appName })}
+                  </Typography>
+                  <Box sx={{ textAlign: "center" }}>
+                    <Link
+                      component={NavLink}
+                      to="https://discord.com/invite/xe9TDuyAyj"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      sx={{
+                        display: "inline-block",
+                        fontSize: "0.875rem",
+                        mt: 0.5,
+                        cursor: "pointer"
+                      }}
+                    >
+                      {t("join-discord")}
+                      <i
+                        aria-hidden="true"
+                        className="fa-brands fa-discord ml-1"
+                      ></i>
+                    </Link>
+                  </Box>
+                  <Box sx={{ px: 3, py: 1.5 }}>
+                    <Typography
+                      component="label"
+                      sx={{ fontSize: "0.75rem" }}
+                    >
                       {t("email")}{" "}
-                      <span className="text-[red] text-[13px]">*</span>
-                    </label>
-                    <input
+                      <Box
+                        component="span"
+                        sx={{ color: "error.main", fontSize: "13px" }}
+                      >
+                        *
+                      </Box>
+                    </Typography>
+                    <TextField
                       id="email"
                       type="email"
-                      className="op-input op-input-bordered op-input-sm focus:outline-none hover:border-base-content w-full text-xs"
+                      fullWidth
                       value={formdata.email}
                       onChange={(e) =>
                         setFormdata((prev) => ({
@@ -126,20 +189,32 @@ const UpdateExistUserAdmin = () => {
                             ?.replace(/\s/g, "")
                         }))
                       }
-                      onInvalid={(e) =>
-                        e.target.setCustomValidity(t("input-required"))
-                      }
-                      onInput={(e) => e.target.setCustomValidity("")}
-                      required
+                      slotProps={{
+                        htmlInput: {
+                          required: true,
+                          onInvalid: (e) =>
+                            e.target.setCustomValidity(t("input-required")),
+                          onInput: (e) => e.target.setCustomValidity("")
+                        }
+                      }}
+                      sx={{ mt: 0.5 }}
                     />
-                    <hr className="my-2 border-none" />
-                    <label>
+                    <Box sx={{ my: 2 }} />
+                    <Typography
+                      component="label"
+                      sx={{ fontSize: "0.75rem" }}
+                    >
                       {t("master-key")}{" "}
-                      <span className="text-[red] text-[13px]">*</span>
-                    </label>
-                    <input
+                      <Box
+                        component="span"
+                        sx={{ color: "error.main", fontSize: "13px" }}
+                      >
+                        *
+                      </Box>
+                    </Typography>
+                    <TextField
                       type="text"
-                      className="op-input op-input-bordered op-input-sm focus:outline-none hover:border-base-content w-full text-xs"
+                      fullWidth
                       value={formdata.masterkey}
                       onChange={(e) =>
                         setFormdata((prev) => ({
@@ -147,29 +222,34 @@ const UpdateExistUserAdmin = () => {
                           masterkey: e.target.value
                         }))
                       }
-                      onInvalid={(e) =>
-                        e.target.setCustomValidity(t("input-required"))
-                      }
-                      onInput={(e) => e.target.setCustomValidity("")}
-                      required
+                      slotProps={{
+                        htmlInput: {
+                          required: true,
+                          onInvalid: (e) =>
+                            e.target.setCustomValidity(t("input-required")),
+                          onInput: (e) => e.target.setCustomValidity("")
+                        }
+                      }}
+                      sx={{ mt: 0.5 }}
                     />
-                  </div>
-                  <div className="mx-4 text-center text-xs font-bold mb-3">
-                    <button
+                  </Box>
+                  <Box sx={{ mx: 2, textAlign: "center", mb: 1.5 }}>
+                    <Button
                       type="submit"
-                      className="op-btn op-btn-primary w-full"
+                      variant="contained"
+                      fullWidth
                       disabled={loader}
                     >
                       {loader ? t("loading") : t("next")}
-                    </button>
-                  </div>
-                </div>
+                    </Button>
+                  </Box>
+                </Card>
               </form>
-            </div>
+            </Box>
           )}
         </>
       )}
-    </div>
+    </Box>
   );
 };
 

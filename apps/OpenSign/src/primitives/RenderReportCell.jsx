@@ -1,6 +1,8 @@
 import { useTranslation } from "react-i18next";
 import { formatDateToDdMmmYyyy } from "../constant/Utils";
 import SignerCell from "./SignerCell";
+import Link from "@mui/material/Link";
+import Box from "@mui/material/Box";
 
 function isValidDateString(str) {
   const date = new Date(str);
@@ -52,9 +54,9 @@ export const RenderReportCell = ({
         <td key={col} className="p-2 min-w-56 max-w-56">
           <div className="font-semibold break-words">{rowData?.Name}</div>
           {rowData?.ExpiryDate?.iso && (
-            <div className="text-gray-500">
+            <Box sx={{ color: "text.secondary" }}>
               {t("expires")} {formatDateToDdMmmYyyy(rowData?.ExpiryDate?.iso)}
-            </div>
+            </Box>
           )}
         </td>
       );
@@ -91,13 +93,15 @@ export const RenderReportCell = ({
     case "File":
       return (
         <td key={col} className="p-2 text-center">
-          <button
+          <Link
+            component="button"
+            underline="hover"
+            color="primary"
             onClick={() => handleDownload(rowData)}
-            className="op-link op-link-primary"
             title={t("download")}
           >
             {rowData?.URL ? t("download") : "-"}
-          </button>
+          </Link>
         </td>
       );
     case "Owner":
@@ -171,11 +175,19 @@ export const RenderReportCell = ({
       return (
         <td key={col} className="p-2 text-center">
           {Array.isArray(rowData[col]) ? (
-            <div className="flex flex-row flex-wrap gap-1 justify-center">
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "row",
+                flexWrap: "wrap",
+                gap: 0.5,
+                justifyContent: "center"
+              }}
+            >
               {rowData[col].map((x, i) => (
                 <span key={i}>{formatRow(x)}</span>
               ))}
-            </div>
+            </Box>
           ) : (
             formatRow(rowData[col])
           )}

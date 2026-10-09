@@ -6,6 +6,10 @@ import {
 import axios from "axios";
 import Loader from "../../primitives/Loader";
 import { useTranslation } from "react-i18next";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Divider from "@mui/material/Divider";
+import SendIcon from "@mui/icons-material/Send";
 import {
   emailRegex,
 } from "../../constant/const";
@@ -559,27 +563,47 @@ const BulkSendUi = (props) => {
 
   if (isLoader) {
     return (
-      <div className="w-full h-[100px] flex justify-center items-center z-[999]">
+      <Box
+        sx={{
+          width: "100%",
+          height: 100,
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          zIndex: 999
+        }}
+      >
         <Loader />
-      </div>
+      </Box>
     );
   }
 
+  const alertBoxSx = {
+    p: 1.5,
+    width: "100%",
+    fontSize: { xs: "0.875rem", md: "1rem" },
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    color: "text.primary",
+    bgcolor: "background.paper"
+  };
+
   return (
-    <div className="relative">
+    <Box sx={{ position: "relative" }}>
       {props.Placeholders?.length > 0 ? (
         isSignatureExist ? (
           isVacantRoles ? (
             <>
-              <div className="border-t mt-3" />
+              <Divider sx={{ mt: 1.5 }} />
               {/* Wizard header */}
-              <div className="px-6 py-3">
+              <Box sx={{ px: 3, py: 1.5 }}>
                 <WizardHeader
                   steps={stepsList}
                   step={step}
                   // onStepClick={(i) => i <= step && setStep(i)}
                 />
-              </div>
+              </Box>
 
               {stepKey === "prefill" && (
                 <PrefillWidgets
@@ -594,29 +618,48 @@ const BulkSendUi = (props) => {
               {stepKey === "recipients" && (
                 <>
                   <form onSubmit={handleSubmit}>
-                    <div className="min-h-max max-h-[250px] overflow-auto">
+                    <Box
+                      sx={{
+                        minHeight: "max-content",
+                        maxHeight: 250,
+                        overflow: "auto"
+                      }}
+                    >
                       {
                           forms?.length > 0 && (
-                            <div className="mx-4">
+                            <Box sx={{ mx: 2 }}>
                               <Table
                                 headers={headers}
                                 rowData={forms}
                                 handleInputChange={handleInputChange}
                                 handleWidgetDetails={handleWidgetDetails}
                               />
-                            </div>
+                            </Box>
                           )
                       }
-                    </div>
-                    <div className="flex flex-row flex-wrap pb-3 pt-2 px-3 gap-3 justify-center">
-                      <button
+                    </Box>
+                    <Box
+                      sx={{
+                        display: "flex",
+                        flexDirection: "row",
+                        flexWrap: "wrap",
+                        pb: 1.5,
+                        pt: 1,
+                        px: 1.5,
+                        gap: 1.5,
+                        justifyContent: "center"
+                      }}
+                    >
+                      <Button
                         type="submit"
-                        className="op-btn op-btn-accent w-[150px] focus:outline-none"
+                        variant="contained"
+                        color="secondary"
+                        startIcon={<SendIcon />}
+                        sx={{ width: 150 }}
                       >
-                        <i className="fa-light fa-paper-plane"></i>
-                        <span>{t("send")}</span>
-                      </button>
-                    </div>
+                        {t("send")}
+                      </Button>
+                    </Box>
                   </form>
                 </>
               )}
@@ -629,21 +672,15 @@ const BulkSendUi = (props) => {
               )}
             </>
           ) : (
-            <div className="text-black p-3 bg-white w-full text-sm md:text-base flex justify-center items-center">
-              {t("quick-send-alert-1")}
-            </div>
+            <Box sx={alertBoxSx}>{t("quick-send-alert-1")}</Box>
           )
         ) : (
-          <div className="text-black p-3 bg-white w-full text-sm md:text-base flex justify-center items-center">
-            {t("quick-send-alert-2")}
-          </div>
+          <Box sx={alertBoxSx}>{t("quick-send-alert-2")}</Box>
         )
       ) : (
-        <div className="text-black p-3 bg-white w-full text-sm md:text-base flex justify-center items-center">
-          {t("quick-send-alert-3")}
-        </div>
+        <Box sx={alertBoxSx}>{t("quick-send-alert-3")}</Box>
       )}
-    </div>
+    </Box>
   );
 };
 

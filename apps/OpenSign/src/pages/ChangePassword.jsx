@@ -2,6 +2,14 @@ import { useState } from "react";
 import Parse from "parse";
 import { Navigate } from "react-router";
 import { useTranslation } from "react-i18next";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import Button from "@mui/material/Button";
+import TextField from "@mui/material/TextField";
+import IconButton from "@mui/material/IconButton";
+import InputAdornment from "@mui/material/InputAdornment";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
 
 function ChangePassword() {
   const { t } = useTranslation();
@@ -83,128 +91,172 @@ function ChangePassword() {
     return <Navigate to="/" />;
   }
   return (
-    <div className="w-full bg-base-100 text-base-content shadow rounded-box p-2">
-      <div className="text-xl font-bold border-b-[1px] border-gray-300">
+    <Box
+      sx={{
+        width: "100%",
+        bgcolor: "surface.main",
+        color: "surface.onMain",
+        boxShadow: 1,
+        borderRadius: 3,
+        p: 1
+      }}
+    >
+      <Typography
+        sx={{
+          fontSize: "1.25rem",
+          fontWeight: 700,
+          borderBottom: "1px solid",
+          borderColor: "divider"
+        }}
+      >
         {t("change-password")}
-      </div>
-      <div className="m-2">
-        <form onSubmit={handleSubmit} className=" flex flex-col gap-y-2">
-          <div>
-            <label htmlFor="currentpassword" className="block text-xs ml-1">
-              {t("current-password")}
-            </label>
-            <input
-              type="password"
-              name="currentpassword"
-              value={currentpassword}
-              onChange={(e) => setCurrentPassword(e.target.value)}
-              className="op-input op-input-bordered op-input-sm text-xs w-full"
-              placeholder={t("current-password")}
-              onInvalid={(e) => e.target.setCustomValidity(t("input-required"))}
-              onInput={(e) => e.target.setCustomValidity("")}
-              required
-            />
-          </div>
-          <div>
-            <label htmlFor="newpassword" className="text-xs block ml-1">
-              {t("new-password")}
-            </label>
-            <div className="relative">
-              <input
-                type={showNewPassword ? "text" : "password"}
-                name="newpassword"
-                value={newpassword}
-                onChange={(e) => setnewpassword(e.target.value)}
-                className="op-input op-input-bordered op-input-sm text-xs w-full"
-                placeholder={t("new-password")}
-                onInvalid={(e) =>
-                  e.target.setCustomValidity(t("input-required"))
-                }
-                onInput={(e) => e.target.setCustomValidity("")}
-                required
-              />
-              <span
-                className={`absolute top-[50%] right-[10px] -translate-y-[50%] cursor-pointer text-base-content`}
-                onClick={toggleNewPasswordVisibility}
-              >
-                {showNewPassword ? (
-                  <i className="fa fa-eye-slash" /> // Close eye icon
-                ) : (
-                  <i className="fa fa-eye" /> // Open eye icon
-                )}
-              </span>
-            </div>
-          </div>
-          <div>
-            <label htmlFor="confirmpassword" className="text-xs block ml-1">
-              {t("confirm-password")}
-            </label>
-            <div className="relative">
-              <input
-                type={showConfirmPassword ? "text" : "password"}
-                name="confirmpassword"
-                className="op-input op-input-bordered op-input-sm text-xs w-full"
-                value={confirmpassword}
-                onChange={handlePasswordChange}
-                placeholder={t("confirm-password")}
-                onInvalid={(e) =>
-                  e.target.setCustomValidity(t("input-required"))
-                }
-                onInput={(e) => e.target.setCustomValidity("")}
-                required
-              />
-              <span
-                className={`absolute top-[50%] right-[10px] -translate-y-[50%] cursor-pointer text-base-content`}
-                onClick={toggleConfirmPasswordVisibility}
-              >
-                {showConfirmPassword ? (
-                  <i className="fa fa-eye-slash" /> // Close eye icon
-                ) : (
-                  <i className="fa fa-eye" /> // Open eye icon
-                )}
-              </span>
-            </div>
-          </div>
+      </Typography>
+      <Box sx={{ m: 1 }}>
+        <Box
+          component="form"
+          onSubmit={handleSubmit}
+          sx={{ display: "flex", flexDirection: "column", gap: 1 }}
+        >
+          <TextField
+            label={t("current-password")}
+            type="password"
+            name="currentpassword"
+            value={currentpassword}
+            onChange={(e) => setCurrentPassword(e.target.value)}
+            placeholder={t("current-password")}
+            fullWidth
+            slotProps={{
+              htmlInput: {
+                required: true,
+                onInvalid: (e) =>
+                  e.target.setCustomValidity(t("input-required")),
+                onInput: (e) => e.target.setCustomValidity("")
+              }
+            }}
+          />
+          <TextField
+            label={t("new-password")}
+            type={showNewPassword ? "text" : "password"}
+            name="newpassword"
+            value={newpassword}
+            onChange={(e) => setnewpassword(e.target.value)}
+            placeholder={t("new-password")}
+            fullWidth
+            slotProps={{
+              htmlInput: {
+                required: true,
+                onInvalid: (e) =>
+                  e.target.setCustomValidity(t("input-required")),
+                onInput: (e) => e.target.setCustomValidity("")
+              },
+              input: {
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="toggle new password visibility"
+                      onClick={toggleNewPasswordVisibility}
+                      edge="end"
+                      size="small"
+                    >
+                      {showNewPassword ? (
+                        <VisibilityOff fontSize="small" />
+                      ) : (
+                        <Visibility fontSize="small" />
+                      )}
+                    </IconButton>
+                  </InputAdornment>
+                )
+              }
+            }}
+          />
+          <TextField
+            label={t("confirm-password")}
+            type={showConfirmPassword ? "text" : "password"}
+            name="confirmpassword"
+            value={confirmpassword}
+            onChange={handlePasswordChange}
+            placeholder={t("confirm-password")}
+            fullWidth
+            slotProps={{
+              htmlInput: {
+                required: true,
+                onInvalid: (e) =>
+                  e.target.setCustomValidity(t("input-required")),
+                onInput: (e) => e.target.setCustomValidity("")
+              },
+              input: {
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="toggle confirm password visibility"
+                      onClick={toggleConfirmPasswordVisibility}
+                      edge="end"
+                      size="small"
+                    >
+                      {showConfirmPassword ? (
+                        <VisibilityOff fontSize="small" />
+                      ) : (
+                        <Visibility fontSize="small" />
+                      )}
+                    </IconButton>
+                  </InputAdornment>
+                )
+              }
+            }}
+          />
           {confirmpassword.length > 0 && (
-            <div className="mt-1 text-[11px]">
+            <Box sx={{ mt: 0.5, fontSize: "11px" }}>
               {newpassword.length > 0 && (
-                <p
-                  className={`${newpassword === confirmpassword ? "text-green-600" : "text-red-600"} text-[11px] mt-1`}
+                <Typography
+                  sx={{
+                    fontSize: "11px",
+                    mt: 0.5,
+                    color:
+                      newpassword === confirmpassword
+                        ? "success.main"
+                        : "error.main"
+                  }}
                 >
                   {newpassword === confirmpassword ? "✓" : "✗"}{" "}
                   {t("password-match-length")}
-                </p>
+                </Typography>
               )}
-              <p
-                className={`${lengthValid ? "text-green-600" : "text-red-600"}`}
+              <Typography
+                sx={{
+                  fontSize: "11px",
+                  color: lengthValid ? "success.main" : "error.main"
+                }}
               >
                 {lengthValid ? "✓" : "✗"} {t("password-length")}
-              </p>
-              <p
-                className={`${
-                  caseDigitValid ? "text-green-600" : "text-red-600"
-                }`}
+              </Typography>
+              <Typography
+                sx={{
+                  fontSize: "11px",
+                  color: caseDigitValid ? "success.main" : "error.main"
+                }}
               >
                 {caseDigitValid ? "✓" : "✗"} {t("password-case")}
-              </p>
-              <p
-                className={`${
-                  specialCharValid ? "text-green-600" : "text-red-600"
-                }`}
+              </Typography>
+              <Typography
+                sx={{
+                  fontSize: "11px",
+                  color: specialCharValid ? "success.main" : "error.main"
+                }}
               >
                 {specialCharValid ? "✓" : "✗"} {t("password-special-char")}
-              </p>
-            </div>
+              </Typography>
+            </Box>
           )}
-          <button
+          <Button
             type="submit"
-            className="op-btn op-btn-primary shadow-md mt-2"
+            variant="contained"
+            sx={{ boxShadow: 2, mt: 1, alignSelf: "flex-start" }}
           >
             {t("change-password")}
-          </button>
-        </form>
-      </div>
-    </div>
+          </Button>
+        </Box>
+      </Box>
+    </Box>
   );
 }
 

@@ -1,5 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
+import Box from "@mui/material/Box";
 import MailTemplateEditor from "../MailTemplateEditor";
 
 const EmailTab = () => {
@@ -8,14 +9,14 @@ const EmailTab = () => {
     tenantInfo
   } = useSelector((state) => state.user);
   return (
-    <div className="flex flex-col mb-4">
+    <Box sx={{ display: "flex", flexDirection: "column", mb: 2 }}>
         <MailTemplateEditor
           info={
                 tenantInfo
           }
           tenantId={tenantInfo?.objectId}
         />
-    </div>
+    </Box>
   );
 };
 

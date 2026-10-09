@@ -1,6 +1,14 @@
 import { useEffect, useState } from "react";
 import Parse from "parse";
 import Loader from "../primitives/Loader";
+import Box from "@mui/material/Box";
+import Paper from "@mui/material/Paper";
+import TextField from "@mui/material/TextField";
+import MenuItem from "@mui/material/MenuItem";
+import Button from "@mui/material/Button";
+import IconButton from "@mui/material/IconButton";
+import InputAdornment from "@mui/material/InputAdornment";
+import Typography from "@mui/material/Typography";
 import {
   copytoData,
   usertimezone
@@ -153,135 +161,188 @@ const AddUser = (props) => {
     copytoData(text);
     props.showAlert("success", t("copied"));
   };
+  const labelSx = {
+    display: "block",
+    fontSize: "0.75rem",
+    fontWeight: 600,
+    mb: 0.5
+  };
+  const requiredMark = (
+    <Box component="span" sx={{ color: "error.main", fontSize: "13px" }}>
+      {" *"}
+    </Box>
+  );
+
   return (
-    <div className="shadow-md rounded-box my-[1px] p-3 bg-base-100 relative">
+    <Paper
+      elevation={2}
+      sx={{ borderRadius: 3, my: "1px", p: 1.5, position: "relative" }}
+    >
       {isFormLoader && (
-        <div className="absolute w-full h-full inset-0 flex justify-center items-center bg-base-content/30 z-50">
+        <Box
+          sx={{
+            position: "absolute",
+            inset: 0,
+            width: "100%",
+            height: "100%",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            bgcolor: "rgba(0,0,0,0.3)",
+            zIndex: 50
+          }}
+        >
           <Loader />
-        </div>
+        </Box>
       )}
-              <div className="w-full mx-auto">
-                    <form onSubmit={handleSubmit}>
-                      <div className="mb-3">
-                        <label
-                          htmlFor="name"
-                          className="block text-xs font-semibold"
-                        >
-                          {t("name")}
-                          <span className="text-[red] text-[13px]"> *</span>
-                        </label>
-                        <input
-                          type="text"
-                          name="name"
-                          value={formdata.name}
-                          onChange={(e) => handleChange(e)}
-                          onInvalid={(e) =>
-                            e.target.setCustomValidity(t("input-required"))
-                          }
-                          onInput={(e) => e.target.setCustomValidity("")}
-                          required
-                          className="op-input op-input-bordered op-input-sm focus:outline-none hover:border-base-content w-full text-xs"
-                          placeholder={t("enter-name")}
-                        />
-                      </div>
-                      <div className="mb-3">
-                        <label
-                          htmlFor="email"
-                          className="block text-xs font-semibold"
-                        >
-                          {t("email")}
-                          <span className="text-[red] text-[13px]"> *</span>
-                        </label>
-                        <input
-                          type="email"
-                          name="email"
-                          value={formdata.email}
-                          onChange={(e) => handleChange(e)}
-                          required
-                          onInvalid={(e) =>
-                            e.target.setCustomValidity(t("input-required"))
-                          }
-                          onInput={(e) => e.target.setCustomValidity("")}
-                          className="op-input op-input-bordered op-input-sm focus:outline-none hover:border-base-content w-full text-xs"
-                          placeholder={t("enter-email")}
-                        />
-                      </div>
-                      <div className="mb-3">
-                        <label className="block text-xs font-semibold">
-                          {t("password")}
-                        </label>
-                        <div className="flex justify-between items-center op-input op-input-bordered op-input-sm text-base-content w-full h-full text-[13px]">
-                          <div className="break-all">{formdata?.password}</div>
-                          <i
-                            onClick={() => copytoclipboard(formdata?.password)}
-                            className="fa-light fa-copy rounded-full hover:bg-base-300 p-[8px] cursor-pointer "
-                          ></i>
-                        </div>
-                        <div className="text-[12px] ml-2 mb-0 text-[red] select-none">
-                          {t("password-generated")}
-                        </div>
-                      </div>
-                      <div className="mb-3">
-                        <label
-                          htmlFor="phone"
-                          className="block text-xs font-semibold"
-                        >
-                          {t("phone")}
-                        </label>
-                        <input
-                          type="text"
-                          name="phone"
-                          placeholder={t("phone-optional")}
-                          value={formdata.phone}
-                          onChange={(e) => handleChange(e)}
-                          className="op-input op-input-bordered op-input-sm focus:outline-none hover:border-base-content w-full text-xs"
-                        />
-                      </div>
-                      <div className="mb-3">
-                        <label
-                          htmlFor="phone"
-                          className="block text-xs font-semibold"
-                        >
-                          {t("Role")}
-                          <span className="text-[red] text-[13px]"> *</span>
-                        </label>
-                        <select
-                          value={formdata.role}
-                          onChange={(e) => handleChange(e)}
-                          name="role"
-                          className="op-select op-select-bordered op-select-sm focus:outline-none hover:border-base-content w-full text-xs"
-                          onInvalid={(e) =>
-                            e.target.setCustomValidity(t("input-required"))
-                          }
-                          onInput={(e) => e.target.setCustomValidity("")}
-                          required
-                        >
-                          <option defaultValue={""} value={""}>
-                            {t("Select")}
-                          </option>
-                          {role.length > 0 &&
-                            role.map((x) => (
-                              <option key={x} value={x}>
-                                {x}
-                              </option>
-                            ))}
-                        </select>
-                      </div>
-                      <div className="flex items-center mt-3 gap-2 text-white">
-                        <button type="submit" className="op-btn op-btn-primary">
-                          {t("submit")}
-                        </button>
-                        <div
-                          type="button"
-                          onClick={() => handleReset()}
-                          className="op-btn op-btn-secondary"
-                        >
-                          {t("cancel")}
-                        </div>
-                      </div>
-                    </form>
-              </div>
-    </div>
+      <Box sx={{ width: "100%", mx: "auto" }}>
+        <form onSubmit={handleSubmit}>
+          <Box sx={{ mb: 1.5 }}>
+            <Box component="label" htmlFor="name" sx={labelSx}>
+              {t("name")}
+              {requiredMark}
+            </Box>
+            <TextField
+              type="text"
+              name="name"
+              value={formdata.name}
+              onChange={(e) => handleChange(e)}
+              required
+              fullWidth
+              size="small"
+              placeholder={t("enter-name")}
+              slotProps={{
+                htmlInput: {
+                  onInvalid: (e) =>
+                    e.target.setCustomValidity(t("input-required")),
+                  onInput: (e) => e.target.setCustomValidity(""),
+                  sx: { fontSize: "0.75rem" }
+                }
+              }}
+            />
+          </Box>
+          <Box sx={{ mb: 1.5 }}>
+            <Box component="label" htmlFor="email" sx={labelSx}>
+              {t("email")}
+              {requiredMark}
+            </Box>
+            <TextField
+              type="email"
+              name="email"
+              value={formdata.email}
+              onChange={(e) => handleChange(e)}
+              required
+              fullWidth
+              size="small"
+              placeholder={t("enter-email")}
+              slotProps={{
+                htmlInput: {
+                  onInvalid: (e) =>
+                    e.target.setCustomValidity(t("input-required")),
+                  onInput: (e) => e.target.setCustomValidity(""),
+                  sx: { fontSize: "0.75rem" }
+                }
+              }}
+            />
+          </Box>
+          <Box sx={{ mb: 1.5 }}>
+            <Box component="label" sx={labelSx}>
+              {t("password")}
+            </Box>
+            <TextField
+              value={formdata?.password || ""}
+              fullWidth
+              size="small"
+              InputProps={{
+                readOnly: true,
+                sx: { fontSize: "13px", wordBreak: "break-all" },
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      size="small"
+                      onClick={() => copytoclipboard(formdata?.password)}
+                      aria-label="copy password"
+                    >
+                      <i className="fa-light fa-copy"></i>
+                    </IconButton>
+                  </InputAdornment>
+                )
+              }}
+            />
+            <Typography
+              sx={{
+                fontSize: "12px",
+                ml: 1,
+                mb: 0,
+                color: "error.main",
+                userSelect: "none"
+              }}
+            >
+              {t("password-generated")}
+            </Typography>
+          </Box>
+          <Box sx={{ mb: 1.5 }}>
+            <Box component="label" htmlFor="phone" sx={labelSx}>
+              {t("phone")}
+            </Box>
+            <TextField
+              type="text"
+              name="phone"
+              placeholder={t("phone-optional")}
+              value={formdata.phone}
+              onChange={(e) => handleChange(e)}
+              fullWidth
+              size="small"
+              slotProps={{ htmlInput: { sx: { fontSize: "0.75rem" } } }}
+            />
+          </Box>
+          <Box sx={{ mb: 1.5 }}>
+            <Box component="label" htmlFor="role" sx={labelSx}>
+              {t("Role")}
+              {requiredMark}
+            </Box>
+            <TextField
+              select
+              value={formdata.role}
+              onChange={(e) => handleChange(e)}
+              name="role"
+              required
+              fullWidth
+              size="small"
+              slotProps={{
+                htmlInput: {
+                  onInvalid: (e) =>
+                    e.target.setCustomValidity(t("input-required")),
+                  onInput: (e) => e.target.setCustomValidity("")
+                }
+              }}
+              sx={{ "& .MuiInputBase-input": { fontSize: "0.75rem" } }}
+            >
+              <MenuItem value={""}>{t("Select")}</MenuItem>
+              {role.length > 0 &&
+                role.map((x) => (
+                  <MenuItem key={x} value={x}>
+                    {x}
+                  </MenuItem>
+                ))}
+            </TextField>
+          </Box>
+          <Box sx={{ display: "flex", alignItems: "center", mt: 1.5, gap: 1 }}>
+            <Button type="submit" variant="contained">
+              {t("submit")}
+            </Button>
+            <Button
+              type="button"
+              onClick={() => handleReset()}
+              variant="contained"
+              color="secondary"
+            >
+              {t("cancel")}
+            </Button>
+          </Box>
+        </form>
+      </Box>
+    </Paper>
   );
 };
 

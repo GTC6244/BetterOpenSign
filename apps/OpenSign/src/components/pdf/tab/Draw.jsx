@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import SignatureCanvas from "react-signature-canvas";
 import { drawWidget } from "../../../constant/Utils";
 import { useSelector } from "react-redux";
+import Box from "@mui/material/Box";
 
 //this component is used for signature widget "Draw tab" and prefill user Draw widget
 function Draw(props) {
@@ -24,7 +25,7 @@ function Draw(props) {
     }
   };
   return (
-    <div className="flex justify-center">
+    <Box sx={{ display: "flex", justifyContent: "center" }}>
       <SignatureCanvas
         ref={props?.canvasRef}
         penColor={props?.penColor}
@@ -45,7 +46,7 @@ function Draw(props) {
         }
         dotSize={1}
       />
-    </div>
+    </Box>
   );
 }
 

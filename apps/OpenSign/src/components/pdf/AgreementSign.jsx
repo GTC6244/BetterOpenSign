@@ -1,6 +1,10 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import AgreementContent from "./AgreementContent";
+import Box from "@mui/material/Box";
+import Paper from "@mui/material/Paper";
+import Button from "@mui/material/Button";
+import Typography from "@mui/material/Typography";
 
 function AgreementSign(props) {
   const { t } = useTranslation();
@@ -8,38 +12,67 @@ function AgreementSign(props) {
 
   return (
     <>
-      <div className="op-modal op-modal-open absolute z-[448]">
-        <div className="w-[95%] md:w-[60%] lg:w-[40%] op-modal-box overflow-y-auto hide-scrollbar text-sm p-4">
-          <div className="flex flex-row items-center">
-            <div className="text-[11px] md:text-base text-base-content">
-              <span>{t("agree-p1")}</span>
-              <span
-                className="font-bold text-blue-600 cursor-pointer"
+      <Box
+        sx={{
+          position: "absolute",
+          inset: 0,
+          zIndex: 448,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          bgcolor: "rgba(0,0,0,0.3)"
+        }}
+      >
+        <Paper
+          className="hide-scrollbar"
+          sx={{
+            width: { xs: "95%", md: "60%", lg: "40%" },
+            maxHeight: "90%",
+            overflowY: "auto",
+            fontSize: "0.875rem",
+            p: 2
+          }}
+        >
+          <Box sx={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
+            <Typography
+              sx={{
+                fontSize: { xs: "11px", md: "1rem" },
+                color: "text.primary"
+              }}
+            >
+              <Box component="span">{t("agree-p1")}</Box>
+              <Box
+                component="span"
+                sx={{ fontWeight: 700, color: "primary.main", cursor: "pointer" }}
                 onClick={() => {
                   setIsShowAgreeTerms(true);
                 }}
               >
                 {t("agree-p2")}
-              </span>
-              <span> {t("agree-p3")}</span>
-            </div>
-          </div>
-          <div className="flex mt-3">
-            <button
+              </Box>
+              <Box component="span"> {t("agree-p3")}</Box>
+            </Typography>
+          </Box>
+          <Box sx={{ display: "flex", mt: 1.5 }}>
+            <Button
               onClick={() => {
                 props.setIsAgree(true);
                 props.showFirstWidget();
               }}
-              className="op-btn op-btn-primary op-btn-sm w-full md:w-auto"
+              variant="contained"
+              size="small"
+              sx={{ width: { xs: "100%", md: "auto" } }}
             >
               {t("agrre-button")}
-            </button>
-          </div>
-          <div className="mt-2  text-base-content">
-            <span className="text-[11px]">{t("agreement-note")}</span>
-          </div>
-        </div>
-      </div>
+            </Button>
+          </Box>
+          <Box sx={{ mt: 1, color: "text.primary" }}>
+            <Box component="span" sx={{ fontSize: "11px" }}>
+              {t("agreement-note")}
+            </Box>
+          </Box>
+        </Paper>
+      </Box>
       {isShowAgreeTerms && (
         <AgreementContent
           setIsAgree={props.setIsAgree}

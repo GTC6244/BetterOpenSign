@@ -15,6 +15,19 @@ import axios from "axios";
 import PasswordResetModal from "../primitives/PasswordResetModal";
 import { usersActions } from "../json/ReportJson";
 import { withSessionValidation } from "../utils";
+import Box from "@mui/material/Box";
+import Paper from "@mui/material/Paper";
+import Button from "@mui/material/Button";
+import Switch from "@mui/material/Switch";
+import Divider from "@mui/material/Divider";
+import Typography from "@mui/material/Typography";
+import IconButton from "@mui/material/IconButton";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
 
 const heading = ["Sr.No", "Name", "Email", "Phone", "Role", "Team", "Active"];
 const UserList = () => {
@@ -280,171 +293,291 @@ const UserList = () => {
     }
   });
   return (
-    <div className="relative">
+    <Box sx={{ position: "relative" }}>
       {isLoader && (
-        <div className="absolute w-full h-[300px] md:h-[400px] flex justify-center items-center z-30 rounded-box">
+        <Box
+          sx={{
+            position: "absolute",
+            width: "100%",
+            height: { xs: 300, md: 400 },
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            zIndex: 30,
+            borderRadius: 4
+          }}
+        >
           <Loader />
-        </div>
+        </Box>
       )}
       {Object.keys(isActLoader)?.length > 0 && (
-        <div className="absolute w-full h-full flex justify-center items-center bg-black/30 z-30 rounded-box">
+        <Box
+          sx={{
+            position: "absolute",
+            width: "100%",
+            height: "100%",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            bgcolor: "rgba(0,0,0,0.3)",
+            zIndex: 30,
+            borderRadius: 4
+          }}
+        >
           <Loader />
-        </div>
+        </Box>
       )}
 
       {
           !isLoader && (
             <>
               {isAdmin ? (
-                <div className="p-2 w-full bg-base-100 text-base-content op-card shadow-lg">
+                <Paper
+                  elevation={3}
+                  sx={{
+                    p: 1,
+                    width: "100%",
+                    bgcolor: "background.paper",
+                    color: "text.primary",
+                    borderRadius: 4
+                  }}
+                >
                   {isAlert.msg && (
                     <Alert type={isAlert.type}>{isAlert.msg}</Alert>
                   )}
-                  <div className="flex flex-row items-center justify-between my-2 mx-3 text-[20px] md:text-[23px]">
-                    <div className="font-light">
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexDirection: "row",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                      my: 1,
+                      mx: 1.5,
+                      fontSize: { xs: "20px", md: "23px" }
+                    }}
+                  >
+                    <Box sx={{ fontWeight: 300 }}>
                       {t("report-name.Users")}{" "}
-                      <span className="text-xs md:text-[13px] font-normal">
-                        <Tooltip message={t("users-from-teams")} />
-                      </span>
-                    </div>
-                    <div className="flex flex-row gap-2 items-center">
-                      <div
-                        className="cursor-pointer"
-                        onClick={() => handleModal("form")}
+                      <Box
+                        component="span"
+                        sx={{ fontSize: { xs: "0.75rem", md: "13px" }, fontWeight: 400 }}
                       >
-                        <i className="fa-light fa-square-plus text-accent text-[30px] md:text-[40px]"></i>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="w-full overflow-x-auto">
-                    <table className="op-table border-collapse w-full mb-[50px]">
-                      <thead className="text-[14px]">
-                        <tr className="border-y-[1px]">
+                        <Tooltip message={t("users-from-teams")} />
+                      </Box>
+                    </Box>
+                    <Box
+                      sx={{
+                        display: "flex",
+                        flexDirection: "row",
+                        gap: 1,
+                        alignItems: "center"
+                      }}
+                    >
+                      <IconButton
+                        color="secondary"
+                        onClick={() => handleModal("form")}
+                        aria-label={t("add-user")}
+                      >
+                        <i className="fa-light fa-square-plus"></i>
+                      </IconButton>
+                    </Box>
+                  </Box>
+                  <TableContainer sx={{ width: "100%", overflowX: "auto" }}>
+                    <Table sx={{ mb: "50px" }}>
+                      <TableHead>
+                        <TableRow>
                           {heading?.map((item, index) => (
-                            <th key={index} className="px-4 py-2">
+                            <TableCell key={index} sx={{ fontSize: "14px", fontWeight: 600 }}>
                               {t(`report-heading.${item}`)}
-                            </th>
+                            </TableCell>
                           ))}
                           {usersActions?.length > 0 && (
-                            <th className="p-2 text-transparent pointer-events-none">
+                            <TableCell
+                              sx={{ color: "transparent", pointerEvents: "none" }}
+                            >
                               {t("action")}
-                            </th>
+                            </TableCell>
                           )}
-                        </tr>
-                      </thead>
+                        </TableRow>
+                      </TableHead>
                       {userList?.length > 0 && (
-                        <tbody className="text-[12px]">
+                        <TableBody>
                           {currentList.map((item, index) => (
-                            <tr className="border-y-[1px]" key={index}>
+                            <TableRow key={index}>
                               {heading.includes("Sr.No") && (
-                                <th className="px-4 py-2">
+                                <TableCell
+                                  component="th"
+                                  scope="row"
+                                  sx={{ fontSize: "12px" }}
+                                >
                                   {startIndex + index + 1}
-                                </th>
+                                </TableCell>
                               )}
-                              <td className="px-4 py-2 font-semibold">
+                              <TableCell sx={{ fontSize: "12px", fontWeight: 600 }}>
                                 {item?.Name}{" "}
-                              </td>
-                              <td className="px-4 py-2 ">
+                              </TableCell>
+                              <TableCell sx={{ fontSize: "12px" }}>
                                 {item?.Email || "-"}
-                              </td>
-                              <td className="px-4 py-2">
+                              </TableCell>
+                              <TableCell sx={{ fontSize: "12px" }}>
                                 {item?.Phone || "-"}
-                              </td>
-                              <td className="px-4 py-2">
+                              </TableCell>
+                              <TableCell sx={{ fontSize: "12px" }}>
                                 {item?.UserRole?.split("_").pop() || "-"}
-                              </td>
-                              <td className="px-4 py-2">
+                              </TableCell>
+                              <TableCell sx={{ fontSize: "12px" }}>
                                 {formatRow(item.TeamIds)}
-                              </td>
+                              </TableCell>
                               {handleActiveToggleVisibility(item) ? (
-                                <td className="px-4 py-2 font-semibold">
-                                  <label
-                                    htmlFor={`isdisabled-${item.objectId}`}
-                                    className="cursor-pointer relative block items-center mb-0"
-                                  >
-                                    <input
-                                      id={`isdisabled-${item.objectId}`}
-                                      type="checkbox"
-                                      className="op-toggle checked:[--tglbg:#3368ff] transition-all checked:text-white"
-                                      checked={item?.IsDisabled !== true}
-                                      onChange={() => handleToggleBtn(item)}
-                                    />
-                                  </label>
+                                <TableCell sx={{ fontSize: "12px", fontWeight: 600 }}>
+                                  <Switch
+                                    id={`isdisabled-${item.objectId}`}
+                                    size="small"
+                                    checked={item?.IsDisabled !== true}
+                                    onChange={() => handleToggleBtn(item)}
+                                  />
                                   {isActiveModal[item.objectId] && (
                                     <ModalUi
                                       isOpen
                                       title={t("user-status")}
                                       handleClose={handleClose}
                                     >
-                                      <div className="m-[20px]">
-                                        <div className="text-lg font-normal text-base-content">
+                                      <Box sx={{ m: 2.5 }}>
+                                        <Typography
+                                          sx={{
+                                            fontSize: "1.125rem",
+                                            fontWeight: 400,
+                                            color: "text.primary"
+                                          }}
+                                        >
                                           {t("are-you-sure")}{" "}
                                           {item?.IsDisabled
                                             ? t("activate")
                                             : t("deactivate")}{" "}
                                           {t("this-user")}?
-                                        </div>
-                                        <hr className="bg-[#ccc] mt-4 " />
-                                        <div className="flex items-center mt-3 gap-2 text-white">
-                                          <button
+                                        </Typography>
+                                        <Divider sx={{ mt: 2 }} />
+                                        <Box
+                                          sx={{
+                                            display: "flex",
+                                            alignItems: "center",
+                                            mt: 1.5,
+                                            gap: 1
+                                          }}
+                                        >
+                                          <Button
+                                            variant="contained"
                                             onClick={() =>
                                               handleToggleSubmit(item)
                                             }
-                                            className="op-btn op-btn-primary"
                                           >
                                             {t("yes")}
-                                          </button>
-                                          <button
+                                          </Button>
+                                          <Button
+                                            variant="contained"
+                                            color="secondary"
                                             onClick={handleClose}
-                                            className="op-btn op-btn-secondary"
                                           >
                                             {t("no")}
-                                          </button>
-                                        </div>
-                                      </div>
+                                          </Button>
+                                        </Box>
+                                      </Box>
                                     </ModalUi>
                                   )}
-                                </td>
+                                </TableCell>
                               ) : (
-                                <td className="px-4 py-2 font-semibold"></td>
+                                <TableCell sx={{ fontSize: "12px", fontWeight: 600 }} />
                               )}
 
                               {isAdmin && (
-                                <td className="px-3 py-2">
-                                  <div className="text-base-content min-w-max flex flex-row gap-x-2 gap-y-1 justify-start items-center">
+                                <TableCell sx={{ fontSize: "12px" }}>
+                                  <Box
+                                    sx={{
+                                      color: "text.primary",
+                                      minWidth: "max-content",
+                                      display: "flex",
+                                      flexDirection: "row",
+                                      columnGap: 1,
+                                      rowGap: 0.5,
+                                      justifyContent: "flex-start",
+                                      alignItems: "center"
+                                    }}
+                                  >
                                     {usersActions?.length > 0 &&
                                       usersActions?.map((act, index) => (
                                         <React.Fragment key={index}>
-                                          {handleBtnVisibility(act, item) && (
-                                            <div
-                                              role="button"
-                                              data-tut={act?.selector}
-                                              onClick={() =>
-                                                handleActionBtn(act, item)
-                                              }
-                                              title={t(
-                                                `btnLabel.${act.hoverLabel}`
-                                              )}
-                                              className={
-                                                act.action !== "option"
-                                                  ? `${act?.btnColor || ""} op-btn op-btn-sm mr-1 `
-                                                  : "text-base-content focus:outline-none text-lg mr-2 relative"
-                                              }
-                                            >
-                                              <i className={act.btnIcon}></i>
-                                              {act.btnLabel && (
-                                                <span className="uppercase font-medium">
-                                                  {t(
-                                                    `btnLabel.${act.btnLabel}`
-                                                  )}
-                                                </span>
-                                              )}
-                                            </div>
-                                          )}
+                                          {handleBtnVisibility(act, item) &&
+                                            (act.action !== "option" ? (
+                                              <IconButton
+                                                size="small"
+                                                data-tut={act?.selector}
+                                                onClick={() =>
+                                                  handleActionBtn(act, item)
+                                                }
+                                                title={t(
+                                                  `btnLabel.${act.hoverLabel}`
+                                                )}
+                                                color={
+                                                  act?.btnColor?.includes(
+                                                    "secondary"
+                                                  )
+                                                    ? "secondary"
+                                                    : act?.btnColor?.includes(
+                                                          "error"
+                                                        ) ||
+                                                        act?.btnColor?.includes(
+                                                          "danger"
+                                                        )
+                                                      ? "error"
+                                                      : act?.btnColor?.includes(
+                                                            "primary"
+                                                          )
+                                                        ? "primary"
+                                                        : "default"
+                                                }
+                                              >
+                                                <i className={act.btnIcon}></i>
+                                                {act.btnLabel && (
+                                                  <Box
+                                                    component="span"
+                                                    sx={{
+                                                      textTransform: "uppercase",
+                                                      fontWeight: 500,
+                                                      ml: 0.5,
+                                                      fontSize: "0.875rem"
+                                                    }}
+                                                  >
+                                                    {t(
+                                                      `btnLabel.${act.btnLabel}`
+                                                    )}
+                                                  </Box>
+                                                )}
+                                              </IconButton>
+                                            ) : (
+                                              <Box
+                                                role="button"
+                                                data-tut={act?.selector}
+                                                onClick={() =>
+                                                  handleActionBtn(act, item)
+                                                }
+                                                title={t(
+                                                  `btnLabel.${act.hoverLabel}`
+                                                )}
+                                                sx={{
+                                                  color: "text.primary",
+                                                  fontSize: "1.125rem",
+                                                  mr: 1,
+                                                  position: "relative",
+                                                  cursor: "pointer"
+                                                }}
+                                              >
+                                                <i className={act.btnIcon}></i>
+                                              </Box>
+                                            ))}
                                         </React.Fragment>
                                       ))}
-                                  </div>
-                                </td>
+                                  </Box>
+                                </TableCell>
                               )}
                               <DeleteUserModal
                                 title={t("delete-account")}
@@ -464,61 +597,88 @@ const UserList = () => {
                                 onSubmit={submitPassword}
                                 showAlert={showAlert}
                               />
-                            </tr>
+                            </TableRow>
                           ))}
-                        </tbody>
+                        </TableBody>
                       )}
-                    </table>
-                  </div>
-                  <div className="flex flex-row justify-between items-center text-xs font-medium">
-                    <div className="op-join flex flex-wrap items-center p-2">
+                    </Table>
+                  </TableContainer>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexDirection: "row",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      fontSize: "0.75rem",
+                      fontWeight: 500
+                    }}
+                  >
+                    <Box
+                      sx={{
+                        display: "flex",
+                        flexWrap: "wrap",
+                        alignItems: "center",
+                        gap: 0.5,
+                        p: 1
+                      }}
+                    >
                       {userList.length > recordperPage && (
-                        <button
+                        <Button
+                          size="small"
+                          variant="outlined"
                           onClick={() => paginateBack()}
-                          className="op-join-item op-btn op-btn-sm"
                         >
                           {t("prev")}
-                        </button>
+                        </Button>
                       )}
                       {pageNumbers.map((x, i) => (
-                        <button
+                        <Button
                           key={i}
+                          size="small"
+                          variant={x === currentPage ? "contained" : "outlined"}
                           onClick={() => setCurrentPage(x)}
                           disabled={x === "..."}
-                          className={`${
-                            x === currentPage ? "op-btn-active" : ""
-                          } op-join-item op-btn op-btn-sm`}
                         >
                           {x}
-                        </button>
+                        </Button>
                       ))}
                       {userList.length > recordperPage && (
-                        <button
+                        <Button
+                          size="small"
+                          variant="outlined"
                           onClick={() => paginateFront()}
-                          className="op-join-item op-btn op-btn-sm"
                         >
                           {t("next")}
-                        </button>
+                        </Button>
                       )}
-                    </div>
-                  </div>
+                    </Box>
+                  </Box>
                   {userList?.length <= 0 && (
-                    <div
-                      className={`${
-                        isDashboard ? "h-[317px]" : ""
-                      } flex flex-col items-center justify-center w-ful bg-base-100 text-base-content rounded-xl py-4`}
+                    <Box
+                      sx={{
+                        height: isDashboard ? 317 : undefined,
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        width: "100%",
+                        bgcolor: "background.paper",
+                        color: "text.primary",
+                        borderRadius: 3,
+                        py: 2
+                      }}
                     >
-                      <div className="w-[60px] h-[60px] overflow-hidden">
+                      <Box sx={{ width: 60, height: 60, overflow: "hidden" }}>
                         <img
                           className="w-full h-full object-contain"
                           src={pad}
                           alt="img"
                         />
-                      </div>
-                      <div className="text-sm font-semibold">
+                      </Box>
+                      <Box sx={{ fontSize: "0.875rem", fontWeight: 600 }}>
                         {t("no-data-available")}
-                      </div>
-                    </div>
+                      </Box>
+                    </Box>
                   )}
                   <ModalUi
                     isOpen={isModal.form}
@@ -532,23 +692,39 @@ const UserList = () => {
                       setFormHeader={setFormHeader}
                     />
                   </ModalUi>
-                </div>
+                </Paper>
               ) : (
-                <div className="flex items-center justify-center h-screen w-full bg-base-100 text-base-content rounded-box">
-                  <div className="text-center">
-                    <h1 className="text-[60px] lg:text-[120px] font-semibold">
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    height: "100vh",
+                    width: "100%",
+                    bgcolor: "background.paper",
+                    color: "text.primary",
+                    borderRadius: 4
+                  }}
+                >
+                  <Box sx={{ textAlign: "center" }}>
+                    <Typography
+                      sx={{
+                        fontSize: { xs: "60px", lg: "120px" },
+                        fontWeight: 600
+                      }}
+                    >
                       404
-                    </h1>
-                    <p className="text-[30px] lg:text-[50px]">
+                    </Typography>
+                    <Typography sx={{ fontSize: { xs: "30px", lg: "50px" } }}>
                       {t("page-not-found")}
-                    </p>
-                  </div>
-                </div>
+                    </Typography>
+                  </Box>
+                </Box>
               )}
             </>
           )
       }
-    </div>
+    </Box>
   );
 };
 

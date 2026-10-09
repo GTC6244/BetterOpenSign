@@ -14,6 +14,10 @@
 import { useRef, useState } from "react";
 import ModalUi from "../primitives/ModalUi";
 import { getEnv } from "../constant/Utils";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import TextField from "@mui/material/TextField";
+import Button from "@mui/material/Button";
 
 function signBaseUrl() {
   const env = typeof getEnv === "function" ? getEnv() : null;
@@ -134,44 +138,44 @@ export default function BetterSignLogin({ isOpen, onClose, onLoggedIn }) {
       handleClose={close}
       reduceWidth="max-w-[420px]"
     >
-      <div className="px-4 py-3 text-base-content">
-        <p className="text-sm mb-3">
+      <Box sx={{ px: 2, py: 1.5, color: "text.primary" }}>
+        <Typography variant="body2" sx={{ mb: 1.5 }}>
           Enter the phone number registered in the BetterSign app. A login request
           is pushed to your phone; approve it there to sign in — no password.
-        </p>
-        <input
+        </Typography>
+        <TextField
           type="tel"
           value={phone}
           onChange={(e) => setPhone(e.target.value)}
           placeholder="+1 555 123 4567"
           disabled={busy}
-          className="op-input op-input-bordered op-input-sm w-full focus:outline-none mb-3"
+          fullWidth
+          size="small"
+          sx={{ mb: 1.5 }}
         />
         {status && (
-          <div
-            className={`text-sm mb-3 ${isError ? "text-red-500" : "text-base-content"}`}
+          <Typography
+            variant="body2"
+            sx={{ mb: 1.5, color: isError ? "error.main" : "text.primary" }}
           >
             {status}
-          </div>
+          </Typography>
         )}
-        <div className="flex justify-end gap-2">
-          <button
-            type="button"
-            onClick={close}
-            className="op-btn op-btn-ghost op-btn-sm"
-          >
+        <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 1 }}>
+          <Button type="button" onClick={close} variant="text" size="small">
             Close
-          </button>
-          <button
+          </Button>
+          <Button
             type="button"
             onClick={send}
             disabled={busy}
-            className="op-btn op-btn-primary op-btn-sm"
+            variant="contained"
+            size="small"
           >
             {busy ? "Waiting…" : "Send request"}
-          </button>
-        </div>
-      </div>
+          </Button>
+        </Box>
+      </Box>
     </ModalUi>
   );
 }

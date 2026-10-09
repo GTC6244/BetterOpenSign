@@ -16,6 +16,11 @@ import SelectLanguage from "../components/pdf/SelectLanguage";
 import LoaderWithMsg from "../primitives/LoaderWithMsg";
 import ModalUi from "../primitives/ModalUi";
 import Loader from "../primitives/Loader";
+import Box from "@mui/material/Box";
+import Paper from "@mui/material/Paper";
+import Button from "@mui/material/Button";
+import TextField from "@mui/material/TextField";
+import Typography from "@mui/material/Typography";
 
 function GuestLogin() {
   const { t, i18n } = useTranslation();
@@ -269,38 +274,52 @@ function GuestLogin() {
           handleClose={() => setEnterOtp(false)}
         >
           {loading ? (
-            <div className="h-[150px] flex justify-center items-center">
+            <Box
+              sx={{
+                height: 150,
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center"
+              }}
+            >
               <Loader />
-            </div>
+            </Box>
           ) : (
             <form onSubmit={(e) => VerifyOTP(e)}>
-              <div className="px-6 py-3 text-base-content">
-                <label className="mb-2">{t("enter-otp")}</label>
-                <input
-                  onInvalid={(e) =>
-                    e.target.setCustomValidity(t("input-required"))
-                  }
-                  onInput={(e) => e.target.setCustomValidity("")}
-                  required
+              <Box sx={{ px: 3, py: 1.5 }}>
+                <Typography component="label" sx={{ mb: 1, display: "block" }}>
+                  {t("enter-otp")}
+                </Typography>
+                <TextField
+                  fullWidth
+                  size="small"
                   type="tel"
-                  pattern="[0-9]{4}"
-                  className="w-full op-input op-input-bordered op-input-sm focus:outline-none hover:border-base-content text-xs"
                   placeholder={t("otp-placeholder")}
                   value={OTP}
                   onChange={(e) => setOTP(e.target.value)}
+                  slotProps={{
+                    htmlInput: {
+                      required: true,
+                      pattern: "[0-9]{4}",
+                      onInvalid: (e) =>
+                        e.target.setCustomValidity(t("input-required")),
+                      onInput: (e) => e.target.setCustomValidity("")
+                    }
+                  }}
                 />
-              </div>
-              <div className="px-6 mb-3">
-                <button type="submit" className="op-btn op-btn-primary">
+              </Box>
+              <Box sx={{ px: 3, mb: 1.5, display: "flex", gap: 1 }}>
+                <Button type="submit" variant="contained">
                   {t("verify")}
-                </button>
-                <button
-                  className="op-btn op-btn-secondary ml-2"
+                </Button>
+                <Button
+                  variant="contained"
+                  color="secondary"
                   onClick={(e) => handleSendOTPBtn(e)}
                 >
                   {t("resend")}
-                </button>
-              </div>
+                </Button>
+              </Box>
             </form>
           )}
         </ModalUi>
@@ -310,8 +329,24 @@ function GuestLogin() {
         <LoaderWithMsg isLoading={isLoading} />
       ) : (
         <div className="pb-1 md:pb-4 pt-10 md:px-10 lg:px-16">
-          <div className="md:p-4 lg:p-10 p-4 text-base-content bg-base-100 op-card shadow-md">
-            <div className="w-[250px] h-[66px] inline-block overflow-hidden mb-6">
+          <Paper
+            elevation={2}
+            sx={{
+              p: { xs: 2, md: 2, lg: 5 },
+              color: "text.primary",
+              bgcolor: "background.paper",
+              borderRadius: 3
+            }}
+          >
+            <Box
+              sx={{
+                width: 250,
+                height: 66,
+                display: "inline-block",
+                overflow: "hidden",
+                mb: 3
+              }}
+            >
               {appLogo && (
                 <img
                   src={appLogo}
@@ -319,169 +354,216 @@ function GuestLogin() {
                   alt="logo"
                 />
               )}
-            </div>
+            </Box>
             {contactId ? (
-              <div className="w-full md:w-[50%] text-base-content">
-                <h1 className="text-2xl md:text-[30px]">{t("welcome")}</h1>
-                <legend className="text-[12px] text-[#878787] mt-2 mb-1">
+              <Box sx={{ width: { xs: "100%", md: "50%" }, color: "text.primary" }}>
+                <Typography variant="h4">{t("welcome")}</Typography>
+                <Typography
+                  component="legend"
+                  variant="caption"
+                  sx={{ color: "text.secondary", mt: 1, mb: 0.5 }}
+                >
                   {t("get-otp-alert")}
-                </legend>
-                <div className="p-[20px] outline outline-1 outline-slate-300/50 my-2 op-card shadow-md">
-                  <input
+                </Typography>
+                <Paper
+                  elevation={2}
+                  sx={{ p: 2.5, my: 1, borderRadius: 3, border: 1, borderColor: "divider" }}
+                >
+                  <TextField
                     type="email"
                     name="email"
                     value={email}
-                    className="op-input op-input-bordered op-input-sm focus:outline-none hover:border-base-content w-full disabled:text-[#5c5c5c] text-xs"
+                    fullWidth
+                    size="small"
                     disabled
                   />
-                </div>
-                <div className="mt-3">
-                  <button
-                    className="op-btn op-btn-primary flex items-center"
+                </Paper>
+                <Box sx={{ mt: 1.5 }}>
+                  <Button
+                    variant="contained"
+                    startIcon={<i className="fa-light fa-message-sms"></i>}
                     onClick={(e) => {
                       e.preventDefault();
-                        SendOtp();
+                      SendOtp();
                     }}
                     disabled={loading}
                   >
-                        <i className="fa-light fa-message-sms mr-2"></i>
-                        {loading ? t("loading") : t("get-verification-code")}
-                  </button>
-                </div>
-              </div>
+                    {loading ? t("loading") : t("get-verification-code")}
+                  </Button>
+                </Box>
+              </Box>
             ) : (
-              <div className="w-full md:w-[50%] text-base-content">
-                <h1 className="text-2xl md:text-[30px]">{t("welcome")}</h1>
-                <legend className="text-[12px] text-[#878787] mt-2">
+              <Box sx={{ width: { xs: "100%", md: "50%" }, color: "text.primary" }}>
+                <Typography variant="h4">{t("welcome")}</Typography>
+                <Typography
+                  component="legend"
+                  variant="caption"
+                  sx={{ color: "text.secondary", mt: 1 }}
+                >
                   {t("provide-your-details")}
-                </legend>
-                <form
-                  className="p-[20px] pt-[15px] outline outline-1 outline-slate-300/50 my-2 op-card shadow-md"
+                </Typography>
+                <Paper
+                  component="form"
+                  elevation={2}
+                  sx={{
+                    p: 2.5,
+                    pt: 1.875,
+                    my: 1,
+                    borderRadius: 3,
+                    border: 1,
+                    borderColor: "divider"
+                  }}
                   onSubmit={handleUserData}
                 >
-                  <div className="mb-2">
-                    <label
+                  <Box sx={{ mb: 1 }}>
+                    <Typography
+                      component="label"
                       htmlFor="name"
-                      className="block text-xs font-semibold"
+                      variant="caption"
+                      sx={{ display: "block", fontWeight: 600 }}
                     >
                       {t("name")}
-                      <span className="text-[red] text-[13px]"> *</span>
-                    </label>
-                    <input
+                      <Box component="span" sx={{ color: "error.main" }}>
+                        {" "}
+                        *
+                      </Box>
+                    </Typography>
+                    <TextField
                       type="text"
                       name="name"
                       value={contact.name}
                       onChange={handleInputChange}
-                      className="op-input op-input-bordered op-input-sm focus:outline-none hover:border-base-content w-full text-xs"
+                      fullWidth
+                      size="small"
                       disabled={loading}
-                      onInvalid={(e) =>
-                        e.target.setCustomValidity(t("input-required"))
-                      }
-                      onInput={(e) => e.target.setCustomValidity("")}
                       placeholder={t("enter-name")}
-                      required
+                      slotProps={{
+                        htmlInput: {
+                          required: true,
+                          onInvalid: (e) =>
+                            e.target.setCustomValidity(t("input-required")),
+                          onInput: (e) => e.target.setCustomValidity("")
+                        }
+                      }}
                     />
-                  </div>
-                  <div className="mb-2">
-                    <label
+                  </Box>
+                  <Box sx={{ mb: 1 }}>
+                    <Typography
+                      component="label"
                       htmlFor="email"
-                      className="block text-xs font-semibold"
+                      variant="caption"
+                      sx={{ display: "block", fontWeight: 600 }}
                     >
                       {t("email")}
-                      <span className="text-[red] text-[13px]"> *</span>
-                    </label>
-                    <input
+                      <Box component="span" sx={{ color: "error.main" }}>
+                        {" "}
+                        *
+                      </Box>
+                    </Typography>
+                    <TextField
                       type="email"
                       name="email"
                       value={contact.email}
                       onChange={handleInputChange}
-                      className="op-input op-input-bordered op-input-sm focus:outline-none hover:border-base-content w-full text-xs"
+                      fullWidth
+                      size="small"
                       placeholder={t("enter-email")}
-                      required
                       disabled
+                      slotProps={{ htmlInput: { required: true } }}
                     />
-                  </div>
+                  </Box>
                   {isOptionalDetails && (
                     <>
-                      <div className="mb-2">
-                        <label
+                      <Box sx={{ mb: 1 }}>
+                        <Typography
+                          component="label"
                           htmlFor="phone"
-                          className="block text-xs font-semibold"
+                          variant="caption"
+                          sx={{ display: "block", fontWeight: 600 }}
                         >
                           {t("phone")}
-                        </label>
-                        <input
+                        </Typography>
+                        <TextField
                           type="text"
                           name="phone"
                           value={contact.phone}
                           onChange={handleInputChange}
-                          className="op-input op-input-bordered op-input-sm focus:outline-none hover:border-base-content w-full text-xs"
+                          fullWidth
+                          size="small"
                           disabled={loading}
                           placeholder={t("phone-optional")}
                         />
-                      </div>
-                      <div className="mb-2">
-                        <label
+                      </Box>
+                      <Box sx={{ mb: 1 }}>
+                        <Typography
+                          component="label"
                           htmlFor="company"
-                          className="block text-xs font-semibold"
+                          variant="caption"
+                          sx={{ display: "block", fontWeight: 600 }}
                         >
                           {t("company")}
-                        </label>
-                        <input
+                        </Typography>
+                        <TextField
                           type="text"
                           id="company"
                           name="company"
                           value={contact.company}
                           onChange={handleInputChange}
-                          className="op-input op-input-bordered op-input-sm focus:outline-none hover:border-base-content w-full text-xs"
+                          fullWidth
+                          size="small"
                           disabled={loading}
                           placeholder={t("phone-optional")}
                         />
-                      </div>
-                      <div className="mb-2">
-                        <label
+                      </Box>
+                      <Box sx={{ mb: 1 }}>
+                        <Typography
+                          component="label"
                           htmlFor="jobTitle"
-                          className="block text-xs font-semibold"
+                          variant="caption"
+                          sx={{ display: "block", fontWeight: 600 }}
                         >
                           {t("job-title")}
-                        </label>
-                        <input
+                        </Typography>
+                        <TextField
                           type="text"
                           id="jobTitle"
                           name="jobTitle"
                           value={contact.jobTitle}
                           onChange={handleInputChange}
-                          className="op-input op-input-bordered op-input-sm focus:outline-none hover:border-base-content w-full text-xs"
+                          fullWidth
+                          size="small"
                           disabled={loading}
                           placeholder={t("phone-optional")}
                         />
-                      </div>
+                      </Box>
                     </>
                   )}
-                  <button
+                  <Button
+                    variant="text"
+                    size="small"
                     onClick={(e) => {
                       e.preventDefault();
                       setIsOptionalDetails(!isOptionalDetails);
                     }}
-                    className="text-base-content/60 no-underline hover:underline focus:outline-none max-w-fit text-xs"
+                    sx={{ color: "text.secondary", px: 0 }}
                   >
                     {isOptionalDetails
                       ? t("hide-optional-details")
                       : t("optional-details")}
-                  </button>
-                  <div className="mt-2 flex justify-start">
-                    <button
+                  </Button>
+                  <Box sx={{ mt: 1, display: "flex", justifyContent: "flex-start" }}>
+                    <Button
                       type="submit"
-                      className="op-btn op-btn-primary"
+                      variant="contained"
                       disabled={loading}
                     >
                       {loading ? t("loading") : t("next")}
-                    </button>
-                  </div>
-                </form>
-              </div>
+                    </Button>
+                  </Box>
+                </Paper>
+              </Box>
             )}
-          </div>
+          </Paper>
           <SelectLanguage />
         </div>
       )}

@@ -11,6 +11,9 @@ import ModalUi from "../primitives/ModalUi";
 import Loader from "../primitives/Loader";
 import DownloadPdfZip from "../primitives/DownloadPdfZip";
 import CheckCircle from "../primitives/CheckCircle";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import Button from "@mui/material/Button";
 
 const DocSuccessPage = () => {
   const { t } = useTranslation();
@@ -68,80 +71,159 @@ const DocSuccessPage = () => {
         <Confetti width={window.innerWidth} height={window.innerHeight} />
       )}
       {sent ? (
-        <div className="min-h-screen flex flex-col items-center justify-center p-3 md:p-8 text-center">
-          <div className="max-w-lg md:max-w-2xl bg-white rounded-lg shadow-lg p-3 md:p-10">
+        <Box
+          sx={{
+            minHeight: "100vh",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            p: { xs: 1.5, md: 4 },
+            textAlign: "center"
+          }}
+        >
+          <Box
+            sx={{
+              maxWidth: { xs: "32rem", md: "42rem" },
+              bgcolor: "background.paper",
+              borderRadius: 2,
+              boxShadow: 6,
+              p: { xs: 1.5, md: 5 }
+            }}
+          >
             {t("doc-sent")}
-          </div>
-        </div>
+          </Box>
+        </Box>
       ) : signed ? (
         <>
-          <div className="min-h-screen flex flex-col items-center justify-center p-3 md:p-8 text-center">
-            <div className="max-w-lg md:max-w-2xl bg-white rounded-lg shadow-lg p-3 md:p-10">
-              <div className="flex flex-col items-center space-y-4 ">
-                <CheckCircle className="text-green-500 w-12 h-12 md:w-14 md:h-14" />
-                <h1 className="text-xl md:text-2xl font-semibold text-gray-800">
+          <Box
+            sx={{
+              minHeight: "100vh",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              p: { xs: 1.5, md: 4 },
+              textAlign: "center"
+            }}
+          >
+            <Box
+              sx={{
+                maxWidth: { xs: "32rem", md: "42rem" },
+                bgcolor: "background.paper",
+                borderRadius: 2,
+                boxShadow: 6,
+                p: { xs: 1.5, md: 5 }
+              }}
+            >
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  gap: 2
+                }}
+              >
+                <CheckCircle color="success.main" size={56} />
+                <Typography
+                  component="h1"
+                  sx={{
+                    fontSize: { xs: "1.25rem", md: "1.5rem" },
+                    fontWeight: 600,
+                    color: "text.primary"
+                  }}
+                >
                   {pdfDetails?.[0]?.IsCompleted
                     ? t("document-has-been-signed")
                     : t("document-has-been-signed-by-you")}
-                </h1>
+                </Typography>
                 {pdfDetails?.[0]?.IsCompleted && (
-                  <p className="text-sm md:text-base text-gray-600">
+                  <Typography
+                    sx={{
+                      fontSize: { xs: "0.875rem", md: "1rem" },
+                      color: "text.secondary"
+                    }}
+                  >
                     {t("participant-completed-signing")}
-                  </p>
+                  </Typography>
                 )}
-              </div>
+              </Box>
               {/* Action Buttons */}
-              <div className="mt-6 flex flex-wrap justify-center gap-2">
-                <button
+              <Box
+                sx={{
+                  mt: 3,
+                  display: "flex",
+                  flexWrap: "wrap",
+                  justifyContent: "center",
+                  gap: 1
+                }}
+              >
+                <Button
                   type="button"
-                  className="font-medium text-sm md:text-[13px] md:px-4 py-2 op-btn op-btn-primary"
+                  variant="contained"
                   onClick={() => handleDownload()}
+                  startIcon={
+                    <i className="fa-light fa-download" aria-hidden="true"></i>
+                  }
                 >
-                  <i className="fa-light fa-download" aria-hidden="true"></i>
-                  <span>{t("download")}</span>
-                </button>
+                  {t("download")}
+                </Button>
 
-                {
-                    pdfDetails?.[0]?.IsCompleted && (
-                      <button
-                        type="button"
-                        onClick={() =>
-                          handleDownloadCertificate(
-                            pdfDetails,
-                            setIsDownloading
-                          )
-                        }
-                        className="font-medium text-sm md:text-[13px] md:px-4 py-2 op-btn op-btn-secondary"
-                      >
-                        <i
-                          className="fa-light fa-award mx-[3px] md:mx-0"
-                          aria-hidden="true"
-                        ></i>
-                        <span>{t("certificate")}</span>
-                      </button>
-                    )
-                }
-                <button
+                {pdfDetails?.[0]?.IsCompleted && (
+                  <Button
+                    type="button"
+                    variant="contained"
+                    color="secondary"
+                    onClick={() =>
+                      handleDownloadCertificate(pdfDetails, setIsDownloading)
+                    }
+                    startIcon={
+                      <i className="fa-light fa-award" aria-hidden="true"></i>
+                    }
+                  >
+                    {t("certificate")}
+                  </Button>
+                )}
+                <Button
+                  type="button"
+                  variant="contained"
+                  color="inherit"
                   onClick={(e) =>
                     handleToPrint(e, setIsDownloading, pdfDetails)
                   }
-                  type="button"
-                  className="font-medium text-sm md:text-[13px] px-4 py-2 op-btn op-btn-neutral"
+                  startIcon={
+                    <i className="fa-light fa-print" aria-hidden="true"></i>
+                  }
                 >
-                  <i className="fa-light fa-print" aria-hidden="true"></i>
-                  <span>{t("print")}</span>
-                </button>
-              </div>
+                  {t("print")}
+                </Button>
+              </Box>
               {/* Footer Message */}
-              <p className="mt-4 md:mt-6 text-xs md:text-sm text-gray-500">
+              <Typography
+                sx={{
+                  mt: { xs: 2, md: 3 },
+                  fontSize: { xs: "0.75rem", md: "0.875rem" },
+                  color: "text.secondary"
+                }}
+              >
                 {t("you-will-receive-email-shortly")}
-              </p>
-            </div>
-          </div>
+              </Typography>
+            </Box>
+          </Box>
           {isDownloading === "pdf" && (
-            <div className="fixed z-[1000] inset-0 flex justify-center items-center bg-black bg-opacity-30">
+            <Box
+              sx={{
+                position: "fixed",
+                zIndex: 1000,
+                inset: 0,
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                bgcolor: "rgba(0,0,0,0.3)"
+              }}
+            >
               <Loader />
-            </div>
+            </Box>
           )}
           <ModalUi
             isOpen={
@@ -156,13 +238,20 @@ const DocSuccessPage = () => {
             }
             handleClose={() => setIsDownloading("")}
           >
-            <div className="p-3 md:p-5 text-sm md:text-base text-center text-base-content">
+            <Box
+              sx={{
+                p: { xs: 1.5, md: 2.5 },
+                fontSize: { xs: "0.875rem", md: "1rem" },
+                textAlign: "center",
+                color: "text.primary"
+              }}
+            >
               {isDownloading === "certificate" ? (
                 <p>{t("generate-certificate-alert")}</p>
               ) : (
                 <p>{t("generate-certificate-err")}</p>
               )}
-            </div>
+            </Box>
           </ModalUi>
           <DownloadPdfZip
             setIsDownloadModal={setIsDownloadModal}

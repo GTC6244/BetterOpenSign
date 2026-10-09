@@ -1,6 +1,8 @@
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import { NavLink } from "react-router";
+import Box from "@mui/material/Box";
+import ListItemButton from "@mui/material/ListItemButton";
 
 const Menu = ({ item, isOpen, closeSidebar }) => {
   const appName =
@@ -10,28 +12,55 @@ const Menu = ({ item, isOpen, closeSidebar }) => {
   const { selectedMenu } = useSelector((state) => state.sidebar);
 
   return (
-    <li key={item.title} role="none" className="my-0.5">
-      <NavLink
+    <Box component="li" role="none" sx={{ my: 0.25 }}>
+      <ListItemButton
+        component={NavLink}
         to={
           item.pageType
             ? `/${item.pageType}/${item.objectId}`
             : `/${item.objectId}`
         }
-        className={({ isActive }) =>
-          `${isActive && selectedMenu ? "bg-base-300 text-base-content" : ""} flex gap-x-5 items-center justify-start text-left p-3 text-base-content hover:text-base-content focus:bg-base-300 hover:bg-base-300 hover:no-underline focus:outline-none`
-        }
         onClick={() => closeSidebar(item.title)}
         tabIndex={isOpen ? 0 : -1}
         role="menuitem"
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "flex-start",
+          textAlign: "left",
+          columnGap: 2.5,
+          p: 1.5,
+          color: "text.primary",
+          "&:hover": {
+            bgcolor: "surface.container",
+            color: "text.primary",
+            textDecoration: "none"
+          },
+          "&:focus": { bgcolor: "surface.container", outline: "none" },
+          ...(selectedMenu && {
+            "&.active": { bgcolor: "surface.container", color: "text.primary" }
+          })
+        }}
       >
-        <span className="w-[20px] h-[20px] flex justify-center">
+        <Box
+          component="span"
+          sx={{
+            width: 20,
+            height: 20,
+            display: "flex",
+            justifyContent: "center"
+          }}
+        >
           <i className={`${item.icon} text-[20px]`} aria-hidden="true"></i>
-        </span>
-        <span className="flex items-center mb-0.5">
+        </Box>
+        <Box
+          component="span"
+          sx={{ display: "flex", alignItems: "center", mb: 0.25 }}
+        >
           {t(`sidebar.${item.title}`, { appName: drivename })}
-        </span>
-      </NavLink>
-    </li>
+        </Box>
+      </ListItemButton>
+    </Box>
   );
 };
 

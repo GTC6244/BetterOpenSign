@@ -1,6 +1,6 @@
-import React from "react";
 import "../../styles/signature.css";
 import { useTranslation } from "react-i18next";
+import Box from "@mui/material/Box";
 function Signedby(props) {
   const { t } = useTranslation();
   const getFirstLetter = (pdfData) => {
@@ -11,36 +11,107 @@ function Signedby(props) {
     return firstLetter;
   };
   return (
-    <div className="hidden md:block w-full h-full bg-base-100">
-      <div className="mx-2 pr-2 pt-2 pb-1 text-[15px] text-base-content font-semibold border-b-[1px] border-base-300">
+    <Box
+      sx={{
+        display: { xs: "none", md: "block" },
+        width: "100%",
+        height: "100%",
+        bgcolor: "background.paper"
+      }}
+    >
+      <Box
+        sx={{
+          mx: 1,
+          pr: 1,
+          pt: 1,
+          pb: 0.5,
+          fontSize: "15px",
+          fontWeight: 600,
+          color: "text.primary",
+          borderBottom: "1px solid",
+          borderColor: "divider"
+        }}
+      >
         {props.isSelfSign ? t("user") : t("signed-by")}
-      </div>
-      <div className="mt-[2px] bg-base-100">
-        <div className="bg-[#93a3db] rounded-xl mx-1 flex flex-row items-center py-[10px]">
-          <div className="bg-[#576081] flex w-[30px] h-[30px] rounded-full justify-center items-center mx-1">
-            <span className="text-[12px] text-center font-bold text-white uppercase">
+      </Box>
+      <Box sx={{ mt: "2px", bgcolor: "background.paper" }}>
+        <Box
+          sx={{
+            bgcolor: "#93a3db",
+            borderRadius: "12px",
+            mx: 0.5,
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+            py: "10px"
+          }}
+        >
+          <Box
+            sx={{
+              bgcolor: "#576081",
+              display: "flex",
+              width: "30px",
+              height: "30px",
+              borderRadius: "9999px",
+              justifyContent: "center",
+              alignItems: "center",
+              mx: 0.5
+            }}
+          >
+            <Box
+              component="span"
+              sx={{
+                fontSize: "12px",
+                textAlign: "center",
+                fontWeight: 700,
+                color: "common.white",
+                textTransform: "uppercase"
+              }}
+            >
               {getFirstLetter(props.pdfDetails)}
-            </span>
-          </div>
-          <div className="flex flex-col">
-            <span className="text-[12px] font-bold text-[#424242] w-[100px] whitespace-nowrap overflow-hidden text-ellipsis">
+            </Box>
+          </Box>
+          <Box sx={{ display: "flex", flexDirection: "column" }}>
+            <Box
+              component="span"
+              sx={{
+                fontSize: "12px",
+                fontWeight: 700,
+                color: "#424242",
+                width: "100px",
+                whiteSpace: "nowrap",
+                overflow: "hidden",
+                textOverflow: "ellipsis"
+              }}
+            >
               {props.isSelfSign
                 ? (props.pdfDetails?.Signers &&
                     props.pdfDetails?.Signers[0]?.Name) ||
                   "User"
                 : props.pdfDetails.ExtUserPtr.Name || "User"}
-            </span>
-            <span className="text-[10px] font-medium text-[#424242] w-[100px] whitespace-nowrap overflow-hidden text-ellipsis">
+            </Box>
+            <Box
+              component="span"
+              sx={{
+                fontSize: "10px",
+                fontWeight: 500,
+                color: "#424242",
+                width: "100px",
+                whiteSpace: "nowrap",
+                overflow: "hidden",
+                textOverflow: "ellipsis"
+              }}
+            >
               {props.isSelfSign
                 ? (props.pdfDetails?.Signers &&
                     props.pdfDetails?.Signers[0]?.Email) ||
                   ""
                 : props.pdfDetails.ExtUserPtr.Email || ""}
-            </span>
-          </div>
-        </div>
-      </div>
-    </div>
+            </Box>
+          </Box>
+        </Box>
+      </Box>
+    </Box>
   );
 }
 

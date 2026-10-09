@@ -108,11 +108,11 @@ export default function WidgetsDragPreview(props) {
                   <input
                     // 📏 Input size based on font
                     style={{ width: calculateFont(), height: calculateFont() }}
-                    className={`${
+                    className={
                       widgetType.text === "checkbox"
-                        ? "op-checkbox"
-                        : "op-radio rounded-full border-black appearance-none bg-white inline-block align-middle relative"
-                    } rounded-[1px]`}
+                        ? "rounded-[1px]"
+                        : "rounded-full border-black inline-block align-middle relative rounded-[1px]"
+                    }
                     type={widgetType.text === "checkbox" ? "checkbox" : "radio"}
                   />
                   {/* 🏷️ Option label */}

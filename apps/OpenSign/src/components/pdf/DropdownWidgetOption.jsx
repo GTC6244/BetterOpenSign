@@ -1,4 +1,17 @@
 import { useEffect, useMemo, useState } from "react";
+import Box from "@mui/material/Box";
+import Stack from "@mui/material/Stack";
+import TextField from "@mui/material/TextField";
+import MenuItem from "@mui/material/MenuItem";
+import Button from "@mui/material/Button";
+import Divider from "@mui/material/Divider";
+import Typography from "@mui/material/Typography";
+import Checkbox from "@mui/material/Checkbox";
+import Radio from "@mui/material/Radio";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import IconButton from "@mui/material/IconButton";
+import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
+import AddBoxOutlinedIcon from "@mui/icons-material/AddBoxOutlined";
 import ModalUi from "../../primitives/ModalUi";
 import { radioButtonWidget } from "../../constant/Utils";
 import { useTranslation } from "react-i18next";
@@ -169,267 +182,384 @@ function DropdownWidgetOption(props) {
   };
   return (
     <ModalUi isOpen={props.showDropdown} title={props.title} showClose={false}>
-      <div className="h-full p-[15px] text-base-content">
-        <form
+      <Box sx={{ height: "100%", p: "15px", color: "text.primary" }}>
+        <Box
+          component="form"
           onSubmit={(e) => {
             e.preventDefault();
             handleSaveOption();
           }}
         >
-          <div>
-            <label htmlFor="title" className="text-[13px] font-semibold">
+          <Box>
+            <Typography
+              component="label"
+              htmlFor="title"
+              sx={{ fontSize: "13px", fontWeight: 600 }}
+            >
               {t("name")}
-              <span className="text-[red] text-[13px]"> *</span>
-            </label>
-            <input
+              <Box component="span" sx={{ color: "error.main", fontSize: "13px" }}>
+                {" "}
+                *
+              </Box>
+            </Typography>
+            <TextField
               id="title"
-              onInvalid={(e) => e.target.setCustomValidity(t("input-required"))}
-              onInput={(e) => e.target.setCustomValidity("")}
+              size="small"
+              fullWidth
               value={dropdownName}
               onChange={(e) => setDropdownName(e.target.value)}
-              className="op-input op-input-bordered op-input-sm focus:outline-none hover:border-base-content w-full text-xs"
-              required
+              slotProps={{
+                htmlInput: {
+                  required: true,
+                  onInvalid: (e) =>
+                    e.target.setCustomValidity(t("input-required")),
+                  onInput: (e) => e.target.setCustomValidity(""),
+                  sx: { fontSize: "0.75rem" }
+                }
+              }}
             />
 
-            <label className="text-[13px] font-semibold mt-[5px]">
+            <Typography
+              component="label"
+              sx={{
+                fontSize: "13px",
+                fontWeight: 600,
+                mt: "5px",
+                display: "block"
+              }}
+            >
               {t("options")}
-            </label>
-            <div className="flex flex-col">
+            </Typography>
+            <Box sx={{ display: "flex", flexDirection: "column" }}>
               {dropdownOptionList?.map((option, index) => (
-                <div
+                <Box
                   key={index}
-                  className="flex flex-row mb-[5px] items-center"
+                  sx={{
+                    display: "flex",
+                    flexDirection: "row",
+                    mb: "5px",
+                    alignItems: "center"
+                  }}
                 >
                   {props.type === "checkbox" && props.isShowAdvanceFeature && (
-                    <input
-                      type="checkbox"
+                    <Checkbox
+                      size="small"
                       checked={defaultCheckbox?.includes(index)}
                       onChange={(e) => handleSelectDefaultCheckbox(e, index)}
-                      className="op-checkbox focus:outline-none hover:border-base-content mr-[5px]"
+                      sx={{ mr: "5px", p: 0.5 }}
                     />
                   )}
-                  <input
-                    onInvalid={(e) =>
-                      e.target.setCustomValidity(t("input-required"))
-                    }
-                    onInput={(e) => e.target.setCustomValidity("")}
-                    required
-                    className="op-input op-input-bordered op-input-sm focus:outline-none hover:border-base-content w-full text-xs"
+                  <TextField
+                    size="small"
+                    fullWidth
                     type="text"
                     value={option}
                     onChange={(e) => handleInputChange(index, e.target.value)}
+                    slotProps={{
+                      htmlInput: {
+                        required: true,
+                        onInvalid: (e) =>
+                          e.target.setCustomValidity(t("input-required")),
+                        onInput: (e) => e.target.setCustomValidity(""),
+                        sx: { fontSize: "0.75rem" }
+                      }
+                    }}
                   />
 
-                  <i
-                    className="fa-light fa-trash-can text-[25px] ml-[10px] text-accent cursor-pointer"
+                  <IconButton
+                    aria-label="Delete option"
+                    color="secondary"
                     onClick={() => handleDeleteInput(index)}
-                  ></i>
-                </div>
+                    sx={{ ml: "10px" }}
+                  >
+                    <DeleteOutlineIcon />
+                  </IconButton>
+                </Box>
               ))}
-              <div>
-                <i
-                  className="fa-light fa-square-plus text-[25px] ml-[10px] op-text-primary cursor-pointer"
+              <Box>
+                <IconButton
                   aria-label="Add option"
+                  color="primary"
                   onClick={handleAddInput}
-                ></i>
-              </div>
-            </div>
+                  sx={{ ml: "10px" }}
+                >
+                  <AddBoxOutlinedIcon />
+                </IconButton>
+              </Box>
+            </Box>
             {["dropdown", radioButtonWidget].includes(props.type) &&
               !isPrefillExist && (
                 <>
-                  <label className="text-[13px] font-semibold mt-[5px]">
+                  <Typography
+                    component="label"
+                    sx={{
+                      fontSize: "13px",
+                      fontWeight: 600,
+                      mt: "5px",
+                      display: "block"
+                    }}
+                  >
                     {t("default-value")}
-                  </label>
-                  <select
+                  </Typography>
+                  <TextField
+                    select
+                    size="small"
+                    fullWidth
                     value={defaultValue}
                     onChange={(e) => setDefaultValue(e.target.value)}
-                    className="op-select op-select-bordered op-select-sm focus:outline-none hover:border-base-content w-full text-xs"
                     name="defaultvalue"
+                    slotProps={{ htmlInput: { sx: { fontSize: "0.75rem" } } }}
                   >
-                    <option value="" disabled hidden className="text-[13px]">
+                    <MenuItem value="" disabled sx={{ fontSize: "13px" }}>
                       {t("select")}...
-                    </option>
+                    </MenuItem>
                     {dropdownOptionList.map((data, ind) => {
                       return (
-                        <option className="text-[13px]" key={ind} value={data}>
+                        <MenuItem
+                          key={ind}
+                          value={data}
+                          sx={{ fontSize: "13px" }}
+                        >
                           {data}
-                        </option>
+                        </MenuItem>
                       );
                     })}
-                  </select>
+                  </TextField>
                 </>
               )}
             {((props.type !== "checkbox" && !isPrefillExist) ||
               isPrefillExist) && (
-              <div className="flex flex-row gap-[10px] mt-[0.5rem]">
+              <Stack direction="row" spacing="10px" sx={{ mt: "0.5rem" }}>
                 {statusArr.map((data, ind) => (
-                  <div
+                  <FormControlLabel
                     key={ind}
-                    className="flex flex-row gap-[5px] items-center"
-                  >
-                    <input
-                      className="op-radio op-radio-xs my-1"
-                      type="radio"
-                      name="status"
-                      onChange={() => setStatus(data.toLowerCase())}
-                      checked={status.toLowerCase() === data.toLowerCase()}
-                    />
-                    <div className="text-[13px] font-500 capitalize">
-                      {data}
-                    </div>
-                  </div>
+                    sx={{ m: 0 }}
+                    control={
+                      <Radio
+                        size="small"
+                        name="status"
+                        onChange={() => setStatus(data.toLowerCase())}
+                        checked={status.toLowerCase() === data.toLowerCase()}
+                        sx={{ p: 0.5 }}
+                      />
+                    }
+                    label={
+                      <Typography
+                        sx={{
+                          fontSize: "13px",
+                          fontWeight: 500,
+                          textTransform: "capitalize"
+                        }}
+                      >
+                        {data}
+                      </Typography>
+                    }
+                  />
                 ))}
-              </div>
+              </Stack>
             )}
-            <div className="flex items-center mt-3 mb-3">
-              <span>{t("font-size")} :</span>
-              <select
-                className="ml-[7px] op-select op-select-bordered op-select-sm focus:outline-none hover:border-base-content text-xs"
+            <Box
+              sx={{ display: "flex", alignItems: "center", mt: 1.5, mb: 1.5 }}
+            >
+              <Box component="span">{t("font-size")} :</Box>
+              <TextField
+                select
+                size="small"
                 value={
                   props.fontSize ||
                   props.currWidgetsDetails?.options?.fontSize ||
                   12
                 }
                 onChange={(e) => props.setFontSize(parseInt(e.target.value))}
+                sx={{ ml: "7px" }}
+                slotProps={{ htmlInput: { sx: { fontSize: "0.75rem" } } }}
               >
                 {fontsizeArr.map((size, ind) => {
                   return (
-                    <option className="text-[13px]" value={size} key={ind}>
+                    <MenuItem value={size} key={ind} sx={{ fontSize: "13px" }}>
                       {size}
-                    </option>
+                    </MenuItem>
                   );
                 })}
-              </select>
-              <div className="flex flex-row gap-1 items-center ml-4">
-                <span className="capitalize">{t("color")} : </span>
-                <select
+              </TextField>
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "row",
+                  gap: 0.5,
+                  alignItems: "center",
+                  ml: 2
+                }}
+              >
+                <Box component="span" sx={{ textTransform: "capitalize" }}>
+                  {t("color")} :{" "}
+                </Box>
+                <TextField
+                  select
+                  size="small"
                   value={
                     props.fontColor ||
                     props.currWidgetsDetails?.options?.fontColor ||
                     "black"
                   }
                   onChange={(e) => props.setFontColor(e.target.value)}
-                  className="ml-[7px] op-select op-select-bordered op-select-sm focus:outline-none hover:border-base-content text-xs"
+                  sx={{ ml: "7px" }}
+                  slotProps={{ htmlInput: { sx: { fontSize: "0.75rem" } } }}
                 >
                   {fontColorArr.map((color, ind) => {
                     return (
-                      <option value={color} key={ind}>
+                      <MenuItem value={color} key={ind}>
                         {t(`color-type.${color}`)}
-                      </option>
+                      </MenuItem>
                     );
                   })}
-                </select>
-                <span
+                </TextField>
+                <Box
+                  component="span"
+                  sx={{ width: 20, height: "19px", ml: 0.5 }}
                   style={{
                     background:
                       props.fontColor ||
                       props.currWidgetsDetails?.options?.fontColor ||
                       "black"
                   }}
-                  className="w-5 h-[19px] ml-1"
-                ></span>
-              </div>
-            </div>
+                ></Box>
+              </Box>
+            </Box>
             {["checkbox", radioButtonWidget, "dropdown"].includes(
               props.type
             ) && (
-              <div className="flex flex-row gap-5 my-2 items-center text-center">
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "row",
+                  gap: 2.5,
+                  my: 1,
+                  alignItems: "center",
+                  textAlign: "center"
+                }}
+              >
                 {props.isShowAdvanceFeature && !isPrefillExist && (
-                  <div className="flex items-center">
-                    <input
-                      id="isreadonly"
-                      type="checkbox"
-                      checked={isReadOnly}
-                      className="op-checkbox op-checkbox-sm"
-                      onChange={(e) => setIsReadOnly(e.target.checked)}
-                    />
-                    <label
-                      className="ml-2 mb-0 capitalize"
-                      htmlFor="isreadonly"
-                    >
-                      {t("read-only")}
-                    </label>
-                  </div>
+                  <FormControlLabel
+                    sx={{ m: 0 }}
+                    control={
+                      <Checkbox
+                        id="isreadonly"
+                        size="small"
+                        checked={isReadOnly}
+                        onChange={(e) => setIsReadOnly(e.target.checked)}
+                        sx={{ p: 0.5 }}
+                      />
+                    }
+                    label={
+                      <Typography sx={{ textTransform: "capitalize" }}>
+                        {t("read-only")}
+                      </Typography>
+                    }
+                  />
                 )}
                 {props.type !== "dropdown" && (
-                  <div className="flex items-center">
-                    <input
-                      id="ishidelabel"
-                      type="checkbox"
-                      checked={isHideLabel}
-                      className="op-checkbox op-checkbox-sm"
-                      onChange={(e) => setIsHideLabel(e.target.checked)}
-                    />
-
-                    <label
-                      className="ml-2 mb-0 capitalize"
-                      htmlFor="ishidelabel"
-                    >
-                      {t("hide-labels")}
-                    </label>
-                  </div>
+                  <FormControlLabel
+                    sx={{ m: 0 }}
+                    control={
+                      <Checkbox
+                        id="ishidelabel"
+                        size="small"
+                        checked={isHideLabel}
+                        onChange={(e) => setIsHideLabel(e.target.checked)}
+                        sx={{ p: 0.5 }}
+                      />
+                    }
+                    label={
+                      <Typography sx={{ textTransform: "capitalize" }}>
+                        {t("hide-labels")}
+                      </Typography>
+                    }
+                  />
                 )}
-              </div>
+              </Box>
             )}
             {["checkbox", radioButtonWidget].includes(props.type) && (
               <>
-                <div className="text-[13px] font-semibold mt-[5px] capitalize">
+                <Typography
+                  sx={{
+                    fontSize: "13px",
+                    fontWeight: 600,
+                    mt: "5px",
+                    textTransform: "capitalize"
+                  }}
+                >
                   {t("layout")}
-                </div>
-                <div
-                  className={`${props.type === "checkbox" ? "mb-[10px]" : ""} flex flex-row gap-[10px] mt-[0.5rem]`}
+                </Typography>
+                <Stack
+                  direction="row"
+                  spacing="10px"
+                  sx={{
+                    mb: props.type === "checkbox" ? "10px" : 0,
+                    mt: "0.5rem"
+                  }}
                 >
                   {layoutArr.map((data, ind) => (
-                    <div
+                    <FormControlLabel
                       key={ind}
-                      className="flex flex-row gap-[5px] items-center"
-                    >
-                      <input
-                        className="op-radio op-radio-xs my-1"
-                        type="radio"
-                        name="layout"
-                        checked={layout.toLowerCase() === data.toLowerCase()}
-                        onChange={() => setLayout(data.toLowerCase())}
-                      />
-                      <label className="text-[13px] font-500 mb-0">
-                        {t(data)}
-                      </label>
-                    </div>
+                      sx={{ m: 0 }}
+                      control={
+                        <Radio
+                          size="small"
+                          name="layout"
+                          checked={layout.toLowerCase() === data.toLowerCase()}
+                          onChange={() => setLayout(data.toLowerCase())}
+                          sx={{ p: 0.5 }}
+                        />
+                      }
+                      label={
+                        <Typography sx={{ fontSize: "13px", fontWeight: 500 }}>
+                          {t(data)}
+                        </Typography>
+                      }
+                    />
                   ))}
-                </div>
+                </Stack>
               </>
             )}
-          </div>
-          <div
-            className={`${
-              props.type === "checkbox" && props.isShowAdvanceFeature
-                ? "mb-[15px]"
-                : "my-[15px]"
-            } w-full h-[1px] bg-[#9f9f9f]`}
-          ></div>
+          </Box>
+          <Divider
+            sx={{
+              my:
+                props.type === "checkbox" && props.isShowAdvanceFeature
+                  ? 0
+                  : "15px",
+              mb:
+                props.type === "checkbox" && props.isShowAdvanceFeature
+                  ? "15px"
+                  : undefined
+            }}
+          />
 
 
-          <button
+          <Button
             disabled={dropdownOptionList.length === 0 && true}
             type="submit"
-            className="op-btn op-btn-primary"
+            variant="contained"
           >
             {t("save")}
-          </button>
+          </Button>
           {props.currWidgetsDetails?.options?.values?.length > 0 && (
-            <button
+            <Button
               type="submit"
-              className="op-btn op-btn-ghost text-base-content ml-1"
+              variant="text"
+              color="inherit"
+              sx={{ ml: 1 }}
               onClick={() => {
                 props.handleClose && props.handleClose();
                 resetState();
               }}
             >
               {t("cancel")}
-            </button>
+            </Button>
           )}
-        </form>
-      </div>
+        </Box>
+      </Box>
     </ModalUi>
   );
 }

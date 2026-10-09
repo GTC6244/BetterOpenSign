@@ -4,10 +4,15 @@ import {
 import { useTranslation } from "react-i18next";
 import SuggestionInput from "../../shared/fields/SuggestionInput";
 import RenderWidgets from "./RenderWidgets";
+import Box from "@mui/material/Box";
+import Paper from "@mui/material/Paper";
+import TableContainer from "@mui/material/TableContainer";
+import MuiTable from "@mui/material/Table";
+import TableHead from "@mui/material/TableHead";
+import TableBody from "@mui/material/TableBody";
+import TableRow from "@mui/material/TableRow";
+import TableCell from "@mui/material/TableCell";
 
-const requiredAsteriskCls = (isRequired = false) => {
-  return isRequired ? "after:content-['_*'] after:text-red-500" : "";
-};
 const Table = ({
   headers = [],
   rowData = [],
@@ -24,27 +29,42 @@ const Table = ({
 
 
   return (
-    <div className="w-full">
+    <Box sx={{ width: "100%" }}>
 
       {/* Table */}
-      <div
-        className="overflow-x-auto border border-gray-300 rounded-lg"
+      <TableContainer
+        component={Paper}
+        variant="outlined"
+        sx={{ overflowX: "auto", borderColor: "outline.variant" }}
       >
-        <table className="op-table border-collapse w-full">
-          <thead className="text-[13px] text-center">
-            <tr className="border-y-[1px]">
+        <MuiTable size="small" sx={{ borderCollapse: "collapse", width: "100%" }}>
+          <TableHead>
+            <TableRow>
               {headers?.map((header) => (
-                <th
+                <TableCell
                   key={header.label}
-                  className={`${requiredAsteriskCls(header?.isRequired)} p-2`}
+                  align="center"
+                  sx={{ fontSize: "13px", fontWeight: 600 }}
                 >
                   {header.label}
-                </th>
+                  {header?.isRequired && (
+                    <Box component="span" sx={{ color: "error.main" }}>
+                      {" *"}
+                    </Box>
+                  )}
+                </TableCell>
               ))}
-              {rowData.length > 1 && <th className="p-2">{t("action")}</th>}
-            </tr>
-          </thead>
-          <tbody>
+              {rowData.length > 1 && (
+                <TableCell
+                  align="center"
+                  sx={{ fontSize: "13px", fontWeight: 600 }}
+                >
+                  {t("action")}
+                </TableCell>
+              )}
+            </TableRow>
+          </TableHead>
+          <TableBody>
             {currentData.length > 0 &&
               currentData.map((form, formIndex) => {
                 const globalIndex = startIndex + formIndex;
@@ -60,9 +80,9 @@ const Table = ({
                   }))
                 );
                 return (
-                  <tr key={form.Id} id={`table-row-${formIndex}`}>
+                  <TableRow key={form.Id} id={`table-row-${formIndex}`}>
                     {emailFields.map((field, fieldIndex) => (
-                      <td key={field.fieldId} className="p-2">
+                      <TableCell key={field.fieldId}>
                         <SuggestionInput
                           required
                           type="email"
@@ -72,11 +92,11 @@ const Table = ({
                             handleInputChange(globalIndex, signer, field.label)
                           }
                         />
-                      </td>
+                      </TableCell>
                     ))}
 
                     {widgets.map(({ widget, fieldIndex, widgetIndex }) => (
-                      <td key={`${form.Id}-${widget.key}`} className="p-2">
+                      <TableCell key={`${form.Id}-${widget.key}`}>
                         <RenderWidgets
                           widget={widget}
                           handleWidgetDetails={(value) =>
@@ -88,16 +108,16 @@ const Table = ({
                             )
                           }
                         />
-                      </td>
+                      </TableCell>
                     ))}
-                  </tr>
+                  </TableRow>
                 );
               })}
-          </tbody>
-        </table>
-      </div>
+          </TableBody>
+        </MuiTable>
+      </TableContainer>
 
-    </div>
+    </Box>
   );
 };
 

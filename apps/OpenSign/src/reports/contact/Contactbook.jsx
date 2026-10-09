@@ -12,6 +12,17 @@ import { useElSize } from "../../hook/useElSize";
 import ImportContact from "./ImportContact";
 import AddContact from "../../primitives/AddContact";
 import { withSessionValidation } from "../../utils";
+import Box from "@mui/material/Box";
+import Paper from "@mui/material/Paper";
+import TextField from "@mui/material/TextField";
+import IconButton from "@mui/material/IconButton";
+import Button from "@mui/material/Button";
+import Divider from "@mui/material/Divider";
+import Table from "@mui/material/Table";
+import TableHead from "@mui/material/TableHead";
+import TableBody from "@mui/material/TableBody";
+import TableRow from "@mui/material/TableRow";
+import TableCell from "@mui/material/TableCell";
 
 const Contactbook = (props) => {
   const titleRef = useRef(null);
@@ -215,107 +226,159 @@ const Contactbook = (props) => {
     setIsModal({});
   };
   return (
-    <div className="relative">
+    <Box sx={{ position: "relative" }}>
       {Object.keys(actLoader)?.length > 0 && (
-        <div className="absolute w-full h-full flex justify-center items-center bg-black/30 rounded-box z-30">
+        <Box
+          sx={{
+            position: "absolute",
+            width: "100%",
+            height: "100%",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            bgcolor: "rgba(0,0,0,0.3)",
+            borderRadius: 2,
+            zIndex: 30
+          }}
+        >
           <Loader />
-        </div>
+        </Box>
       )}
-      <div className="p-2 w-full bg-base-100 text-base-content op-card shadow-lg">
+      <Paper
+        elevation={3}
+        sx={{
+          p: 1,
+          width: "100%",
+          bgcolor: "surface.main",
+          color: "text.primary"
+        }}
+      >
         {alertMsg.message && (
           <Alert type={alertMsg.type}>{alertMsg.message}</Alert>
         )}
-        <div
+        <Box
           ref={titleRef}
-          className="flex flex-row items-center justify-between my-2 mx-3 text-[20px] md:text-[23px]"
+          sx={{
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "space-between",
+            my: 1,
+            mx: 1.5,
+            fontSize: { xs: "20px", md: "23px" }
+          }}
         >
-          <div className="font-light">
+          <Box sx={{ fontWeight: 300 }}>
             {t(`report-name.Contactbook`)}{" "}
             {props.report_help && (
-              <span className="text-xs md:text-[13px] font-normal">
+              <Box component="span" sx={{ fontSize: { xs: "0.75rem", md: "13px" }, fontWeight: 400 }}>
                 <Tooltip
                   id="report_help"
                   message="t(`report-help.Contactbook`)"
                 />
-              </span>
+              </Box>
             )}
-          </div>
-          <div className="flex flex-row justify-center items-center gap-3 mb-2">
+          </Box>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "center",
+              alignItems: "center",
+              gap: 1.5,
+              mb: 1
+            }}
+          >
             {/* Search input for report bigger in width */}
             {titleElement?.width > 500 && (
-              <div className="flex">
-                <input
+              <Box sx={{ display: "flex" }}>
+                <TextField
                   type="search"
+                  size="small"
                   value={props.searchTerm}
                   onChange={props.handleSearchChange}
                   placeholder={t("search-contacts")}
                   onPaste={props.handleSearchPaste}
-                  className="op-input op-input-bordered op-input-sm focus:outline-none hover:border-base-content w-64 text-xs"
+                  sx={{ width: 256 }}
+                  inputProps={{ style: { fontSize: "0.75rem" } }}
                 />
-              </div>
+              </Box>
             )}
             {/* import contact icon */}
-            <div
-              className="cursor-pointer flex"
+            <IconButton
               onClick={() => handleImportBtn()}
+              sx={{ color: "text.primary" }}
             >
               <i className="fa-light fa-upload text-[23px] md:text-[25px]"></i>
-            </div>
+            </IconButton>
             {/* add contact icon*/}
-            <div
-              className="cursor-pointer flex"
+            <IconButton
               onClick={() => handleContactFormModal()}
+              sx={{ color: "secondary.main" }}
             >
-              <i className="fa-light fa-square-plus text-accent text-[30px] md:text-[32px]"></i>
-            </div>
+              <i className="fa-light fa-square-plus text-[30px] md:text-[32px]"></i>
+            </IconButton>
             {/* search icon/magnifer icon */}
             {titleElement?.width < 500 && (
-              <button
-                className="flex justify-center items-center focus:outline-none rounded-md text-[18px]"
+              <IconButton
                 aria-label="Search"
                 onClick={() =>
                   props.setMobileSearchOpen(!props.mobileSearchOpen)
                 }
               >
                 <i className="fa-light fa-magnifying-glass"></i>
-              </button>
+              </IconButton>
             )}
-          </div>
-        </div>
+          </Box>
+        </Box>
         {/* Search input for report smalle in width */}
         {titleElement?.width < 500 && props.mobileSearchOpen && (
-          <div className="top-full left-0 w-full px-3 pt-1 pb-3">
-            <input
+          <Box sx={{ width: "100%", px: 1.5, pt: 0.5, pb: 1.5 }}>
+            <TextField
               type="search"
+              size="small"
+              fullWidth
               value={props.searchTerm}
               onChange={props.handleSearchChange}
               placeholder={t("search-documents")}
               onPaste={props.handleSearchPaste}
-              className="op-input op-input-bordered op-input-sm focus:outline-none hover:border-base-content w-full text-xs"
+              inputProps={{ style: { fontSize: "0.75rem" } }}
             />
-          </div>
+          </Box>
         )}
-        <div
-          className={`overflow-auto w-full border-b ${
-            props.List?.length > 0
-              ? "min-h-[317px]"
-              : currentList?.length === props.docPerPage
-                ? "h-fit"
-                : "h-screen"
-          }`}
+        <Box
+          sx={{
+            overflow: "auto",
+            width: "100%",
+            borderBottom: 1,
+            borderColor: "divider",
+            minHeight:
+              props.List?.length > 0
+                ? "317px"
+                : currentList?.length === props.docPerPage
+                  ? "auto"
+                  : undefined,
+            height:
+              props.List?.length > 0
+                ? undefined
+                : currentList?.length === props.docPerPage
+                  ? "fit-content"
+                  : "100vh"
+          }}
         >
-          <table className="op-table border-collapse w-full mb-4">
-            <thead className="text-[14px] text-center">
-              <tr className="border-y-[1px]">
+          <Table sx={{ width: "100%", mb: 2, borderCollapse: "collapse" }}>
+            <TableHead>
+              <TableRow>
                 {props.heading?.map((item, index) => (
                   <React.Fragment key={index}>
-                    <th className="text-left p-2">
+                    <TableCell sx={{ textAlign: "left", p: 1, fontSize: "14px" }}>
                       {t(`report-heading.${item}`)}
                       {item === "Name" && (
-                        <button
+                        <IconButton
                           type="button"
+                          size="small"
                           onClick={toggleSortOrder}
-                          className="ml-1"
+                          sx={{ ml: 0.5 }}
                         >
                           <i
                             className={
@@ -324,59 +387,73 @@ const Contactbook = (props) => {
                                 : "fa-light fa-arrow-up-a-z"
                             }
                           ></i>
-                        </button>
+                        </IconButton>
                       )}
-                    </th>
+                    </TableCell>
                   </React.Fragment>
                 ))}
                 {props.actions?.length > 0 && (
-                  <th className="p-2 text-transparent pointer-events-none">
+                  <TableCell
+                    sx={{ p: 1, color: "transparent", pointerEvents: "none" }}
+                  >
                     {t("action")}
-                  </th>
+                  </TableCell>
                 )}
-              </tr>
-            </thead>
-            <tbody className="text-[12px]">
+              </TableRow>
+            </TableHead>
+            <TableBody>
               {props.List?.length > 0 &&
                 !props.searchLoader &&
                 currentList.map((item, index) => (
-                  <tr className="last:border-none border-y-[1px]" key={index}>
+                  <TableRow key={index}>
                     {props.heading.includes("Sr.No") && (
-                      <td className="p-2 text-left font-semibold">
+                      <TableCell sx={{ p: 1, textAlign: "left", fontWeight: 600, fontSize: "12px" }}>
                         {startIndex + index + 1}
-                      </td>
+                      </TableCell>
                     )}
                     {props.heading.includes("Name") && (
-                      <td className="p-2 text-left font-semibold">
+                      <TableCell sx={{ p: 1, textAlign: "left", fontWeight: 600, fontSize: "12px" }}>
                         {item?.Name}
-                      </td>
+                      </TableCell>
                     )}
                     {props.heading.includes("Email") && (
-                      <td className="p-2 text-left">{item?.Email ?? "-"}</td>
+                      <TableCell sx={{ p: 1, textAlign: "left", fontSize: "12px" }}>{item?.Email ?? "-"}</TableCell>
                     )}
                     {props.heading.includes("Phone") && (
-                      <td className="p-2 text-left">{item?.Phone ?? "-"}</td>
+                      <TableCell sx={{ p: 1, textAlign: "left", fontSize: "12px" }}>{item?.Phone ?? "-"}</TableCell>
                     )}
                     {props.heading.includes("Company") && (
-                      <td className="p-2 text-left">{item?.Company ?? "-"}</td>
+                      <TableCell sx={{ p: 1, textAlign: "left", fontSize: "12px" }}>{item?.Company ?? "-"}</TableCell>
                     )}
                     {props.heading.includes("JobTitle") && (
-                      <td className="p-2 text-left">{item?.JobTitle ?? "-"}</td>
+                      <TableCell sx={{ p: 1, textAlign: "left", fontSize: "12px" }}>{item?.JobTitle ?? "-"}</TableCell>
                     )}
-                    <td className="px-3 py-2">
-                      <div className="text-base-content min-w-max flex flex-row gap-x-2 gap-y-1 justify-start items-center">
+                    <TableCell sx={{ px: 1.5, py: 1 }}>
+                      <Box
+                        sx={{
+                          color: "text.primary",
+                          minWidth: "max-content",
+                          display: "flex",
+                          flexDirection: "row",
+                          columnGap: 1,
+                          rowGap: 0.5,
+                          justifyContent: "flex-start",
+                          alignItems: "center"
+                        }}
+                      >
                         {props.actions?.length > 0 &&
                           props.actions.map((act, index) => (
-                            <button
+                            <Button
                               key={index}
+                              variant="outlined"
+                              size="small"
                               onClick={() => handleActionBtn(act, item)}
                               title={t(`btnLabel.${act.hoverLabel}`)}
-                              className={`${
-                                act?.btnColor ? act.btnColor : ""
-                              } op-btn op-btn-sm`}
+                              className={act?.btnColor ? act.btnColor : undefined}
+                              sx={{ minWidth: 0, px: 1 }}
                             >
                               <i className={act.btnIcon}></i>
-                            </button>
+                            </Button>
                           ))}
                         {isDeleteModal[item.objectId] && (
                           <ModalUi
@@ -384,88 +461,96 @@ const Contactbook = (props) => {
                             title={t("delete-contact")}
                             handleClose={handleClose}
                           >
-                            <div className="m-[20px]">
-                              <div className="text-lg font-normal text-base-content">
+                            <Box sx={{ m: "20px" }}>
+                              <Box sx={{ fontSize: "1.125rem", fontWeight: 400, color: "text.primary" }}>
                                 {t("contact-delete-alert")}
-                              </div>
-                              <hr className="bg-[#ccc] mt-3" />
-                              <div className="flex items-center mt-3 gap-2 text-white">
-                                <button
+                              </Box>
+                              <Divider sx={{ mt: 1.5 }} />
+                              <Box sx={{ display: "flex", alignItems: "center", mt: 1.5, gap: 1 }}>
+                                <Button
+                                  variant="contained"
                                   onClick={() => handleDelete(item)}
-                                  className="w-[100px] op-btn op-btn-primary"
+                                  sx={{ width: 100 }}
                                 >
                                   {t("yes")}
-                                </button>
-                                <button
+                                </Button>
+                                <Button
+                                  variant="contained"
+                                  color="secondary"
                                   onClick={handleClose}
-                                  className="w-[100px] op-btn op-btn-secondary"
+                                  sx={{ width: 100 }}
                                 >
                                   {t("no")}
-                                </button>
-                              </div>
-                            </div>
+                                </Button>
+                              </Box>
+                            </Box>
                           </ModalUi>
                         )}
-                      </div>
-                    </td>
-                  </tr>
+                      </Box>
+                    </TableCell>
+                  </TableRow>
                 ))}
-            </tbody>
-          </table>
+            </TableBody>
+          </Table>
           {(props.searchLoader || props.List?.length <= 0) && (
-            <div className="flex flex-col items-center justify-center w-ful bg-base-100 text-base-content rounded-xl py-4">
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                width: "100%",
+                bgcolor: "surface.main",
+                color: "text.primary",
+                borderRadius: 3,
+                py: 2
+              }}
+            >
               {props.searchLoader ? (
                 <>
                   <Loader />
-                  <div className="text-sm ">{t("loading-mssg")}</div>
+                  <Box sx={{ fontSize: "0.875rem" }}>{t("loading-mssg")}</Box>
                 </>
               ) : (
                 <>
-                  <div className="w-[60px] h-[60px] overflow-hidden">
+                  <Box sx={{ width: 60, height: 60, overflow: "hidden" }}>
                     <img
                       className="w-full h-full object-contain"
                       src={pad}
                       alt={t("no-data-available")}
                     />
-                  </div>
-                  <div className="text-sm font-semibold">
+                  </Box>
+                  <Box sx={{ fontSize: "0.875rem", fontWeight: 600 }}>
                     {t("no-data-available")}
-                  </div>
+                  </Box>
                 </>
               )}
-            </div>
+            </Box>
           )}
-        </div>
-        <div className="op-join flex flex-wrap items-center p-2">
+        </Box>
+        <Box sx={{ display: "flex", flexWrap: "wrap", alignItems: "center", p: 1, gap: 0.5 }}>
           {props.List.length > props.docPerPage && (
-            <button
-              onClick={() => paginateBack()}
-              className="op-join-item op-btn op-btn-sm"
-            >
+            <Button variant="outlined" size="small" onClick={() => paginateBack()}>
               {t("prev")}
-            </button>
+            </Button>
           )}
           {pageNumbers.map((x, i) => (
-            <button
+            <Button
               key={i}
+              size="small"
+              variant={x === currentPage ? "contained" : "outlined"}
               onClick={() => setCurrentPage(x)}
               disabled={x === "..."}
-              className={`${
-                x === currentPage ? "op-btn-active" : ""
-              } op-join-item op-btn op-btn-sm`}
             >
               {x}
-            </button>
+            </Button>
           ))}
           {props.List.length > props.docPerPage && (
-            <button
-              onClick={() => paginateFront()}
-              className="op-join-item op-btn op-btn-sm"
-            >
+            <Button variant="outlined" size="small" onClick={() => paginateFront()}>
               {t("next")}
-            </button>
+            </Button>
           )}
-        </div>
+        </Box>
         <ModalUi
           title={t("add-contact")}
           isOpen={isContactform}
@@ -496,21 +581,32 @@ const Contactbook = (props) => {
           title={t("bulk-import")}
           handleClose={handleCloseModal}
         >
-          <div className="relative">
+          <Box sx={{ position: "relative" }}>
             {Object.keys(actLoader)?.length > 0 && (
-              <div className="absolute w-full h-full flex justify-center items-center bg-black bg-opacity-30 z-30">
+              <Box
+                sx={{
+                  position: "absolute",
+                  width: "100%",
+                  height: "100%",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  bgcolor: "rgba(0,0,0,0.3)",
+                  zIndex: 30
+                }}
+              >
                 <Loader />
-              </div>
+              </Box>
             )}
             <ImportContact
               setLoader={setActLoader}
               onImport={handleCloseModal}
               showAlert={showAlert}
             />
-          </div>
+          </Box>
         </ModalUi>
-      </div>
-    </div>
+      </Paper>
+    </Box>
   );
 };
 

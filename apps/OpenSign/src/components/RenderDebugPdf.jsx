@@ -2,21 +2,45 @@ import React from "react";
 import { Document, Page } from "react-pdf";
 import { Stage, Layer, Rect, Text } from "react-konva";
 import { useTranslation } from "react-i18next";
+import Box from "@mui/material/Box";
 const RenderDebugPdf = (props) => {
   const { t } = useTranslation();
   return (
-    <div>
-      <div className="sticky top-0 p-[10px] z-10 bg-white border-[1px] border-[gray] my-[5px]">
+    <Box>
+      <Box
+        sx={{
+          position: "sticky",
+          top: 0,
+          p: "10px",
+          zIndex: 10,
+          bgcolor: "background.paper",
+          color: "text.primary",
+          border: "1px solid",
+          borderColor: "outline.main",
+          my: "5px"
+        }}
+      >
         {`Co-ordinates: X - ${props.hoverCoordinates.x}, Y - ${props.hoverCoordinates.y}`}
-      </div>
-      <div
-        className="relative flex-1 cursor-crosshair border-[1px] border-[gray] overflow-auto"
+      </Box>
+      <Box
+        sx={{
+          position: "relative",
+          flex: 1,
+          cursor: "crosshair",
+          border: "1px solid",
+          borderColor: "outline.main",
+          overflow: "auto"
+        }}
         onMouseMove={props.handleMouseMoveDiv}
       >
         <Document
           onLoadError={() => props.setPdfLoadFail(false)}
           loading={t("loading-doc")}
-          error={<p className="mx-2">{t("failed-to-load-refresh-page")}</p>}
+          error={
+            <Box component="p" sx={{ mx: 1 }}>
+              {t("failed-to-load-refresh-page")}
+            </Box>
+          }
           onLoadSuccess={props.pageDetails}
           ref={props.pdfRef}
           file={props.pdfUrl}
@@ -72,8 +96,8 @@ const RenderDebugPdf = (props) => {
               })}
           </Layer>
         </Stage>
-      </div>
-    </div>
+      </Box>
+    </Box>
   );
 };
 

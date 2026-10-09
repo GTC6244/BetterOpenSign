@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import LoaderWithMsg from "../../primitives/LoaderWithMsg";
 import { contractDocument } from "../../constant/Utils";
 import HandleError from "../../primitives/HandleError";
 import { useLocation, useNavigate } from "react-router";
 import { useTranslation } from "react-i18next";
+import Box from "@mui/material/Box";
 function useQuery() {
   return new URLSearchParams(useLocation().search);
 }
@@ -86,13 +87,13 @@ function DraftDocument() {
   };
 
   return (
-    <div>
+    <Box>
       {isLoading.isLoader ? (
         <LoaderWithMsg isLoading={isLoading} />
       ) : (
         <HandleError handleError={isLoading.message} />
       )}
-    </div>
+    </Box>
   );
 }
 

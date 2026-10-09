@@ -1,6 +1,12 @@
 import React, { useState } from "react";
 import { formatDateTime } from "../../constant/Utils";
 import { useTranslation } from "react-i18next";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import TextField from "@mui/material/TextField";
+import MenuItem from "@mui/material/MenuItem";
+import Radio from "@mui/material/Radio";
+import FormControlLabel from "@mui/material/FormControlLabel";
 
 const DateFormatSelector = (props) => {
   const { t } = useTranslation();
@@ -33,49 +39,61 @@ const DateFormatSelector = (props) => {
     props.setIs12HourTime && props.setIs12HourTime(!is12Hour);
   };
   return (
-    <div className="max-w-[400px] pr-[20px]">
-      <label className="text-[14px] mb-[0.7rem] font-medium">
+    <Box sx={{ maxWidth: 400, pr: "20px" }}>
+      <Typography
+        component="label"
+        sx={{ display: "block", fontSize: 14, mb: "0.7rem", fontWeight: 500 }}
+      >
         {t("date-format")}
-      </label>
-      <select
-        className="op-select op-select-bordered op-select-sm focus:outline-none hover:border-base-content w-full h-full text-[11px]"
+      </Typography>
+      <TextField
+        select
+        size="small"
+        fullWidth
         value={selectedFormat}
         onChange={handleFormatChange}
+        sx={{ "& .MuiInputBase-input": { fontSize: 11 } }}
       >
         {dateFormats.map((format) => (
-          <option key={format} value={format}>
+          <MenuItem key={format} value={format} sx={{ fontSize: 11 }}>
             {format}
-          </option>
+          </MenuItem>
         ))}
-      </select>
-      <div className="flex flex-row gap-4 mt-[0.75rem] text-[12px]">
-        <div className="flex items-center gap-2 ml-2">
-          <input
-            type="radio"
-            value={true}
-            className="op-radio op-radio-xs"
-            checked={is12Hour}
-            onChange={handleHrInput}
-          />
-          <div className="text-center">12 hr</div>
-        </div>
-        <div className="flex items-center gap-2 ml-2">
-          <input
-            type="radio"
-            value={false}
-            className="op-radio op-radio-xs"
-            checked={!is12Hour}
-            onChange={handleHrInput}
-          />
-          <div className="text-center">24 hr</div>
-        </div>
-      </div>
-      <p className="mt-[12px] ml-[10px] text-[13px] font-medium">
+      </TextField>
+      <Box sx={{ display: "flex", flexDirection: "row", gap: 2, mt: "0.75rem" }}>
+        <FormControlLabel
+          sx={{ ml: "2px", mr: 0 }}
+          control={
+            <Radio
+              size="small"
+              value={true}
+              checked={is12Hour}
+              onChange={handleHrInput}
+            />
+          }
+          label="12 hr"
+          slotProps={{ typography: { sx: { fontSize: 12 } } }}
+        />
+        <FormControlLabel
+          sx={{ ml: "2px", mr: 0 }}
+          control={
+            <Radio
+              size="small"
+              value={false}
+              checked={!is12Hour}
+              onChange={handleHrInput}
+            />
+          }
+          label="24 hr"
+          slotProps={{ typography: { sx: { fontSize: 12 } } }}
+        />
+      </Box>
+      <Typography sx={{ mt: "12px", ml: "10px", fontSize: 13, fontWeight: 500 }}>
         <strong>
           {formatDateTime(date, selectedFormat, props?.timezone, is12Hour)}
         </strong>
-      </p>
-    </div>
+      </Typography>
+    </Box>
   );
 };
 

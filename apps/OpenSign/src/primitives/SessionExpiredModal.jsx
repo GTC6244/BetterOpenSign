@@ -3,6 +3,9 @@ import { useLocation, useNavigate } from "react-router";
 import { useDispatch } from "react-redux";
 import { sessionStatus } from "../redux/reducers/userReducer";
 import Parse from "parse";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Typography from "@mui/material/Typography";
 import ModalUi from "./ModalUi";
 
 const SessionExpiredModal = () => {
@@ -25,12 +28,24 @@ const SessionExpiredModal = () => {
 
   return (
     <ModalUi showHeader={false} isOpen={true} showClose={false}>
-      <div className="flex flex-col justify-center items-center py-4 md:py-5 gap-5">
-        <p className="text-xl font-medium">{t("session-expired")}</p>
-        <button onClick={handleLoginBtn} className="op-btn op-btn-neutral">
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center",
+          py: { xs: 2, md: 2.5 },
+          px: 3,
+          gap: 2.5
+        }}
+      >
+        <Typography variant="h6" sx={{ fontWeight: 500 }}>
+          {t("session-expired")}
+        </Typography>
+        <Button variant="contained" color="primary" onClick={handleLoginBtn}>
           {t("login")}
-        </button>
-      </div>
+        </Button>
+      </Box>
     </ModalUi>
   );
 };

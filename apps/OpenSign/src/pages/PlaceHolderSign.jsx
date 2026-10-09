@@ -69,6 +69,10 @@ import EditDocument from "../components/pdf/EditTemplate";
 import CustomizeMail from "../components/pdf/CustomizeMail";
 import { useWindowSize } from "../hook/useWindowSize";
 import { useScroll } from "../context/ScrollPdfContext";
+import Button from "@mui/material/Button";
+import Box from "@mui/material/Box";
+import Divider from "@mui/material/Divider";
+import Link from "@mui/material/Link";
 
 function PlaceHolderSign() {
   const { t } = useTranslation();
@@ -1179,32 +1183,45 @@ function PlaceHolderSign() {
     }
     return shareLinkList.map((data, ind) => {
       return (
-        <div
-          className="flex flex-row justify-between items-center mb-1"
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "center",
+            mb: 0.5
+          }}
           key={ind}
         >
           {copied && <Alert type="success">{t("copied")}</Alert>}
           <span className="w-[220px] md:w-[300px] whitespace-nowrap overflow-hidden text-ellipsis">
             {data.signerEmail}
           </span>
-          <div className="flex flex-row items-center gap-3 ">
-            <button
+          <Box sx={{ display: "flex", flexDirection: "row", alignItems: "center", gap: 1.5 }}>
+            <Button
               onClick={() => copytoclipboard(data.url)}
               type="button"
-              className="flex flex-row items-center op-link op-link-primary"
+              variant="text"
+              size="small"
+              color="primary"
+              startIcon={<i className="fa-light fa-copy" />}
+              sx={{ minWidth: 0 }}
             >
-              <i className="fa-light fa-copy" />
-              <span className="hidden md:block ml-1 ">{t("copy-link")}</span>
-            </button>
+              <span className="hidden md:block">{t("copy-link")}</span>
+            </Button>
             <ShareButton
               title={t("sign-url")}
               text={t("sign-url")}
               url={data.url}
             >
-              <i className="fa-light fa-share-from-square op-link opensigncss:op-link-secondary opensigndark:op-link-primary no-underline"></i>
+              <Box
+                component="i"
+                className="fa-light fa-share-from-square"
+                sx={{ color: "secondary.main", textDecoration: "none" }}
+              />
             </ShareButton>
-          </div>
-        </div>
+          </Box>
+        </Box>
       );
     });
   };
@@ -1889,12 +1906,36 @@ function PlaceHolderSign() {
       ) : handleError ? (
         <HandleError handleError={handleError} />
       ) : (
-        <div className="relative op-card overflow-hidden flex flex-col md:flex-row justify-between bg-base-300">
+        <Box
+          sx={{
+            position: "relative",
+            overflow: "hidden",
+            display: "flex",
+            flexDirection: { xs: "column", md: "row" },
+            justifyContent: "space-between",
+            bgcolor: "surface.container",
+            borderRadius: 2
+          }}
+        >
           {isUiLoading && (
-            <div className="absolute h-full w-full flex flex-col justify-center items-center z-[999] bg-[#e6f2f2]/80">
+            <Box
+              sx={{
+                position: "absolute",
+                height: "100%",
+                width: "100%",
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+                alignItems: "center",
+                zIndex: 999,
+                bgcolor: "rgba(230,242,242,0.8)"
+              }}
+            >
               <Loader />
-              <span className="text-[13px]">{t("loading-mssg")}</span>
-            </div>
+              <Box component="span" sx={{ fontSize: "13px" }}>
+                {t("loading-mssg")}
+              </Box>
+            </Box>
           )}
           {/* 
             this component used for UI interaction and show their functionality 
@@ -1975,11 +2016,18 @@ function PlaceHolderSign() {
                   navigate("/report/1MwEuxLEkF");
                 }}
               >
-                <div className="h-[100%] p-[20px] text-base-content">
-                  <div className="flex flex-col items-center gap-5">
+                <Box sx={{ height: "100%", p: 2.5, color: "text.primary" }}>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                      gap: 2.5
+                    }}
+                  >
                     <div>
                       {mailStatus === "success" ? (
-                        <div className="text-center mb-[10px]">
+                        <Box sx={{ textAlign: "center", mb: 1.25 }}>
                           <LottieWithLoader />
                           {pdfDetails[0].SendinOrder ? (
                             <p>
@@ -1992,11 +2040,13 @@ function PlaceHolderSign() {
                           ) : (
                             <p>{t("placeholder-alert-4")}</p>
                           )}
-                        </div>
+                        </Box>
                       ) : mailStatus === "quotareached" ? (
-                        <div className="flex flex-col gap-y-3">
-                          <div className="my-3">{handleShareList()}</div>
-                        </div>
+                        <Box
+                          sx={{ display: "flex", flexDirection: "column", gap: 1.5 }}
+                        >
+                          <Box sx={{ my: 1.5 }}>{handleShareList()}</Box>
+                        </Box>
                       ) : mailStatus === "failed" ? (
                         <p>{t("mail-failed")} </p>
                       ) : mailStatus === "emailnotverified" ? (
@@ -2006,30 +2056,30 @@ function PlaceHolderSign() {
                               i18nKey="email-not-verified-send"
                               components={{
                                 1: (
-                                  <a
-                                    href="/profile"
-                                    className="text-blue-700 underline cursor-pointer"
-                                  />
+                                  <Link href="/profile" sx={{ cursor: "pointer" }} />
                                 )
                               }}
                             />
                           </p>
-                          <div className="flex justify-center mt-2">
-                            <button
+                          <Box
+                            sx={{ display: "flex", justifyContent: "center", mt: 1 }}
+                          >
+                            <Button
                               onClick={() => {
                                 setIsSend(false);
                                 setSignerPos([]);
                                 navigate("/report/1MwEuxLEkF");
                               }}
                               type="button"
-                              className="op-btn op-btn-ghost text-base-content"
+                              variant="text"
+                              color="inherit"
                             >
                               {t("close")}
-                            </button>
-                          </div>
+                            </Button>
+                          </Box>
                         </div>
                       ) : (
-                        <div className="mb-[10px]">
+                        <Box sx={{ mb: 1.25 }}>
                           {!pdfDetails[0]?.SendinOrder &&
                             (mailStatus === "dailyquotareached" ? (
                               <p>{t("daily-quota-reached")}</p>
@@ -2037,91 +2087,98 @@ function PlaceHolderSign() {
                               <p>{t("placeholder-alert-6")}</p>
                             ))}
                           {isCurrUser && (
-                            <span className="mt-1">
+                            <Box component="span" sx={{ mt: 0.5 }}>
                               {t("placeholder-alert-5")}
-                            </span>
+                            </Box>
                           )}
-                        </div>
+                        </Box>
                       )}
 
                       {mailStatus !== "quotareached" &&
                         mailStatus !== "failed" &&
                         mailStatus !== "emailnotverified" && (
-                          <div
-                            className={
-                              mailStatus === "success"
-                                ? "flex justify-center mt-1"
-                                : "flex items-center justify-center mt-7"
-                            }
+                          <Box
+                            sx={{
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              mt: mailStatus === "success" ? 1 : 3.5
+                            }}
                           >
                             {isCurrUser && (
-                              <button
+                              <Button
                                 onClick={() => handleRecipientSign()}
                                 type="button"
-                                className="op-btn op-btn-primary mr-1"
+                                variant="contained"
+                                sx={{ mr: 0.5 }}
                               >
                                 {t("sign-now")}
-                              </button>
+                              </Button>
                             )}
-                            <button
+                            <Button
                               onClick={() => {
                                 setIsSend(false);
                                 setSignerPos([]);
                                 navigate("/report/1MwEuxLEkF");
                               }}
                               type="button"
-                              className="op-btn op-btn-ghost text-base-content"
+                              variant="text"
+                              color="inherit"
                             >
                               {isCurrUser ? t("no") : t("close")}
-                            </button>
-                          </div>
+                            </Button>
+                          </Box>
                         )}
                     </div>
                     {mailStatus !== "success" &&
                       mailStatus !== "emailnotverified" &&
                       isCurrUser &&
                       pdfDetails[0]?.SendinOrder && (
-                        <div className="op-divider text-base-content mx-[0%] my-1 font-medium">
+                        <Divider
+                          sx={{ my: 0.5, fontWeight: 500, color: "text.primary" }}
+                        >
                           {t("or")}
-                        </div>
+                        </Divider>
                       )}
                     {mailStatus !== "success" &&
                       mailStatus !== "emailnotverified" &&
                       pdfDetails[0]?.SendinOrder &&
                       isCurrUser && (
-                        <div
-                          className="op-btn op-btn-outline w-[50%] md:w-[35%] mt-1 group"
+                        <Button
+                          variant="outlined"
                           onClick={() => {
                             setIsSend(false);
                             setIsMailModal(true);
                           }}
+                          startIcon={
+                            <i className="fa-regular fa-envelope text-[19px]" />
+                          }
+                          className="w-[50%] md:w-[35%]"
+                          sx={{ mt: 0.5 }}
                         >
-                          <i className="fa-regular fa-envelope text-[19px] op-text-primary group-hover:text-base-100 "></i>{" "}
-                          <span>{t("send-to-email")}</span>
-                        </div>
+                          {t("send-to-email")}
+                        </Button>
                       )}
-                  </div>
-                  {!mailStatus && (
-                    <div className="op-divider text-base-content mx-[0%] mt-3"></div>
-                  )}
-                </div>
+                  </Box>
+                  {!mailStatus && <Divider sx={{ mt: 1.5 }} />}
+                </Box>
               </ModalUi>
               <ModalUi
                 isOpen={isShowEmail}
                 title={t("signers-alert")}
                 handleClose={() => setIsShowEmail(false)}
               >
-                <div className="h-[100%] p-[20px]">
+                <Box sx={{ height: "100%", p: 2.5 }}>
                   <p>{t("placeholder-alert-7")}</p>
-                  <div className="w-full h-[1px] bg-[#9f9f9f] my-[15px]"></div>
-                  <button
+                  <Divider sx={{ my: 1.875 }} />
+                  <Button
                     onClick={() => setIsShowEmail(false)}
                     type="button"
-                    className="op-btn op-btn-primary"
+                    variant="contained"
                   >
                     {t("ok")}
-                  </button>
-                </div>
+                  </Button>
+                </Box>
               </ModalUi>
               <PlaceholderCopy
                 isPageCopy={isPageCopy}
@@ -2276,7 +2333,10 @@ function PlaceHolderSign() {
           </div>
 
           {/* signature button */}
-          <div className="w-full md:w-[23%] bg-base-100 overflow-y-auto hide-scrollbar">
+          <Box
+            className="w-full md:w-[23%] hide-scrollbar"
+            sx={{ bgcolor: "surface.main", overflowY: "auto" }}
+          >
             <div className={`max-h-screen`}>
               {isMobile ? (
                 <div>
@@ -2311,9 +2371,10 @@ function PlaceHolderSign() {
                 </div>
               ) : (
                 <div>
-                  <div
-                    className="hidden md:block w-full h-full bg-base-100"
+                  <Box
+                    className="hidden md:block w-full h-full"
                     aria-disabled
+                    sx={{ bgcolor: "surface.main" }}
                   >
                     <SignerListPlace
                       setSignerPos={setSignerPos}
@@ -2345,11 +2406,11 @@ function PlaceHolderSign() {
                         roleName={roleName}
                       />
                     </div>
-                  </div>
+                  </Box>
                 </div>
               )}
             </div>
-          </div>
+          </Box>
           <CustomizeMail
             setIsMailModal={setIsMailModal}
             setCustomizeMail={setCustomizeMail}
@@ -2366,7 +2427,7 @@ function PlaceHolderSign() {
             emailEditorType={emailEditorType}
             setEmailEditorType={setEmailEditorType}
           />
-        </div>
+        </Box>
       )}
       {isShowModal[currWidgetsDetails?.key] && (
         <WidgetsValueModal
@@ -2391,17 +2452,17 @@ function PlaceHolderSign() {
         title={t("document-alert")}
         showClose={false}
       >
-        <div className="h-[100%] p-[20px] text-base-content">
+        <Box sx={{ height: "100%", p: 2.5, color: "text.primary" }}>
           <p>{isAlreadyPlace.message}</p>
-          <div className="h-[1px] w-full my-[15px] bg-[#9f9f9f]"></div>
-          <button
+          <Divider sx={{ my: 1.875 }} />
+          <Button
             onClick={() => handleRecipientSign()}
             type="button"
-            className="op-btn op-btn-primary"
+            variant="contained"
           >
             {t("view")}
-          </button>
-        </div>
+          </Button>
+        </Box>
       </ModalUi>
       {(isAddSigner || (isAddUser && isAddUser[uniqueId])) && (
         <LinkUserModal

@@ -8,6 +8,11 @@ import { withSessionValidation } from "../../utils";
 import { useDispatch } from "react-redux";
 import { setTenantInfo, setUserInfo } from "../../redux/reducers/userReducer";
 import EmailEditor from "../emaileditor";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import TextField from "@mui/material/TextField";
+import Typography from "@mui/material/Typography";
+import Link from "@mui/material/Link";
 
 const MailTemplateEditor = ({
   info,
@@ -312,51 +317,94 @@ const MailTemplateEditor = ({
   return (
     <>
       {isalert.msg && <Alert type={isalert.type}>{isalert.msg}</Alert>}
-      <div className="flex flex-col mb-4">
-        <div className="flex flex-col">
-          <h1 className="text-[14px] mb-[0.7rem] font-medium">
+      <Box sx={{ display: "flex", flexDirection: "column", mb: 2 }}>
+        <Box sx={{ display: "flex", flexDirection: "column" }}>
+          <Typography
+            component="h1"
+            sx={{ fontSize: 14, mb: "0.7rem", fontWeight: 500 }}
+          >
             {t("request-email")}
-          </h1>
-          <div className="relative mt-2 mb-4">
+          </Typography>
+          <Box sx={{ position: "relative", mt: 1, mb: 2 }}>
             {isMailLoader.request && (
-              <div className="flex z-[100] justify-center items-center absolute w-full h-full rounded-box bg-black/30">
+              <Box
+                sx={{
+                  position: "absolute",
+                  inset: 0,
+                  zIndex: 100,
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  borderRadius: 2,
+                  bgcolor: "rgba(0,0,0,0.3)"
+                }}
+              >
                 <Loader />
-              </div>
+              </Box>
             )}
-            {
-                isDefaultMail?.requestMail && (
-                  <div className="absolute backdrop-blur-[2px] flex w-full h-full justify-center items-center bg-black/10 rounded-box select-none z-20">
-                    <button
-                      onClick={() => handleModifyMail("request")}
-                      className="op-btn op-btn-primary shadow-lg"
-                    >
-                      {t("modify")}
-                    </button>
-                  </div>
-                )
-            }
-            <form
+            {isDefaultMail?.requestMail && (
+              <Box
+                sx={{
+                  position: "absolute",
+                  inset: 0,
+                  zIndex: 20,
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  backdropFilter: "blur(2px)",
+                  bgcolor: "rgba(0,0,0,0.1)",
+                  borderRadius: 2,
+                  userSelect: "none"
+                }}
+              >
+                <Button
+                  variant="contained"
+                  onClick={() => handleModifyMail("request")}
+                  sx={{ boxShadow: 3 }}
+                >
+                  {t("modify")}
+                </Button>
+              </Box>
+            )}
+            <Box
+              component="form"
               onSubmit={handleSaveRequestEmail}
-              className="p-3 border-[1px] border-base-content rounded-box"
+              sx={{
+                p: 1.5,
+                border: 1,
+                borderColor: "outline.main",
+                borderRadius: 2
+              }}
             >
-              <div className="text-lg font-normal">
-                <label className="text-sm">
+              <Box>
+                <Box component="label" sx={{ fontSize: 14 }}>
                   {t("subject")}{" "}
                   <Tooltip
                     id={"request-sub-tooltip"}
                     message={`${t("variables-use")}: {{document_title}} {{sender_name}}, {{sender_mail}}, {{sender_phone}}, {{receiver_name}}, {{receiver_email}}, {{receiver_phone}}, {{expiry_date}}, {{company_name}}, {{signing_url}}, {{note}}`}
                   />
-                </label>
-                <input
+                </Box>
+                <TextField
                   required
+                  fullWidth
+                  size="small"
                   value={requestSubject}
                   onChange={(e) => setRequestSubject(e.target.value)}
                   placeholder={`{{sender_name}} ${t("send-to-sign")} {{document_title}}`}
-                  className="w-full op-input op-input-bordered op-input-sm focus:outline-none hover:border-base-content text-xs"
+                  sx={{ mt: 0.5, "& .MuiInputBase-input": { fontSize: 12 } }}
                 />
-              </div>
-              <div className="text-lg font-normal py-2">
-                <label className="flex justify-between text-sm mt-3">
+              </Box>
+              <Box sx={{ py: 1 }}>
+                <Box
+                  component="label"
+                  sx={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    fontSize: 14,
+                    mt: 1.5
+                  }}
+                >
                   <span>
                     {t("body")}{" "}
                     <Tooltip
@@ -364,15 +412,18 @@ const MailTemplateEditor = ({
                       message={`${t("variables-use")}: {{document_title}} {{sender_name}}, {{sender_mail}}, {{sender_phone}}, {{receiver_name}}, {{receiver_email}}, {{receiver_phone}}, {{expiry_date}}, {{company_name}}, {{signing_url}}, {{note}}`}
                     />
                   </span>
-                  <button
-                    className="op-link op-link-primary"
+                  <Link
+                    component="button"
+                    type="button"
+                    underline="hover"
                     onClick={(e) => handleSwitch(e, "request")}
+                    sx={{ fontSize: 14 }}
                   >
                     {editorType.request === "basic"
                       ? t("switch-to-advanced")
                       : t("switch-to-basic")}
-                  </button>
-                </label>
+                  </Link>
+                </Box>
                 <EmailEditor
                   type={editorType.request}
                   values={requestBody}
@@ -381,68 +432,112 @@ const MailTemplateEditor = ({
                   isReset={isMailLoader?.request}
                   isTemplateLoaded={isTemplateLoaded}
                 />
-              </div>
-              <div className="flex items-center mt-3 gap-2">
-                <button
+              </Box>
+              <Box sx={{ display: "flex", alignItems: "center", mt: 1.5, gap: 1 }}>
+                <Button
                   disabled={!requestBody[editorType.request] || !requestSubject}
-                  className="op-btn op-btn-primary"
+                  variant="contained"
                   type="submit"
                 >
                   {t("save")}
-                </button>
-                <button
+                </Button>
+                <Button
                   type="button"
-                  className="op-btn op-btn-secondary"
+                  variant="outlined"
+                  color="secondary"
                   onClick={() => handleReset("request")}
                 >
                   {t("reset")}
-                </button>
-              </div>
-            </form>
-          </div>
-          <h1 className="text-[14px] mb-[0.7rem] font-medium">
+                </Button>
+              </Box>
+            </Box>
+          </Box>
+          <Typography
+            component="h1"
+            sx={{ fontSize: 14, mb: "0.7rem", fontWeight: 500 }}
+          >
             {t("completion-email")}
-          </h1>
-          <div className="relative my-2">
+          </Typography>
+          <Box sx={{ position: "relative", my: 1 }}>
             {isMailLoader.completion && (
-              <div className="flex z-[100] justify-center items-center absolute w-full h-full rounded-box bg-black/30">
+              <Box
+                sx={{
+                  position: "absolute",
+                  inset: 0,
+                  zIndex: 100,
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  borderRadius: 2,
+                  bgcolor: "rgba(0,0,0,0.3)"
+                }}
+              >
                 <Loader />
-              </div>
+              </Box>
             )}
-            {
-                isDefaultMail?.completionMail && (
-                  <div className="absolute backdrop-blur-[2px] flex w-full h-full justify-center items-center bg-black/10 rounded-box select-none z-20">
-                    <button
-                      onClick={() => handleModifyMail("completion")}
-                      className="op-btn op-btn-primary shadow-lg"
-                    >
-                      {t("modify")}
-                    </button>
-                  </div>
-                )
-            }
-            <form
+            {isDefaultMail?.completionMail && (
+              <Box
+                sx={{
+                  position: "absolute",
+                  inset: 0,
+                  zIndex: 20,
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  backdropFilter: "blur(2px)",
+                  bgcolor: "rgba(0,0,0,0.1)",
+                  borderRadius: 2,
+                  userSelect: "none"
+                }}
+              >
+                <Button
+                  variant="contained"
+                  onClick={() => handleModifyMail("completion")}
+                  sx={{ boxShadow: 3 }}
+                >
+                  {t("modify")}
+                </Button>
+              </Box>
+            )}
+            <Box
+              component="form"
               onSubmit={handleSaveCompletionEmail}
-              className="p-3 border-[1px] border-base-content rounded-box"
+              sx={{
+                p: 1.5,
+                border: 1,
+                borderColor: "outline.main",
+                borderRadius: 2
+              }}
             >
-              <div className="text-lg font-normal">
-                <label className="text-sm">
+              <Box>
+                <Box component="label" sx={{ fontSize: 14 }}>
                   {t("subject")}{" "}
                   <Tooltip
                     id={"complete-sub-tooltip"}
                     message={`${t("variables-use")}: {{document_title}} {{sender_name}}, {{sender_mail}}, {{sender_phone}}, {{receiver_name}}, {{receiver_email}}, {{receiver_phone}}, {{company_name}}, {{signing_url}}, {{note}}`}
                   />
-                </label>
-                <input
+                </Box>
+                <TextField
                   required
+                  fullWidth
+                  size="small"
                   value={completionSubject}
                   onChange={(e) => setCompletionSubject(e.target.value)}
                   placeholder={`{{sender_name}}  ${t("send-to-sign")} {{document_title}}`}
-                  className="w-full op-input op-input-bordered op-input-sm focus:outline-none hover:border-base-content text-xs"
+                  sx={{ mt: 0.5, "& .MuiInputBase-input": { fontSize: 12 } }}
                 />
-              </div>
-              <div className="text-lg font-normal py-2">
-                <label className="flex justify-between text-sm mt-3">
+              </Box>
+              <Box sx={{ py: 1 }}>
+                <Box
+                  component="label"
+                  sx={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    fontSize: 14,
+                    mt: 1.5
+                  }}
+                >
                   <span>
                     {t("body")}{" "}
                     <Tooltip
@@ -450,15 +545,18 @@ const MailTemplateEditor = ({
                       message={`${t("variables-use")}: {{document_title}} {{sender_name}}, {{sender_mail}}, {{sender_phone}}, {{receiver_name}}, {{receiver_email}}, {{receiver_phone}}, {{company_name}}, {{signing_url}}, {{note}}`}
                     />
                   </span>
-                  <button
-                    className="op-link op-link-primary"
+                  <Link
+                    component="button"
+                    type="button"
+                    underline="hover"
                     onClick={(e) => handleSwitch(e, "completion")}
+                    sx={{ fontSize: 14 }}
                   >
                     {editorType.completion === "basic"
                       ? t("switch-to-advanced")
                       : t("switch-to-basic")}
-                  </button>
-                </label>
+                  </Link>
+                </Box>
                 <EmailEditor
                   type={editorType.completion}
                   values={completionBody}
@@ -467,29 +565,30 @@ const MailTemplateEditor = ({
                   isReset={isMailLoader?.completion}
                   isTemplateLoaded={isTemplateLoaded}
                 />
-              </div>
-              <div className="flex items-center mt-3 gap-2">
-                <button
+              </Box>
+              <Box sx={{ display: "flex", alignItems: "center", mt: 1.5, gap: 1 }}>
+                <Button
                   disabled={
                     !completionBody[editorType.completion] || !completionSubject
                   }
-                  className="op-btn op-btn-primary"
+                  variant="contained"
                   type="submit"
                 >
                   {t("save")}
-                </button>
-                <button
+                </Button>
+                <Button
                   type="button"
-                  className="op-btn op-btn-secondary"
+                  variant="outlined"
+                  color="secondary"
                   onClick={() => handleReset(null, "completion")}
                 >
                   {t("reset")}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      </div>
+                </Button>
+              </Box>
+            </Box>
+          </Box>
+        </Box>
+      </Box>
     </>
   );
 };

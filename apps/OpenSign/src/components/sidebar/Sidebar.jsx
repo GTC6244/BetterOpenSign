@@ -11,6 +11,9 @@ import {
   setSelectedMenu,
   toggleSidebar
 } from "../../redux/reducers/sidebarReducer";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import Avatar from "@mui/material/Avatar";
 
 const Sidebar = () => {
   const { width } = useWindowSize();
@@ -76,44 +79,76 @@ const Sidebar = () => {
     navigate("/profile");
   };
   return (
-    <aside
-      className={`absolute max-lg:min-h-screen lg:relative bg-base-100 overflow-y-auto transition-all z-[500] shadow-lg hide-scrollbar
-     ${isOpen ? "w-full md:w-64" : "w-0"}`}
+    <Box
+      component="aside"
+      className="hide-scrollbar"
+      sx={{
+        position: { xs: "absolute", lg: "relative" },
+        minHeight: { xs: "100vh", lg: "auto" },
+        bgcolor: "surface.main",
+        overflowY: "auto",
+        transition: "all 0.2s",
+        zIndex: 500,
+        boxShadow: 3,
+        width: isOpen ? { xs: "100%", md: "16rem" } : 0
+      }}
     >
-      <div className="flex px-2 py-3 gap-2 items-center shadow-md">
-        <div
+      <Box
+        sx={{
+          display: "flex",
+          px: 1,
+          py: 1.5,
+          gap: 1,
+          alignItems: "center",
+          boxShadow: 2
+        }}
+      >
+        <Avatar
           onClick={() => handleProfile()}
-          className="w-[75px] h-[75px] rounded-full ring-[2px] ring-offset-2 ring-gray-400 overflow-hidden cursor-pointer"
-        >
-          <img
-            className="w-full h-full object-contain"
-            src={image}
-            alt="Profile"
-          />
-        </div>
-        <div>
-          <p
+          src={image}
+          alt="Profile"
+          sx={{
+            width: 75,
+            height: 75,
+            cursor: "pointer",
+            border: "2px solid",
+            borderColor: "outline.main",
+            boxShadow: (theme) => `0 0 0 2px ${theme.palette.background.paper}`,
+            "& img": { objectFit: "contain" }
+          }}
+        />
+        <Box>
+          <Typography
             onClick={handleProfile}
-            className="text-[14px] font-bold text-base-content cursor-pointer"
+            sx={{
+              fontSize: "14px",
+              fontWeight: 700,
+              color: "text.primary",
+              cursor: "pointer"
+            }}
           >
             {username}
-          </p>
-          <p
+          </Typography>
+          <Typography
             onClick={handleProfile}
-            className={`cursor-pointer text-[12px] text-base-content ${
-              tenantname ? "mt-2" : ""
-            }`}
+            sx={{
+              cursor: "pointer",
+              fontSize: "12px",
+              color: "text.primary",
+              mt: tenantname ? 1 : 0
+            }}
           >
             {tenantname}
-          </p>
-        </div>
-      </div>
-      <nav
-        className="op-menu op-menu-sm"
+          </Typography>
+        </Box>
+      </Box>
+      <Box
+        component="nav"
         aria-label="OpenSign Sidebar Navigation"
       >
-        <ul
-          className="text-sm"
+        <Box
+          component="ul"
+          sx={{ fontSize: "0.875rem", listStyle: "none", m: 0, p: 0 }}
           role="menubar"
           aria-label="OpenSign Sidebar Navigation"
         >
@@ -135,12 +170,23 @@ const Sidebar = () => {
               />
             )
           )}
-        </ul>
-      </nav>
-        <footer className="my-3 flex justify-center items-center text-[25px] text-base-content gap-3">
-          <SocialMedia />
-        </footer>
-    </aside>
+        </Box>
+      </Box>
+      <Box
+        component="footer"
+        sx={{
+          my: 1.5,
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          fontSize: "25px",
+          color: "text.primary",
+          gap: 1.5
+        }}
+      >
+        <SocialMedia />
+      </Box>
+    </Box>
   );
 };
 

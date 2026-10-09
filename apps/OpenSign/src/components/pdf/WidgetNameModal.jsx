@@ -1,4 +1,15 @@
 import { useEffect, useMemo, useState } from "react";
+import Box from "@mui/material/Box";
+import Stack from "@mui/material/Stack";
+import TextField from "@mui/material/TextField";
+import MenuItem from "@mui/material/MenuItem";
+import Button from "@mui/material/Button";
+import Divider from "@mui/material/Divider";
+import Typography from "@mui/material/Typography";
+import Checkbox from "@mui/material/Checkbox";
+import Radio from "@mui/material/Radio";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import WarningAmberIcon from "@mui/icons-material/WarningAmber";
 import ModalUi from "../../primitives/ModalUi";
 import "../../styles/AddUser.css";
 import RegexParser from "regex-parser";
@@ -220,46 +231,75 @@ const WidgetNameModal = (props) => {
       handleClose={props.handleClose && props.handleClose}
       title={isSignOrInitials ? t("signature-setting") : t("widget-info")}
     >
-      <form
+      <Box
+        component="form"
         onSubmit={handleSubmit}
-        className={`${
-          [textInputWidget, cellsWidget].includes(props.defaultdata?.type)
-            ? "pt-0"
+        sx={{
+          p: "20px",
+          color: "text.primary",
+          pt: [textInputWidget, cellsWidget].includes(props.defaultdata?.type)
+            ? 0
             : isSignOrInitials
-              ? "pt-2"
-              : ""
-        } p-[20px] text-base-content`}
+              ? 1
+              : "20px"
+        }}
       >
         {!isSignOrInitials && (
-          <div className="mb-[0.75rem] text-[13px]">
-            <label htmlFor="name">
+          <Box sx={{ mb: "0.75rem" }}>
+            <Typography
+              component="label"
+              htmlFor="name"
+              sx={{ fontSize: "13px" }}
+            >
               {t("name")}
-              <span className="text-[red]"> *</span>
-            </label>
-            <input
-              className="op-input op-input-bordered op-input-sm focus:outline-none hover:border-base-content w-full text-xs"
+              <Box component="span" sx={{ color: "error.main" }}>
+                {" "}
+                *
+              </Box>
+            </Typography>
+            <TextField
+              size="small"
+              fullWidth
               name="name"
               value={formdata.name}
               onChange={(e) => handleChange(e)}
-              onInvalid={(e) => e.target.setCustomValidity(t("input-required"))}
-              onInput={(e) => e.target.setCustomValidity("")}
-              required
+              slotProps={{
+                htmlInput: {
+                  required: true,
+                  onInvalid: (e) =>
+                    e.target.setCustomValidity(t("input-required")),
+                  onInput: (e) => e.target.setCustomValidity(""),
+                  sx: { fontSize: "0.75rem" }
+                }
+              }}
             />
-          </div>
+          </Box>
         )}
         {isCellWidget && (
-          <div className="mb-[0.75rem] text-[13px]">
-            <label htmlFor="cellCount">{t("cell-count")}</label>
-            <input
-              className="op-input op-input-bordered op-input-sm focus:outline-none hover:border-base-content w-full text-xs"
+          <Box sx={{ mb: "0.75rem" }}>
+            <Typography
+              component="label"
+              htmlFor="cellCount"
+              sx={{ fontSize: "13px" }}
+            >
+              {t("cell-count")}
+            </Typography>
+            <TextField
+              size="small"
+              fullWidth
               type="number"
-              min="1"
               name="cellCount"
               value={formdata.cellCount}
               onChange={(e) => handleChange(e)}
-              required
+              slotProps={{
+                htmlInput: {
+                  min: "1",
+                  required: true,
+                  sx: { fontSize: "0.75rem" }
+                }
+              }}
             />
-          </div>
+          </Box>
         )}
         {[
           textInputWidget,
@@ -267,216 +307,300 @@ const WidgetNameModal = (props) => {
         ].includes(props.defaultdata?.type) &&
           props?.roleName !== "prefill" && (
             <>
-              <div className="mb-[0.75rem]">
-                <label htmlFor="name" className="text-[13px]">
+              <Box sx={{ mb: "0.75rem" }}>
+                <Typography
+                  component="label"
+                  htmlFor="name"
+                  sx={{ fontSize: "13px" }}
+                >
                   {t("default-value")}
-                </label>
-                <input
-                  className="op-input op-input-bordered op-input-sm focus:outline-none hover:border-base-content w-full text-xs"
+                </Typography>
+                <TextField
+                  size="small"
+                  fullWidth
                   name="defaultValue"
                   value={formdata.defaultValue}
                   onChange={(e) => handledefaultChange(e)}
                   autoComplete="off"
-                  maxLength={isCellWidget ? formdata.cellCount : undefined}
                   onBlur={() => {
                     if (isValid === false) {
                       setFormdata({ ...formdata, defaultValue: "" });
                       setIsValid(true);
                     }
                   }}
+                  slotProps={{
+                    htmlInput: {
+                      maxLength: isCellWidget ? formdata.cellCount : undefined,
+                      sx: { fontSize: "0.75rem" }
+                    }
+                  }}
                 />
                 {isValid === false && (
-                  <div
-                    className="warning defaultvalueWarning"
-                    style={{ fontSize: 12 }}
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      fontSize: 12,
+                      mt: 0.5
+                    }}
                   >
-                    <i
-                      className="fa-light fa-exclamation-circle text-[15px] mr-1"
-                      style={{ color: "#fab005" }}
-                    ></i>
+                    <WarningAmberIcon
+                      sx={{ fontSize: "15px", mr: 0.5, color: "warning.main" }}
+                    />
                     {t("invalid-default-value")}
-                  </div>
+                  </Box>
                 )}
-              </div>
+              </Box>
             </>
           )}
         {!props?.isSelfSign && !isSignOrInitials && (
-          <div className={showFontControls ? "mb-[0.5rem]" : "mb-[0.75rem]"}>
-            <div className="flex flex-row gap-[10px] mb-[0.5rem]">
+          <Box sx={{ mb: showFontControls ? "0.5rem" : "0.75rem" }}>
+            <Stack direction="row" spacing="10px" sx={{ mb: "0.5rem" }}>
               {statusArr.map((data, ind) => {
                 return (
-                  <div
+                  <FormControlLabel
                     key={ind}
-                    className="flex flex-row gap-[5px] items-center"
-                  >
-                    <input
-                      className="mr-[2px] op-radio op-radio-xs"
-                      type="radio"
-                      name="status"
-                      onChange={() =>
-                        setFormdata({
-                          ...formdata,
-                          status: data.toLowerCase()
-                        })
-                      }
-                      checked={
-                        formdata.status.toLowerCase() === data.toLowerCase()
-                      }
-                    />
-                    <div className="text-[13px] font-medium">
-                      {t(`widget-status.${data}`)}
-                    </div>
-                  </div>
+                    sx={{ m: 0 }}
+                    control={
+                      <Radio
+                        size="small"
+                        name="status"
+                        onChange={() =>
+                          setFormdata({
+                            ...formdata,
+                            status: data.toLowerCase()
+                          })
+                        }
+                        checked={
+                          formdata.status.toLowerCase() === data.toLowerCase()
+                        }
+                        sx={{ p: 0.5 }}
+                      />
+                    }
+                    label={
+                      <Typography sx={{ fontSize: "13px", fontWeight: 500 }}>
+                        {t(`widget-status.${data}`)}
+                      </Typography>
+                    }
+                  />
                 );
               })}
-            </div>
+            </Stack>
             {[
               textInputWidget,
               cellsWidget,
             ].includes(props.defaultdata?.type) && (
-              <div className="flex items-center">
-                <input
-                  id="isReadOnly"
-                  name="isReadOnly"
-                  type="checkbox"
-                  checked={formdata.isReadOnly}
-                  className="op-checkbox op-checkbox-xs"
-                  onChange={() =>
-                    setFormdata((prev) => ({
-                      ...formdata,
-                      isReadOnly: !prev.isReadOnly
-                    }))
-                  }
-                />
-                <label
-                  className="ml-1.5 mb-0 capitalize text-[13px]"
-                  htmlFor="isreadonly"
-                >
-                  {t("read-only")}
-                </label>
-              </div>
+              <FormControlLabel
+                sx={{ m: 0 }}
+                control={
+                  <Checkbox
+                    id="isReadOnly"
+                    name="isReadOnly"
+                    size="small"
+                    checked={formdata.isReadOnly}
+                    onChange={() =>
+                      setFormdata((prev) => ({
+                        ...formdata,
+                        isReadOnly: !prev.isReadOnly
+                      }))
+                    }
+                    sx={{ p: 0.5 }}
+                  />
+                }
+                label={
+                  <Typography
+                    sx={{
+                      fontSize: "13px",
+                      textTransform: "capitalize"
+                    }}
+                  >
+                    {t("read-only")}
+                  </Typography>
+                }
+              />
             )}
-          </div>
+          </Box>
         )}
         {isSignOrInitials && (
-          <div className="mb-[0.75rem]">
-            <label htmlFor="signaturetype" className="text-[14px] mb-[0.7rem]">
+          <Box sx={{ mb: "0.75rem" }}>
+            <Typography
+              component="label"
+              htmlFor="signaturetype"
+              sx={{ fontSize: "14px", mb: "0.7rem", display: "block" }}
+            >
               {t("allowed-signature-types")}
-            </label>
-            <div className="ml-[7px] flex flex-col md:flex-row gap-[10px] mb-[0.7rem]">
+            </Typography>
+            <Box
+              sx={{
+                ml: "7px",
+                display: "flex",
+                flexDirection: { xs: "column", md: "row" },
+                gap: "10px",
+                mb: "0.7rem"
+              }}
+            >
               {signatureType.map((type, i) => {
                 return (
-                  <div key={i} className="flex flex-row gap-[5px] items-center">
-                    <input
-                      className="mr-[2px] op-checkbox op-checkbox-xs"
-                      type="checkbox"
-                      name="signaturetype"
-                      onChange={() => handleCheckboxChange(i)}
-                      checked={type.enabled}
-                    />
-                    <div
-                      className="text-[13px] font-medium hover:underline underline-offset-2 cursor-default capitalize"
-                      title={`Enabling this allow signers to ${type.name} signature`}
-                    >
-                      {type.name}
-                    </div>
-                  </div>
+                  <FormControlLabel
+                    key={i}
+                    sx={{ m: 0 }}
+                    control={
+                      <Checkbox
+                        size="small"
+                        name="signaturetype"
+                        onChange={() => handleCheckboxChange(i)}
+                        checked={type.enabled}
+                        sx={{ p: 0.5 }}
+                      />
+                    }
+                    label={
+                      <Typography
+                        title={`Enabling this allow signers to ${type.name} signature`}
+                        sx={{
+                          fontSize: "13px",
+                          fontWeight: 500,
+                          textTransform: "capitalize",
+                          cursor: "default",
+                          "&:hover": {
+                            textDecoration: "underline",
+                            textUnderlineOffset: "2px"
+                          }
+                        }}
+                      >
+                        {type.name}
+                      </Typography>
+                    }
+                  />
                 );
               })}
-            </div>
-          </div>
+            </Box>
+          </Box>
         )}
         {isSignOrInitials && (
-          <div className="mb-[0.75rem]">
-            <label className="text-[14px] mb-[0.7rem]">{t("rotation")}</label>
-            <div className="ml-[7px] flex items-center gap-[10px]">
-              <select
-                className="op-select op-select-bordered op-select-sm focus:outline-none hover:border-base-content text-xs w-[120px]"
+          <Box sx={{ mb: "0.75rem" }}>
+            <Typography sx={{ fontSize: "14px", mb: "0.7rem", display: "block" }}>
+              {t("rotation")}
+            </Typography>
+            <Box
+              sx={{ ml: "7px", display: "flex", alignItems: "center", gap: "10px" }}
+            >
+              <TextField
+                select
+                size="small"
                 value={rotation}
                 onChange={(e) => setRotation(parseInt(e.target.value))}
+                sx={{ width: "120px" }}
+                slotProps={{ htmlInput: { sx: { fontSize: "0.75rem" } } }}
               >
-                <option value={0}>0°</option>
-                <option value={90}>90°</option>
-                <option value={180}>180°</option>
-                <option value={270}>270°</option>
-              </select>
-            </div>
-          </div>
+                <MenuItem value={0}>0°</MenuItem>
+                <MenuItem value={90}>90°</MenuItem>
+                <MenuItem value={180}>180°</MenuItem>
+                <MenuItem value={270}>270°</MenuItem>
+              </TextField>
+            </Box>
+          </Box>
         )}
         {!props?.isSelfSign && props?.roleName !== "prefill" && (
-          <div className="mb-[0.75rem]">
-            <label htmlFor="hint" className="text-[13px]">
+          <Box sx={{ mb: "0.75rem" }}>
+            <Typography
+              component="label"
+              htmlFor="hint"
+              sx={{ fontSize: "13px" }}
+            >
               {t("hint")}
-            </label>
-            <input
-              maxLength={40}
-              className="op-input op-input-bordered op-input-sm focus:outline-none hover:border-base-content w-full text-xs"
+            </Typography>
+            <TextField
+              size="small"
+              fullWidth
               name="hint"
               placeholder={handleHintPlaceholder()}
               value={formdata.hint}
               onChange={(e) => handleChange(e)}
+              slotProps={{
+                htmlInput: { maxLength: 40, sx: { fontSize: "0.75rem" } }
+              }}
             />
-          </div>
+          </Box>
         )}
 
         {showFontControls && (
-          <div className="flex flex-col md:flex-row md:items-center gap-3 mb-3">
-            <div className="flex items-center gap-2 ">
-              <span className="whitespace-nowrap">{t("font-size")}: </span>
-              <select
-                className="ml-[7px] w-[60%] op-select op-select-bordered op-select-sm focus:outline-none hover:border-base-content text-xs"
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: { xs: "column", md: "row" },
+              alignItems: { md: "center" },
+              gap: 1.5,
+              mb: 1.5
+            }}
+          >
+            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+              <Box component="span" sx={{ whiteSpace: "nowrap" }}>
+                {t("font-size")}:{" "}
+              </Box>
+              <TextField
+                select
+                size="small"
                 value={
                   props.fontSize || props.defaultdata?.options?.fontSize || 12
                 }
                 onChange={(e) => props.setFontSize(parseInt(e.target.value))}
+                sx={{ ml: "7px", width: "60%" }}
+                slotProps={{ htmlInput: { sx: { fontSize: "0.75rem" } } }}
               >
                 {fontsizeArr.map((size, ind) => {
                   return (
-                    <option className="text-[13px]" value={size} key={ind}>
+                    <MenuItem value={size} key={ind} sx={{ fontSize: "13px" }}>
                       {size}
-                    </option>
+                    </MenuItem>
                   );
                 })}
-              </select>
-            </div>
-            <div className="flex items-center">
-              <span>{t("color")}: </span>
-              <select
+              </TextField>
+            </Box>
+            <Box sx={{ display: "flex", alignItems: "center" }}>
+              <Box component="span">{t("color")}: </Box>
+              <TextField
+                select
+                size="small"
                 value={
                   props.fontColor ||
                   props.defaultdata?.options?.fontColor ||
                   "black"
                 }
                 onChange={(e) => props.setFontColor(e.target.value)}
-                className="ml-[33px] md:ml-4 w-[65%] md:w-[full] op-select op-select-bordered op-select-sm focus:outline-none hover:border-base-content text-xs"
+                sx={{
+                  ml: { xs: "33px", md: 2 },
+                  width: { xs: "65%", md: "100%" }
+                }}
+                slotProps={{ htmlInput: { sx: { fontSize: "0.75rem" } } }}
               >
                 {fontColorArr.map((color, ind) => {
                   return (
-                    <option value={color} key={ind}>
+                    <MenuItem value={color} key={ind}>
                       {t(`color-type.${color}`)}
-                    </option>
+                    </MenuItem>
                   );
                 })}
-              </select>
-              <span
+              </TextField>
+              <Box
+                component="span"
+                sx={{ width: 20, height: "19px", ml: 0.5 }}
                 style={{
                   background:
                     props.fontColor ||
                     props.defaultdata?.options?.fontColor ||
                     "black"
                 }}
-                className="w-5 h-[19px] ml-1"
-              ></span>
-            </div>
-          </div>
+              ></Box>
+            </Box>
+          </Box>
         )}
 
 
-        <div className="h-[1px] w-full mb-[16px] bg-[#b7b3b3]"></div>
-        <button type="submit" className="op-btn op-btn-primary">
+        <Divider sx={{ mb: "16px" }} />
+        <Button type="submit" variant="contained">
           {t("save")}
-        </button>
-      </form>
+        </Button>
+      </Box>
     </ModalUi>
   );
 };

@@ -2,6 +2,8 @@ import { useState, useLayoutEffect, useEffect, useRef } from "react";
 import { findContact } from "../../../constant/Utils";
 import { createPortal } from "react-dom";
 import { useTranslation } from "react-i18next";
+import Box from "@mui/material/Box";
+import TextField from "@mui/material/TextField";
 
 function findScrollParent(el) {
   let parent = el?.parentElement;
@@ -202,9 +204,24 @@ const SuggestionInput = (props) => {
   const dropdown =
     showSuggestions && suggestions.length > 0
       ? createPortal(
-          <ul
+          <Box
+            component="ul"
             ref={dropdownRef}
-            className="fixed z-[1002] max-h-[250px] overflow-y-auto bg-base-200 border border-gray-300 rounded shadow-md text-base-content"
+            sx={{
+              position: "fixed",
+              zIndex: 1002,
+              maxHeight: "250px",
+              overflowY: "auto",
+              bgcolor: "surface.container",
+              color: "text.primary",
+              border: "1px solid",
+              borderColor: "outline.variant",
+              borderRadius: 1,
+              boxShadow: 3,
+              listStyle: "none",
+              m: 0,
+              p: 0
+            }}
             style={{
               top: dropdownPos?.top,
               left: dropdownPos?.left,
@@ -212,9 +229,18 @@ const SuggestionInput = (props) => {
             }}
           >
             {suggestions.map((suggestion, index) => (
-              <li
+              <Box
+                component="li"
                 key={index}
-                className="block py-2 px-2 w-full text-sm cursor-pointer hover:bg-base-300"
+                sx={{
+                  display: "block",
+                  py: 1,
+                  px: 1,
+                  width: "100%",
+                  fontSize: "0.875rem",
+                  cursor: "pointer",
+                  "&:hover": { bgcolor: "surface.containerHigh" }
+                }}
                 // use onMouseDown so click registers BEFORE input blur
                 onMouseDown={(e) => {
                   e.preventDefault();
@@ -222,28 +248,44 @@ const SuggestionInput = (props) => {
                 }}
               >
                 {suggestion.Name} {"<" + suggestion.Email + ">"}
-              </li>
+              </Box>
             ))}
-          </ul>,
+          </Box>,
           document.body
         )
       : null;
 
   return (
-    <div className="flex flex-col items-center relative text-base-content">
-      <input
-        ref={inputRef}
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        position: "relative",
+        color: "text.primary"
+      }}
+    >
+      <TextField
+        inputRef={inputRef}
         type={props?.type || "text"}
         value={inputValue}
         onChange={handleInputChange}
-        autoComplete="off"
-        autoCorrect="off"
-        autoCapitalize="none"
         placeholder={`${t("enter-value", { value: t("Email") })}...`}
-        className={[
-          "op-input op-input-bordered op-input-sm focus:outline-none hover:border-base-content w-full min-w-[150px] text-xs lowercase placeholder:capitalize",
-        ].join(" ")}
         required={props.required}
+        size="small"
+        fullWidth
+        slotProps={{
+          htmlInput: {
+            autoComplete: "off",
+            autoCorrect: "off",
+            autoCapitalize: "none",
+            style: { textTransform: "lowercase", fontSize: "0.75rem" }
+          }
+        }}
+        sx={{
+          minWidth: "150px",
+          "& input::placeholder": { textTransform: "capitalize" }
+        }}
         onFocus={() => {
           // ✅ focus should NOT trigger suggestions OR server call
           isFocusedRef.current = true;
@@ -253,7 +295,7 @@ const SuggestionInput = (props) => {
         }}
       />
       {dropdown}
-    </div>
+    </Box>
   );
 };
 export default SuggestionInput;

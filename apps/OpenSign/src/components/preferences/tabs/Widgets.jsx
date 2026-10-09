@@ -14,7 +14,12 @@ import {
   selectFormat
 } from "../../../constant/Utils";
 import moment from "moment";
-import { Tooltip as ReactTooltip } from "react-tooltip";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Checkbox from "@mui/material/Checkbox";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Typography from "@mui/material/Typography";
+import Tooltip from "../../../primitives/Tooltip";
 
 
 const WidgetsTab = () => {
@@ -155,115 +160,185 @@ const WidgetsTab = () => {
     setDateWidget((prev) => ({ ...prev, date: "" }));
   };
   return (
-    <div id="panel-widgets">
-      <div className="grid grid-cols-1 md:grid-cols-12 md:gap-x-8 gap-y-6">
+    <Box id="panel-widgets">
+      <Box
+        sx={{
+          display: "grid",
+          gridTemplateColumns: { xs: "1fr", md: "repeat(12, 1fr)" },
+          columnGap: { md: 4 },
+          rowGap: 3
+        }}
+      >
         {/* Left Column - Signature Settings */}
-        <div className="md:col-span-6 flex flex-col">
-          <div>
-            <label className="inline-flex text-[14px] mb-0 font-medium">
+        <Box
+          sx={{
+            gridColumn: { md: "span 6" },
+            display: "flex",
+            flexDirection: "column"
+          }}
+        >
+          <Box>
+            <Typography
+              component="label"
+              sx={{
+                display: "inline-flex",
+                alignItems: "center",
+                fontSize: 14,
+                mb: 0,
+                fontWeight: 500
+              }}
+            >
               {t("date-widget")}
-              <a data-tooltip-id="date-widget-tooltip" className="ml-1">
-                <sup>
-                  <i className="fa-light fa-question rounded-full border-[#33bbff] text-[#33bbff] text-[13px] border-[1px] py-[1.5px] px-[4px]"></i>
-                </sup>
-              </a>
-              <ReactTooltip id="date-widget-tooltip" className="z-[999]">
-                <div className="max-w-[200px] md:max-w-[450px]">
-                  <p className="font-bold"> {t("date-widget")}</p>
-                  <p>{t("date-pref-help-sub-title")}</p>
-                  <div className="p-[5px]">
-                    <ol className="list-disc">
+              <Tooltip
+                id="date-widget-tooltip"
+                maxWidth
+                message={
+                  <Box sx={{ maxWidth: 450 }}>
+                    <Typography sx={{ fontWeight: 700 }}>
+                      {t("date-widget")}
+                    </Typography>
+                    <Typography>{t("date-pref-help-sub-title")}</Typography>
+                    <Box
+                      component="ol"
+                      sx={{ listStyle: "disc", pl: 2, p: "5px" }}
+                    >
                       <li>
-                        <span className="font-bold capitalize">
+                        <Box
+                          component="span"
+                          sx={{ fontWeight: 700, textTransform: "capitalize" }}
+                        >
                           {t("format")}:{" "}
-                        </span>
+                        </Box>
                         <span>{t("date-pref-help-format")}</span>
                       </li>
                       <li>
-                        <span className="font-bold capitalize">
+                        <Box
+                          component="span"
+                          sx={{ fontWeight: 700, textTransform: "capitalize" }}
+                        >
                           {t("default-date")}:{" "}
-                        </span>
+                        </Box>
                         <span>{t("date-pref-help-default-date")}</span>
                       </li>
                       <li>
-                        <span className="font-bold capitalize">
+                        <Box
+                          component="span"
+                          sx={{ fontWeight: 700, textTransform: "capitalize" }}
+                        >
                           {t("signing-date")}:{" "}
-                        </span>
+                        </Box>
                         <span>{t("date-pref-help-signing-date")}</span>
                       </li>
                       <li>
-                        <span className="font-bold capitalize">
+                        <Box
+                          component="span"
+                          sx={{ fontWeight: 700, textTransform: "capitalize" }}
+                        >
                           {t("read-only")}:{" "}
-                        </span>
+                        </Box>
                         <span>{t("date-pref-help-read-only")}</span>
                       </li>
-                    </ol>
-                  </div>
-                </div>
-              </ReactTooltip>
-            </label>
+                    </Box>
+                  </Box>
+                }
+              />
+            </Typography>
             <DateFormat
               selectDate={selectDate}
               dateFormatList={dateFormatList}
               handleChangeFormat={handleChangeFormat}
             />
-            <div className="flex flex-col md:flex-row md:items-center gap-1 md:w-[300px]">
-            <DatePicker
-              selectDate={selectDate}
-              onChange={handleDateChange}
-              handleClear={handleClear}
-            />
-            </div>
-            <div className="mt-3 flex flex-col gap-2">
-              <div className="flex flex-row gap-2 items-center">
-                <input
-                  className="op-checkbox op-checkbox-xs"
-                  type="checkbox"
-                  id="date-widget-signingdate"
-                  name="isSigningDate"
-                  onChange={handleSigningDateChange}
-                  checked={dateWidget.isSigningDate}
-                />
-                <label
-                  htmlFor="date-widget-signingdate"
-                  className="text-sm font-medium text-base-content hover:underline underline-offset-2 cursor-pointer capitalize mb-0"
-                  title={t("signing-date")}
-                >
-                  {t("signing-date")}
-                </label>
-              </div>
-              <div className="flex flex-row gap-2 items-center">
-                <input
-                  className="op-checkbox op-checkbox-xs"
-                  type="checkbox"
-                  id="date-widget-readonly"
-                  name="isReadOnly"
-                  onChange={handleReadOnlyChange}
-                  checked={dateWidget.isReadOnly}
-                />
-                <label
-                  htmlFor="date-widget-readonly"
-                  className="text-sm font-medium text-base-content hover:underline underline-offset-2 cursor-pointer capitalize mb-0"
-                  title={t("read-only")}
-                >
-                  {t("read-only")}
-                </label>
-              </div>
-            </div>
-          </div>
-        </div>
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: { xs: "column", md: "row" },
+                alignItems: { md: "center" },
+                gap: 0.5,
+                width: { md: 300 }
+              }}
+            >
+              <DatePicker
+                selectDate={selectDate}
+                onChange={handleDateChange}
+                handleClear={handleClear}
+              />
+            </Box>
+            <Box
+              sx={{ mt: 1.5, display: "flex", flexDirection: "column", gap: 1 }}
+            >
+              <FormControlLabel
+                sx={{ ml: 0, gap: 1 }}
+                control={
+                  <Checkbox
+                    size="small"
+                    id="date-widget-signingdate"
+                    name="isSigningDate"
+                    onChange={handleSigningDateChange}
+                    checked={dateWidget.isSigningDate}
+                    sx={{ p: 0 }}
+                  />
+                }
+                label={
+                  <Typography
+                    title={t("signing-date")}
+                    sx={{
+                      fontSize: 14,
+                      fontWeight: 500,
+                      textTransform: "capitalize"
+                    }}
+                  >
+                    {t("signing-date")}
+                  </Typography>
+                }
+              />
+              <FormControlLabel
+                sx={{ ml: 0, gap: 1 }}
+                control={
+                  <Checkbox
+                    size="small"
+                    id="date-widget-readonly"
+                    name="isReadOnly"
+                    onChange={handleReadOnlyChange}
+                    checked={dateWidget.isReadOnly}
+                    sx={{ p: 0 }}
+                  />
+                }
+                label={
+                  <Typography
+                    title={t("read-only")}
+                    sx={{
+                      fontSize: 14,
+                      fontWeight: 500,
+                      textTransform: "capitalize"
+                    }}
+                  >
+                    {t("read-only")}
+                  </Typography>
+                }
+              />
+            </Box>
+          </Box>
+        </Box>
 
         {/* Save Button - Full Width */}
-        <div className="md:col-span-12 flex justify-start mt-3">
-          <button
-            className="op-btn op-btn-primary w-[110px]"
+        <Box
+          sx={{
+            gridColumn: { md: "span 12" },
+            display: "flex",
+            justifyContent: "flex-start",
+            mt: 1.5
+          }}
+        >
+          <Button
+            variant="contained"
             onClick={handleSave}
+            sx={{ width: 110 }}
           >
             {t("save")}
-          </button>
-        </div>
-      </div>
-    </div>
+          </Button>
+        </Box>
+      </Box>
+    </Box>
   );
 };
 

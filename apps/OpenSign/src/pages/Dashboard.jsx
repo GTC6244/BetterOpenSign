@@ -6,6 +6,7 @@ import { saveTourSteps } from "../redux/reducers/TourStepsReducer";
 import dashboardJson from "../json/dashboardJson";
 import Loader from "../primitives/Loader";
 import { useTranslation } from "react-i18next";
+import Box from "@mui/material/Box";
 
 const Dashboard = () => {
   const { t } = useTranslation();
@@ -58,9 +59,19 @@ const Dashboard = () => {
   return (
     <React.Fragment>
       {loading ? (
-        <div className="h-[300px] w-full bg-white flex justify-center items-center rounded-md">
+        <Box
+          sx={{
+            height: 300,
+            width: "100%",
+            bgcolor: "background.paper",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            borderRadius: 2
+          }}
+        >
           <Loader />
-        </div>
+        </Box>
       ) : (
         <GetDashboard dashboard={dashboard} />
       )}

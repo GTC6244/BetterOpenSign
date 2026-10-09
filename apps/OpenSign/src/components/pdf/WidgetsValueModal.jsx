@@ -1,5 +1,13 @@
 import { forwardRef, useEffect, useMemo, useRef, useState } from "react";
 import ModalUi from "../../primitives/ModalUi";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Checkbox from "@mui/material/Checkbox";
+import Radio from "@mui/material/Radio";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import TextField from "@mui/material/TextField";
+import MenuItem from "@mui/material/MenuItem";
+import Typography from "@mui/material/Typography";
 import { useTranslation } from "react-i18next";
 import { removeBackground } from "@imgly/background-removal";
 import {
@@ -71,9 +79,10 @@ const fontOptions = [
   { value: "Delicious Handrawn" }
   // Add more font options as needed
 ];
+// Retained: still passed to the TextInput / CellsInput child widgets (out of
+// scope for this migration); they consume it as a className prop.
 const textInputcls =
   "op-input op-input-bordered op-input-sm focus:outline-none text-base-content hover:border-base-content w-full text-xs";
-const isTabCls = "bg-[#002864] text-white rounded-[15px] px-[10px] py-[4px]";
 
 function WidgetsValueModal(props) {
   const dispatch = useDispatch();
@@ -776,17 +785,21 @@ function WidgetsValueModal(props) {
     handleTab();
   };
   const autoSignAll = (
-    <label className="mb-0 cursor-pointer flex items-center text-sm text-base-content">
-      <input
-        className="mr-2 md:mr-3 op-checkbox op-checkbox-xs md:op-checkbox-sm"
-        type="checkbox"
-        value={isAutoSign}
-        onChange={(e) => {
-          setIsAutoSign(e.target.checked);
-        }}
-      />
-      {t("auto-sign-mssg")}
-    </label>
+    <FormControlLabel
+      sx={{ m: 0, color: "text.primary" }}
+      control={
+        <Checkbox
+          size="small"
+          sx={{ py: 0, mr: 0.5 }}
+          value={isAutoSign}
+          onChange={(e) => {
+            setIsAutoSign(e.target.checked);
+          }}
+        />
+      }
+      label={t("auto-sign-mssg")}
+      slotProps={{ typography: { fontSize: "0.875rem" } }}
+    />
   );
 
   useEffect(() => {
@@ -1017,15 +1030,19 @@ function WidgetsValueModal(props) {
   ]);
 
   const savesigncheckbox = (
-    <label className="cursor-pointer flex items-center mb-0 text-center text-sm">
-      <input
-        className="mr-2 md:mr-3 op-checkbox op-checkbox-xs md:op-checkbox-sm"
-        type="checkbox"
-        checked={isSavedSign}
-        onChange={(e) => setIsSavedSign(e.target.checked)}
-      />
-      {t("save")} {t(`widgets-name.${currWidgetsDetails?.type}`)}
-    </label>
+    <FormControlLabel
+      sx={{ m: 0 }}
+      control={
+        <Checkbox
+          size="small"
+          sx={{ py: 0, mr: 0.5 }}
+          checked={isSavedSign}
+          onChange={(e) => setIsSavedSign(e.target.checked)}
+        />
+      }
+      label={`${t("save")} ${t(`widgets-name.${currWidgetsDetails?.type}`)}`}
+      slotProps={{ typography: { fontSize: "0.875rem" } }}
+    />
   );
   //function for set checked and unchecked value of checkbox
   const handleCheckboxValue = (isChecked, ind) => {
@@ -1159,7 +1176,9 @@ function WidgetsValueModal(props) {
               currWidgetsDetails={currWidgetsDetails}
             />
             {uniqueId && (
-              <div className="flex justify-center my-2">{autoSignAll}</div>
+              <Box sx={{ display: "flex", justifyContent: "center", my: 1 }}>
+                {autoSignAll}
+              </Box>
             )}
           </>
         )
@@ -1180,7 +1199,9 @@ function WidgetsValueModal(props) {
               currWidgetsDetails={currWidgetsDetails}
             />
             {uniqueId && (
-              <div className="flex justify-center my-2">{autoSignAll}</div>
+              <Box sx={{ display: "flex", justifyContent: "center", my: 1 }}>
+                {autoSignAll}
+              </Box>
             )}
           </>
         )
@@ -1199,7 +1220,14 @@ function WidgetsValueModal(props) {
               currWidgetsDetails={currWidgetsDetails}
               handleSignatureChange={handleSignatureChange}
             />
-            <div className="flex flex-row justify-between mt-[10px]">
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "space-between",
+                mt: "10px"
+              }}
+            >
               <PenColorComponent
                 providedColors={penColors}
                 penColor={penColor}
@@ -1208,19 +1236,30 @@ function WidgetsValueModal(props) {
                 typedSignature={typedSignature}
                 setPenColor={setPenColor}
               />
-            </div>
-            <div className="flex flex-row ml-1 mt-1 gap-x-3 text-base-content">
+            </Box>
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "row",
+                ml: 0.5,
+                mt: 0.5,
+                columnGap: 1.5,
+                color: "text.primary"
+              }}
+            >
               {/* Standalone autoSignAll for "Draw" tab if conditions met */}
               {/* 'uniqueId' represents the current user */}
               {uniqueId && (
-                <div className="flex justify-start my-1">{autoSignAll}</div>
+                <Box sx={{ display: "flex", justifyContent: "flex-start", my: 0.5 }}>
+                  {autoSignAll}
+                </Box>
               )}
               {accesstoken && (
-                <div className="flex justify-start my-1">
+                <Box sx={{ display: "flex", justifyContent: "flex-start", my: 0.5 }}>
                   {mysign?.isVisible && savesigncheckbox}
-                </div>
+                </Box>
               )}
-            </div>
+            </Box>
           </>
         )
       },
@@ -1249,29 +1288,41 @@ function WidgetsValueModal(props) {
             {/* 'isImageSelect' indicates if the user selected the upload-image option for the signature pad */}
             {/* 'isImageOrStamp' determines whether the item is an image or a stamp */}
             {(uniqueId || (image && (isImageSelect || isImageOrStamp))) && (
-              <div className="flex flex-wrap flex-row sm:justify-center items-center gap-x-3 my-2 text-base-content">
+              <Box
+                sx={{
+                  display: "flex",
+                  flexWrap: "wrap",
+                  flexDirection: "row",
+                  justifyContent: { sm: "center" },
+                  alignItems: "center",
+                  columnGap: 1.5,
+                  my: 1,
+                  color: "text.primary"
+                }}
+              >
                 {uniqueId && autoSignAll}
                 {image && (isImageSelect || isImageOrStamp) && (
-                  <label
-                    htmlFor={`removeBgToggleModal-${currWidgetsDetails?.key}`}
-                    className="mb-0 cursor-pointer flex items-center text-sm"
-                  >
-                    <input
-                      type="checkbox"
-                      id={`removeBgToggleModal-${currWidgetsDetails?.key}`} // Unique ID
-                      className="mr-2 op-checkbox op-checkbox-xs md:op-checkbox-sm"
-                      checked={removeBgEnabled}
-                      onChange={() => setRemoveBgEnabled(!removeBgEnabled)}
-                    />
-                    {t("remove-background")}
-                  </label>
+                  <FormControlLabel
+                    sx={{ m: 0 }}
+                    control={
+                      <Checkbox
+                        id={`removeBgToggleModal-${currWidgetsDetails?.key}`} // Unique ID
+                        size="small"
+                        sx={{ py: 0, mr: 0.5 }}
+                        checked={removeBgEnabled}
+                        onChange={() => setRemoveBgEnabled(!removeBgEnabled)}
+                      />
+                    }
+                    label={t("remove-background")}
+                    slotProps={{ typography: { fontSize: "0.875rem" } }}
+                  />
                 )}
                 {accesstoken && isSignOrInitials && (
-                  <div className="flex justify-start my-1">
+                  <Box sx={{ display: "flex", justifyContent: "flex-start", my: 0.5 }}>
                     {mysign?.isVisible && savesigncheckbox}
-                  </div>
+                  </Box>
                 )}
-              </div>
+              </Box>
             )}
           </>
         )
@@ -1299,7 +1350,14 @@ function WidgetsValueModal(props) {
               fontOptions={fontOptions}
               setFontSelect={setFontSelect}
             />
-            <div className="flex flex-row justify-between mt-[10px]">
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "space-between",
+                mt: "10px"
+              }}
+            >
               <PenColorComponent
                 providedColors={penColors}
                 penColor={penColor}
@@ -1308,18 +1366,29 @@ function WidgetsValueModal(props) {
                 typedSignature={typedSignature}
                 setPenColor={setPenColor}
               />
-            </div>
-            <div className="flex flex-row ml-1 mt-2 gap-x-3 text-base-content">
+            </Box>
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "row",
+                ml: 0.5,
+                mt: 1,
+                columnGap: 1.5,
+                color: "text.primary"
+              }}
+            >
               {/* Standalone autoSignAll for "Type" tab if conditions met */}
               {uniqueId && (
-                <div className="flex justify-start my-1">{autoSignAll}</div>
+                <Box sx={{ display: "flex", justifyContent: "flex-start", my: 0.5 }}>
+                  {autoSignAll}
+                </Box>
               )}
               {accesstoken && (
-                <div className="flex justify-start my-1">
+                <Box sx={{ display: "flex", justifyContent: "flex-start", my: 0.5 }}>
                   {mysign?.isVisible && savesigncheckbox}
-                </div>
+                </Box>
               )}
-            </div>
+            </Box>
           </>
         )
       },
@@ -1356,29 +1425,41 @@ function WidgetsValueModal(props) {
             />
             {/* 'uniqueId' represents the current user */}
             {(uniqueId || image) && (
-              <div className="flex flex-wrap flex-row sm:justify-center items-center gap-x-3 my-2 text-base-content">
+              <Box
+                sx={{
+                  display: "flex",
+                  flexWrap: "wrap",
+                  flexDirection: "row",
+                  justifyContent: { sm: "center" },
+                  alignItems: "center",
+                  columnGap: 1.5,
+                  my: 1,
+                  color: "text.primary"
+                }}
+              >
                 {uniqueId && autoSignAll}
                 {image && (
-                  <label
-                    htmlFor={`removeBgToggleModal-${currWidgetsDetails?.key}`}
-                    className="mb-0 cursor-pointer flex items-center text-sm"
-                  >
-                    <input
-                      type="checkbox"
-                      id={`removeBgToggleModal-${currWidgetsDetails?.key}`} // Unique ID
-                      className="mr-2 op-checkbox op-checkbox-xs md:op-checkbox-sm"
-                      checked={removeBgEnabled}
-                      onChange={() => setRemoveBgEnabled(!removeBgEnabled)}
-                    />
-                    {t("remove-background")}
-                  </label>
+                  <FormControlLabel
+                    sx={{ m: 0 }}
+                    control={
+                      <Checkbox
+                        id={`removeBgToggleModal-${currWidgetsDetails?.key}`} // Unique ID
+                        size="small"
+                        sx={{ py: 0, mr: 0.5 }}
+                        checked={removeBgEnabled}
+                        onChange={() => setRemoveBgEnabled(!removeBgEnabled)}
+                      />
+                    }
+                    label={t("remove-background")}
+                    slotProps={{ typography: { fontSize: "0.875rem" } }}
+                  />
                 )}
                 {accesstoken && (
-                  <div className="flex justify-start my-1">
+                  <Box sx={{ display: "flex", justifyContent: "flex-start", my: 0.5 }}>
                     {mysign?.isVisible && savesigncheckbox}
-                  </div>
+                  </Box>
                 )}
-              </div>
+              </Box>
             )}
           </>
         )
@@ -1391,41 +1472,78 @@ function WidgetsValueModal(props) {
       case "stamp":
       case "signature":
         return (
-          <div className="flex flex-col">
+          <Box sx={{ display: "flex", flexDirection: "column" }}>
             {isLoader && (
-              <div className="absolute w-full h-full inset-0 flex justify-center items-center bg-base-content/30 z-50">
+              <Box
+                sx={{
+                  position: "absolute",
+                  inset: 0,
+                  width: "100%",
+                  height: "100%",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  bgcolor: "rgba(0,0,0,0.3)",
+                  zIndex: 50
+                }}
+              >
                 <Loader />
-              </div>
+              </Box>
             )}
             {isSignTypes ? (
               <>
-                <div className="text-base-content rounded-[4px] tabWidth">
+                <Box
+                  className="tabWidth"
+                  sx={{ color: "text.primary", borderRadius: "4px" }}
+                >
                   {/* Render All Tabs  */}
-                  <div className="ml-3 flex justify-start gap-4 text-[11px] md:text-base my-[3px]">
+                  <Box
+                    sx={{
+                      ml: 1.5,
+                      display: "flex",
+                      justifyContent: "flex-start",
+                      gap: 2,
+                      fontSize: { xs: "11px", md: "1rem" },
+                      my: "3px"
+                    }}
+                  >
                     {Tabs.filter((tab) => tab.show).map((tab) => (
-                      <div key={tab.id}>
-                        <span
-                          className={`${isTab === tab.id && isTabCls} ml-[2px] cursor-pointer`}
+                      <Box key={tab.id}>
+                        <Box
+                          component="span"
                           onClick={tab.onClick}
+                          sx={{
+                            ml: "2px",
+                            cursor: "pointer",
+                            ...(isTab === tab.id && {
+                              bgcolor: "primary.main",
+                              color: "primary.contrastText",
+                              borderRadius: "15px",
+                              px: "10px",
+                              py: "4px"
+                            })
+                          }}
                         >
                           {tab.label}
-                        </span>
-                      </div>
+                        </Box>
+                      </Box>
                     ))}
-                  </div>
-                </div>
-                <div className="h-full mt-3">
+                  </Box>
+                </Box>
+                <Box sx={{ height: "100%", mt: 1.5 }}>
                   {Tabs.find((t) => t.id === isTab)?.render()}
-                </div>
+                </Box>
                 {["signature", "initials"].includes(type) && (
-                  <div className="mx-3 my-2">
-                    <button
+                  <Box sx={{ mx: 1.5, my: 1 }}>
+                    <Button
                       type="button"
+                      variant="outlined"
+                      size="small"
+                      fullWidth
                       onClick={() => setShowPhoneSign(true)}
-                      className="op-btn op-btn-outline op-btn-sm w-full"
                     >
                       📱 Sign on phone (BetterSign)
-                    </button>
+                    </Button>
                     <PhoneSign
                       isOpen={showPhoneSign}
                       onClose={() => setShowPhoneSign(false)}
@@ -1439,71 +1557,83 @@ function WidgetsValueModal(props) {
                         applyPhoneSignature(img);
                       }}
                     />
-                  </div>
+                  </Box>
                 )}
               </>
             ) : (
-              <div className="mx-3 mb-6 mt-3">
-                <p>{t("at-least-one-signature-type")}</p>
-              </div>
+              <Box sx={{ mx: 1.5, mb: 3, mt: 1.5 }}>
+                <Typography>{t("at-least-one-signature-type")}</Typography>
+              </Box>
             )}
-          </div>
+          </Box>
         );
       case "checkbox":
         const checkBoxLayout =
           currWidgetsDetails?.options?.layout || "vertical";
         const isMultipleCheckbox =
           currWidgetsDetails?.options?.values?.length > 0 ? true : false;
-        const checkBoxWrapperClass = `flex items-start ${
-          checkBoxLayout === "horizontal"
-            ? `flex-row flex-wrap ${isMultipleCheckbox ? "gap-x-2" : ""}`
-            : `flex-col ${isMultipleCheckbox ? "gap-y-[5px]" : ""}`
-        }`; // Using gap-y-1 for consistency, adjust if needed
 
         return (
-          <div
-            className={`border-[1px] border-gray-300 rounded-[2px] pt-1 px-2.5 ${checkBoxWrapperClass}`}
+          <Box
+            sx={{
+              border: "1px solid",
+              borderColor: "outline.variant",
+              borderRadius: "2px",
+              pt: 0.5,
+              px: 1.25,
+              display: "flex",
+              alignItems: "flex-start",
+              flexDirection: checkBoxLayout === "horizontal" ? "row" : "column",
+              flexWrap: checkBoxLayout === "horizontal" ? "wrap" : "nowrap",
+              ...(isMultipleCheckbox &&
+                (checkBoxLayout === "horizontal"
+                  ? { columnGap: 1 }
+                  : { rowGap: "5px" }))
+            }}
           >
             {currWidgetsDetails?.options?.values?.map((data, ind) => (
-              <div key={ind} className="text-base-content select-none-cls">
-                <label
-                  // htmlFor={`checkbox-${currWidgetsDetails?.key + ind}`}
-                  className="text-xs flex items-center gap-1 cursor-pointer"
-                >
-                  <input
-                    id={`checkbox-${currWidgetsDetails?.key + ind}`}
-                    className={`${
-                      ind === 0 ? "mt-0" : "mt-[5px]"
-                    } op-checkbox op-checkbox-xs rounded-[1px] mt-1`}
-                    type="checkbox"
-                    checked={!!selectCheckbox(ind, selectedCheckbox)}
-                    onChange={(e) => {
-                      if (e.target.checked) {
-                        const maxRequired =
-                          currWidgetsDetails?.options?.validation
-                            ?.maxRequiredCount;
-                        const maxCountInt =
-                          maxRequired && parseInt(maxRequired);
-                        if (maxCountInt > 0) {
-                          if (
-                            selectedCheckbox &&
-                            selectedCheckbox?.length <= maxCountInt - 1
-                          ) {
+              <Box
+                key={ind}
+                className="select-none-cls"
+                sx={{ color: "text.primary" }}
+              >
+                <FormControlLabel
+                  sx={{ m: 0 }}
+                  control={
+                    <Checkbox
+                      id={`checkbox-${currWidgetsDetails?.key + ind}`}
+                      size="small"
+                      sx={{ py: 0, mr: 0.5 }}
+                      checked={!!selectCheckbox(ind, selectedCheckbox)}
+                      onChange={(e) => {
+                        if (e.target.checked) {
+                          const maxRequired =
+                            currWidgetsDetails?.options?.validation
+                              ?.maxRequiredCount;
+                          const maxCountInt =
+                            maxRequired && parseInt(maxRequired);
+                          if (maxCountInt > 0) {
+                            if (
+                              selectedCheckbox &&
+                              selectedCheckbox?.length <= maxCountInt - 1
+                            ) {
+                              handleCheckboxValue(e.target.checked, ind);
+                            }
+                          } else {
                             handleCheckboxValue(e.target.checked, ind);
                           }
                         } else {
                           handleCheckboxValue(e.target.checked, ind);
                         }
-                      } else {
-                        handleCheckboxValue(e.target.checked, ind);
-                      }
-                    }}
-                  />
-                  {data}
-                </label>
-              </div>
+                      }}
+                    />
+                  }
+                  label={data}
+                  slotProps={{ typography: { fontSize: "0.75rem" } }}
+                />
+              </Box>
             ))}
-          </div>
+          </Box>
         );
       case textInputWidget:
         return (
@@ -1529,67 +1659,95 @@ function WidgetsValueModal(props) {
         );
       case "dropdown":
         return (
-          <select
-            className="op-select op-select-bordered op-select-sm focus:outline-none hover:border-base-content text-base-content w-full text-xs"
+          <TextField
+            select
             id="myDropdown"
-            value={widgetValue?.trim()}
+            size="small"
+            fullWidth
+            value={widgetValue?.trim() || ""}
             onChange={(e) => handleOnchangeTextBox(e)}
+            slotProps={{ select: { displayEmpty: true } }}
           >
             {/* Default/Title option */}
-            <option value="" disabled hidden>
-              {/* {currWidgetsDetails?.options?.name} */}
+            <MenuItem value="" disabled>
               {t("choose-one")}
-            </option>
+            </MenuItem>
             {currWidgetsDetails?.options?.values?.map((data, ind) => (
-              <option key={ind} value={data?.trim()}>
+              <MenuItem key={ind} value={data?.trim()}>
                 {data?.trim()}
-              </option>
+              </MenuItem>
             ))}
-          </select>
+          </TextField>
         );
       case "name":
         return (
-          <input
-            ref={widgetRef}
+          <TextField
+            inputRef={widgetRef}
             type="text"
+            size="small"
+            fullWidth
             placeholder={hint || widgetTypeTranslation}
             value={widgetValue}
             onBlur={handleValidation}
             onChange={(e) => handleOnchangeTextBox(e)}
-            className={textInputcls}
           />
         );
       case "company":
         return (
-          <input
-            ref={widgetRef}
+          <TextField
+            inputRef={widgetRef}
             placeholder={hint || widgetTypeTranslation}
             value={widgetValue}
             type="text"
+            size="small"
+            fullWidth
             onBlur={handleValidation}
             onChange={(e) => handleOnchangeTextBox(e)}
-            className={textInputcls}
           />
         );
       case "job title":
         return (
-          <input
-            ref={widgetRef}
+          <TextField
+            inputRef={widgetRef}
             type="text"
+            size="small"
+            fullWidth
             onBlur={handleValidation}
             placeholder={hint || widgetTypeTranslation}
             value={widgetValue}
             onChange={(e) => handleOnchangeTextBox(e)}
-            className={textInputcls}
           />
         );
       case "date":
         return (
-          <div className="inline-flex flex-col items-center w-full">
+          <Box
+            sx={{
+              display: "inline-flex",
+              flexDirection: "column",
+              alignItems: "center",
+              width: "100%"
+            }}
+          >
             {/* Input + format group */}
-            <div className="inline-flex flex-col items-center">
+            <Box
+              sx={{
+                display: "inline-flex",
+                flexDirection: "column",
+                alignItems: "center"
+              }}
+            >
               {/* Date input */}
-              <div className="border-[1px] opensigncss:border-gray-300 opensigndark:border-base-content text-base-content rounded-[2px] px-3 py-1 inline-flex">
+              <Box
+                sx={{
+                  border: "1px solid",
+                  borderColor: "outline.variant",
+                  color: "text.primary",
+                  borderRadius: "2px",
+                  px: 1.5,
+                  py: 0.5,
+                  display: "inline-flex"
+                }}
+              >
                 <DatePicker
                   renderCustomHeader={({ date, changeYear, changeMonth }) => (
                     <div className="flex items-center gap-2 ml-2">
@@ -1631,44 +1789,65 @@ function WidgetsValueModal(props) {
                   }
                   portalId="root-portal"
                 />
-              </div>
+              </Box>
               {/* Format */}
-              <span className="mt-1 text-gray-300 uppercase">
+              <Box
+                component="span"
+                sx={{ mt: 0.5, color: "text.secondary", textTransform: "uppercase" }}
+              >
                 {currWidgetsDetails?.options?.validation?.format}
-              </span>
-            </div>
+              </Box>
+            </Box>
             {/* hint */}
             {hint && (
-              <div className="mt-2 flex items-center gap-2 text-sm">
+              <Box
+                sx={{
+                  mt: 1,
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 1,
+                  fontSize: "0.875rem"
+                }}
+              >
                 <span>{hint}</span>
-              </div>
+              </Box>
             )}
-          </div>
+          </Box>
         );
       case "email":
         return (
-          <input
-            ref={widgetRef}
+          <TextField
+            inputRef={widgetRef}
             type="email"
+            size="small"
+            fullWidth
             onBlur={handleValidation}
             placeholder={hint || widgetTypeTranslation}
             value={widgetValue}
             onChange={(e) => handleOnchangeTextBox(e)}
-            className={textInputcls}
           />
         );
       case radioButtonWidget:
         const radioLayout = currWidgetsDetails.options?.layout || "vertical";
         const isOnlyOneBtn =
           currWidgetsDetails.options?.values?.length > 0 ? true : false;
-        const radioWrapperClass = `flex items-start ${
-          radioLayout === "horizontal"
-            ? `flex-row flex-wrap ${isOnlyOneBtn ? "gap-x-2" : ""}`
-            : `flex-col ${isOnlyOneBtn ? "gap-y-[5px]" : ""}`
-        }`; // Using gap-y-1 for consistency, adjust if needed
         return (
-          <div
-            className={`border-[1px] border-gray-300 rounded-[2px] pt-1 px-2.5 ${radioWrapperClass}`}
+          <Box
+            sx={{
+              border: "1px solid",
+              borderColor: "outline.variant",
+              borderRadius: "2px",
+              pt: 0.5,
+              px: 1.25,
+              display: "flex",
+              alignItems: "flex-start",
+              flexDirection: radioLayout === "horizontal" ? "row" : "column",
+              flexWrap: radioLayout === "horizontal" ? "wrap" : "nowrap",
+              ...(isOnlyOneBtn &&
+                (radioLayout === "horizontal"
+                  ? { columnGap: 1 }
+                  : { rowGap: "5px" }))
+            }}
           >
             {currWidgetsDetails?.options?.values.map((data, ind) => {
               const label =
@@ -1678,27 +1857,32 @@ function WidgetsValueModal(props) {
                     ? String(data.name)
                     : "";
               return (
-                <div key={ind} className="text-base-content select-none-cls">
-                  <label
-                    // htmlFor={`radio-${currWidgetsDetails?.key + ind}`}
-                    className="cursor-pointer flex items-center text-sm gap-1"
-                  >
-                    <input
-                      id={`radio-${currWidgetsDetails?.key + ind}`}
-                      className={`op-radio op-radio-xs mt-1`}
-                      type="radio"
-                      value={label}
-                      checked={handleRadioCheck(label?.trim())}
-                      onChange={(e) => {
-                        handleCheckRadio(e.target.value?.trim());
-                      }}
-                    />
-                    <span>{label}</span>
-                  </label>
-                </div>
+                <Box
+                  key={ind}
+                  className="select-none-cls"
+                  sx={{ color: "text.primary" }}
+                >
+                  <FormControlLabel
+                    sx={{ m: 0 }}
+                    control={
+                      <Radio
+                        id={`radio-${currWidgetsDetails?.key + ind}`}
+                        size="small"
+                        sx={{ py: 0, mr: 0.5 }}
+                        value={label}
+                        checked={handleRadioCheck(label?.trim())}
+                        onChange={(e) => {
+                          handleCheckRadio(e.target.value?.trim());
+                        }}
+                      />
+                    }
+                    label={label}
+                    slotProps={{ typography: { fontSize: "0.875rem" } }}
+                  />
+                </Box>
               );
             })}
-          </div>
+          </Box>
         );
       case textWidget:
         return (
@@ -1712,27 +1896,35 @@ function WidgetsValueModal(props) {
         );
       case drawWidget:
         return (
-          <div>
+          <Box>
             <Draw
               penColor={penColor}
               canvasRef={canvasRef}
               currWidgetsDetails={props?.currWidgetsDetails}
               handleSignatureChange={handleSignatureChange}
             />
-            <div className="flex flex-row justify-between mt-[10px]">
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "space-between",
+                mt: "10px"
+              }}
+            >
               <PenColorComponent
                 penColor={penColor}
                 setPenColor={setPenColor}
               />
-            </div>
-          </div>
+            </Box>
+          </Box>
         );
       default:
         return (
-          <input
+          <TextField
+            size="small"
+            fullWidth
             placeholder={t("widgets-name.text")}
-            readOnly
-            className={textInputcls}
+            slotProps={{ htmlInput: { readOnly: true } }}
           />
         );
     }
@@ -1808,9 +2000,12 @@ function WidgetsValueModal(props) {
       }
     }, []);
     return (
-      <span className="text-center text-[12px] text-base-content">
+      <Typography
+        component="span"
+        sx={{ textAlign: "center", fontSize: "12px", color: "text.primary" }}
+      >
         {t("required-mssg", { leftRequiredWidget, totalWidget })}
-      </span>
+      </Typography>
     );
   };
   //function to validate text widget expression or type
@@ -2095,117 +2290,171 @@ function WidgetsValueModal(props) {
         handleClose={() => handleclose()}
         position="bottom"
       >
-        <div className="h-[100%] p-[18px]">
+        <Box sx={{ height: "100%", p: "18px" }}>
           {isLoader && (
-            <div className="absolute w-full h-full inset-0 flex justify-center items-center bg-base-content/30 z-50">
+            <Box
+              sx={{
+                position: "absolute",
+                inset: 0,
+                width: "100%",
+                height: "100%",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                bgcolor: "rgba(0,0,0,0.3)",
+                zIndex: 50
+              }}
+            >
               <Loader />
-            </div>
+            </Box>
           )}
           {isFinish ? (
             <>
-              <div className="p-1 mt-3">
-                <span className="text-base text-base-content">
-                  {
-                        t("finish-mssg")
-                  }
-                </span>
-              </div>
-              <div className="flex gap-3 items-center mt-4">
-                <button
+              <Box sx={{ p: 0.5, mt: 1.5 }}>
+                <Typography
+                  component="span"
+                  sx={{ fontSize: "1rem", color: "text.primary" }}
+                >
+                  {t("finish-mssg")}
+                </Typography>
+              </Box>
+              <Box sx={{ display: "flex", gap: 1.5, alignItems: "center", mt: 2 }}>
+                <Button
                   type="button"
-                  className="op-btn op-btn-primary op-btn-sm px-4"
+                  variant="contained"
+                  color="primary"
+                  size="small"
+                  sx={{ px: 2 }}
                   onClick={() => handleFinish()}
                 >
-                  {
-                        t("finish")
-                  }
-                </button>
-                <button
+                  {t("finish")}
+                </Button>
+                <Button
                   type="button"
-                  className="op-btn op-btn-secondary op-btn-sm px-[18px]"
+                  variant="contained"
+                  color="secondary"
+                  size="small"
+                  sx={{ px: "18px" }}
                   onClick={() => dispatch(setIsShowModal({}))}
                 >
                   {t("review")}
-                </button>
-              </div>
+                </Button>
+              </Box>
             </>
           ) : (
             <>
-              <div>
-                <div className="relative inline-block">
-                  <span className="text-base text-base-content">
+              <Box>
+                <Box sx={{ position: "relative", display: "inline-block" }}>
+                  <Typography
+                    component="span"
+                    sx={{ fontSize: "1rem", color: "text.primary" }}
+                  >
                     {formatWidgetName(currWidgetsDetails?.options?.name)}
-                  </span>
+                  </Typography>
                   {!isOptional && (
-                    <span className="absolute -top-1 -right-2 text-red-500 text-lg">
+                    <Box
+                      component="span"
+                      sx={{
+                        position: "absolute",
+                        top: -4,
+                        right: -8,
+                        color: "error.main",
+                        fontSize: "1.125rem"
+                      }}
+                    >
                       *
-                    </span>
+                    </Box>
                   )}
-                </div>
-                <div className="flex flex-col justify-center m-2 mt-3">
-                  <div className="flex justify-center">
+                </Box>
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "center",
+                    m: 1,
+                    mt: 1.5
+                  }}
+                >
+                  <Box sx={{ display: "flex", justifyContent: "center" }}>
                     {getWidgetType(currWidgetsDetails?.type)}
-                  </div>
+                  </Box>
                   {isShowValidation && (
-                    <span className="text-[12px] text-red-500">
+                    <Box
+                      component="span"
+                      sx={{ fontSize: "12px", color: "error.main" }}
+                    >
                       {t("validation-alert-1")}
-                    </span>
+                    </Box>
                   )}
-                </div>
-              </div>
-              <div className="flex justify-between items-center text-center">
+                </Box>
+              </Box>
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  textAlign: "center"
+                }}
+              >
                 {showClearbtn ? (
-                  <button
+                  <Button
                     type="button"
-                    className="op-btn op-btn-ghost op-btn-sm text-base-content mr-1"
+                    variant="text"
+                    size="small"
+                    color="inherit"
+                    sx={{ mr: 0.5, color: "text.primary" }}
                     onClick={handleClear}
                   >
                     {t("clear")}
-                  </button>
+                  </Button>
                 ) : (
-                  <button
-                    type="button"
-                    className="op-btn op-btn-ghost text-base-content op-btn-sm mr-1 cursor-default"
-                  ></button>
+                  <Box sx={{ mr: 0.5 }} />
                 )}
-                <div className="flex items-center gap-2">
+                <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                   {(!isSave || props?.role === "prefill") && (
                     <HandleRequiredField />
                   )}
                   {isSave ? (
-                    <button
+                    <Button
                       type="button"
-                      className="op-btn op-btn-primary op-btn-sm"
+                      variant="contained"
+                      color="primary"
+                      size="small"
                       onClick={() => handleClickOnNext()}
                       disabled={handleDisable()}
                     >
                       {t("save")}
-                    </button>
+                    </Button>
                   ) : isLastWidget ? (
-                    <button
+                    <Button
                       type="button"
-                      className="op-btn op-btn-primary op-btn-sm"
+                      variant="contained"
+                      color="primary"
+                      size="small"
                       disabled={handleDisable()}
                       onClick={() => handleClickOnNext(true)} // isFinishDoc
                     >
                       {t("done")}
-                    </button>
+                    </Button>
                   ) : (
-                    <button
+                    <Button
                       type="button"
-                      className="op-btn op-btn-primary op-btn-sm text-xs md:text-sm"
+                      variant="contained"
+                      color="primary"
+                      size="small"
                       onClick={() => handleClickOnNext()}
                       disabled={handleDisable()}
+                      endIcon={<i className="fa-light fa-forward-step"></i>}
+                      sx={{ fontSize: { xs: "0.75rem", md: "0.875rem" } }}
                     >
                       {t("next-field")}
-                      <i className="fa-light fa-forward-step"></i>
-                    </button>
+                    </Button>
                   )}
-                </div>
-              </div>
+                </Box>
+              </Box>
             </>
           )}
-        </div>
+        </Box>
       </ModalUi>
     </>
   );

@@ -33,6 +33,17 @@ import { useGuidelinesContext } from "../../context/GuidelinesContext";
 import DatePicker from "react-datepicker";
 import DateWidgetModal from "../../primitives/DateWidgetModal";
 import { dateFormat } from "../../utils";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import TextField from "@mui/material/TextField";
+import Select from "@mui/material/Select";
+import MenuItem from "@mui/material/MenuItem";
+import Checkbox from "@mui/material/Checkbox";
+import Radio from "@mui/material/Radio";
+import RadioGroup from "@mui/material/RadioGroup";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Divider from "@mui/material/Divider";
+import Link from "@mui/material/Link";
 
 /**
  * Custom input UI for DatePicker
@@ -1002,64 +1013,101 @@ function Placeholder(props) {
         </Rnd>
       )}
       <DateWidgetModal isOpen={isDateModal} title={t("widget-info")}>
-        <div className="text-base-content h-[100%] p-[20px]">
+        <Box sx={{ color: "text.primary", height: "100%", p: "20px" }}>
           <form
             onSubmit={(e) => {
               e.preventDefault();
               saveDateSetting(selectDate);
             }}
           >
-            <div className="flex flex-col gap-3">
+            <Box sx={{ display: "flex", flexDirection: "column", gap: 1.5 }}>
               {!isSelfSign && (
-                <div className="mb-[0.75rem] text-[13px] md:w-[60%] w-full">
-                  <label htmlFor="name">
+                <Box
+                  sx={{
+                    mb: "0.75rem",
+                    fontSize: "13px",
+                    width: { xs: "100%", md: "60%" }
+                  }}
+                >
+                  <Box component="label" htmlFor="name" sx={{ display: "block", mb: 0.5 }}>
                     {t("name")}
-                    <span className="text-[red]"> *</span>
-                  </label>
-                  <input
-                    className="op-input op-input-bordered op-input-sm focus:outline-none hover:border-base-content w-full text-xs"
-                    name="name"
-                    value={formdata.name}
+                    <Box component="span" sx={{ color: "error.main" }}> *</Box>
+                  </Box>
+                  <TextField
+                    size="small"
+                    fullWidth
+                    value={formdata.name || ""}
                     onChange={(e) =>
                       setFormdata({
                         ...formdata,
                         name: e.target.value
                       })
                     }
-                    onInvalid={(e) =>
-                      e.target.setCustomValidity(t("input-required"))
-                    }
-                    onInput={(e) => e.target.setCustomValidity("")}
                     required
+                    slotProps={{
+                      htmlInput: {
+                        name: "name",
+                        onInvalid: (e) =>
+                          e.target.setCustomValidity(t("input-required")),
+                        onInput: (e) => e.target.setCustomValidity(""),
+                        style: { fontSize: "0.75rem" }
+                      }
+                    }}
                   />
-                </div>
+                </Box>
               )}
-              <div className="flex flex-col md:items-center md:flex-row gap-y-3">
-                <span className="capitalize">{t("format")} :</span>
-                <select
-                  className="op-select op-select-bordered op-select-sm focus:outline-none hover:border-base-content text-xs md:ml-4"
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: { xs: "column", md: "row" },
+                  alignItems: { md: "center" },
+                  rowGap: 1.5
+                }}
+              >
+                <Box component="span" sx={{ textTransform: "capitalize" }}>
+                  {t("format")} :
+                </Box>
+                <Select
+                  size="small"
+                  displayEmpty
                   value={selectedFormatIndex >= 0 ? selectedFormatIndex : ""}
                   onChange={(e) => handleChangeFormat(e)}
+                  sx={{ fontSize: "0.75rem", ml: { md: 2 }, minWidth: 160 }}
                 >
-                  <option value="" disabled>
+                  <MenuItem value="" disabled>
                     {t("select-date-format")}
-                  </option>
+                  </MenuItem>
                   {dateFormatList.map((data, ind) => {
                     return (
-                      <option className="text-[13px]" value={ind} key={ind}>
+                      <MenuItem sx={{ fontSize: "13px" }} value={ind} key={ind}>
                         {data?.date ? data?.date : "nodata"}
-                      </option>
+                      </MenuItem>
                     );
                   })}
-                </select>
-                <span className="text-xs text-gray-400 ml-1 uppercase">
+                </Select>
+                <Box
+                  component="span"
+                  sx={{
+                    fontSize: "0.75rem",
+                    color: "text.secondary",
+                    ml: 1,
+                    textTransform: "uppercase"
+                  }}
+                >
                   {selectDate.format || props.pos?.options?.validation?.format}
-                </span>
-              </div>
+                </Box>
+              </Box>
               {props?.data?.Role !== "prefill" && props?.isPlaceholder && (
                 <>
-                  <div className="flex flex-col md:flex-row md:items-center gap-2">
-                    <span>{t("default-date")} :</span>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexDirection: { xs: "column", md: "row" },
+                      alignItems: { md: "center" },
+                      gap: 1
+                    }}
+                  >
+                    <Box component="span">{t("default-date")} :</Box>
                     <DatePicker
                       renderCustomHeader={({
                         date,
@@ -1120,156 +1168,196 @@ function Placeholder(props) {
                       }
                       portalId="root-portal"
                     />
-                    <label className="flex items-center gap-1 cursor-pointer mb-0">
-                      <input
-                        checked={isToday}
-                        type="checkbox"
-                        className="op-checkbox op-checkbox-xs"
-                        onClick={() => {
-                          setSelectDate((prev) => ({ ...prev, date: "" }));
-                          setIsToday(!isToday);
-                        }}
-                      />
-                      <span className="ml-[2px]">{t("set-today")}</span>
-                    </label>
-                    <span
+                    <FormControlLabel
+                      sx={{ m: 0 }}
+                      control={
+                        <Checkbox
+                          size="small"
+                          checked={isToday}
+                          onClick={() => {
+                            setSelectDate((prev) => ({ ...prev, date: "" }));
+                            setIsToday(!isToday);
+                          }}
+                        />
+                      }
+                      label={t("set-today")}
+                    />
+                    <Link
+                      component="button"
+                      type="button"
+                      underline="always"
                       onClick={() => handleClearDate()}
-                      className="underline text-blue-500 cursor-pointer ml-2"
+                      sx={{ ml: 2, cursor: "pointer" }}
                     >
                       {t("clear")}
-                    </span>
-                  </div>
+                    </Link>
+                  </Box>
                 </>
               )}
               {!isSelfSign && (
-                <div className="flex flex-row items-center gap-[10px]">
+                <RadioGroup
+                  row
+                  name="status"
+                  value={formdata.status.toLowerCase()}
+                  sx={{ alignItems: "center", gap: "10px" }}
+                >
                   {statusArr.map((data, ind) => {
                     return (
-                      <div
+                      <FormControlLabel
                         key={ind}
-                        className="flex flex-row gap-[5px] items-center"
-                      >
-                        <input
-                          className="mr-[2px] op-radio op-radio-xs"
-                          type="radio"
-                          name="status"
-                          onChange={() => handleDateStatus(data)}
-                          checked={
-                            formdata.status.toLowerCase() === data.toLowerCase()
-                          }
-                        />
-                        <div className="text-[13px]">
-                          {t(`widget-status.${data}`)}
-                        </div>
-                      </div>
+                        value={data.toLowerCase()}
+                        control={
+                          <Radio
+                            size="small"
+                            onChange={() => handleDateStatus(data)}
+                            checked={
+                              formdata.status.toLowerCase() ===
+                              data.toLowerCase()
+                            }
+                          />
+                        }
+                        label={
+                          <Box component="span" sx={{ fontSize: "13px" }}>
+                            {t(`widget-status.${data}`)}
+                          </Box>
+                        }
+                      />
                     );
                   })}
-                </div>
+                </RadioGroup>
               )}
-              <div className="flex flex-col md:flex-row gap-y-2 md:gap-y-0 gap-x-2">
-                <div className="flex flex-row items-center">
-                  <span className="capitalize">{t("font-size")} :</span>
-                  <select
-                    className="ml-[3px] md:ml:[7px] op-select op-select-bordered op-select-sm focus:outline-none hover:border-base-content text-xs"
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: { xs: "column", md: "row" },
+                  rowGap: { xs: 1, md: 0 },
+                  columnGap: 1
+                }}
+              >
+                <Box sx={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
+                  <Box component="span" sx={{ textTransform: "capitalize" }}>
+                    {t("font-size")} :
+                  </Box>
+                  <Select
+                    size="small"
                     value={
                       props.fontSize || clickonWidget.options?.fontSize || 12
                     }
                     onChange={(e) =>
                       props.setFontSize(parseInt(e.target.value))
                     }
+                    sx={{ ml: 0.5, fontSize: "0.75rem" }}
                   >
                     {fontsizeArr.map((size, ind) => (
-                      <option className="text-[13px]" value={size} key={ind}>
+                      <MenuItem sx={{ fontSize: "13px" }} value={size} key={ind}>
                         {size}
-                      </option>
+                      </MenuItem>
                     ))}
-                  </select>
-                </div>
-                <div className="flex flex-row gap-1 items-center">
-                  <span className="capitalize">{t("color")} :</span>
-                  <select
+                  </Select>
+                </Box>
+                <Box sx={{ display: "flex", flexDirection: "row", gap: 0.5, alignItems: "center" }}>
+                  <Box component="span" sx={{ textTransform: "capitalize" }}>
+                    {t("color")} :
+                  </Box>
+                  <Select
+                    size="small"
                     value={
                       props.fontColor ||
                       clickonWidget.options?.fontColor ||
                       "black"
                     }
                     onChange={(e) => props.setFontColor(e.target.value)}
-                    className="ml-[4px] md:ml[7px] op-select op-select-bordered op-select-sm focus:outline-none hover:border-base-content text-xs"
+                    sx={{ ml: 0.5, fontSize: "0.75rem" }}
                   >
                     {fontColorArr.map((color, ind) => (
-                      <option value={color} key={ind}>
+                      <MenuItem value={color} key={ind}>
                         {t(`color-type.${color}`)}
-                      </option>
+                      </MenuItem>
                     ))}
-                  </select>
-                  <span
-                    style={{
-                      background:
+                  </Select>
+                  <Box
+                    sx={{
+                      width: 20,
+                      height: 19,
+                      ml: 1,
+                      backgroundColor:
                         props.fontColor ||
                         props.pos.options?.fontColor ||
                         "black"
                     }}
-                    className="w-5 h-[19px] ml-1"
-                  ></span>
-                </div>
-              </div>
+                  />
+                </Box>
+              </Box>
               {props?.isPlaceholder && props?.data?.Role !== "prefill" && (
                 <>
-                  <div className="flex items-center gap-1 w-max">
-                    <input
-                      name="isReadOnly"
-                      id="isReadOnly"
-                      type="checkbox"
-                      checked={formdata?.isReadOnly}
-                      className="op-checkbox op-checkbox-xs"
-                      onChange={() =>
-                        setFormdata({
-                          ...formdata,
-                          isReadOnly: !formdata?.isReadOnly
-                        })
-                      }
-                    />
-                    <label
-                      htmlFor="isReadOnly"
-                      className="capitalize ml-[2px] mb-0 cursor-pointer"
+                  <FormControlLabel
+                    sx={{ m: 0, width: "max-content" }}
+                    control={
+                      <Checkbox
+                        size="small"
+                        id="isReadOnly"
+                        checked={!!formdata?.isReadOnly}
+                        onChange={() =>
+                          setFormdata({
+                            ...formdata,
+                            isReadOnly: !formdata?.isReadOnly
+                          })
+                        }
+                        slotProps={{ htmlInput: { name: "isReadOnly" } }}
+                      />
+                    }
+                    label={
+                      <Box component="span" sx={{ textTransform: "capitalize" }}>
+                        {t("read-only")}
+                      </Box>
+                    }
+                  />
+                  <Box sx={{ mb: "0.75rem" }}>
+                    <Box
+                      component="label"
+                      htmlFor="hint"
+                      sx={{ display: "block", fontSize: "13px", mb: 0.5 }}
                     >
-                      {t("read-only")}
-                    </label>
-                  </div>
-                  <div className="mb-[0.75rem]">
-                    <label htmlFor="hint" className="text-[13px]">
                       {t("hint")}
-                    </label>
-                    <input
-                      maxLength={40}
-                      className="op-input op-input-bordered op-input-sm focus:outline-none hover:border-base-content w-full text-xs"
-                      name="hint"
+                    </Box>
+                    <TextField
+                      size="small"
+                      fullWidth
                       placeholder={"Enter date hint"}
-                      value={formdata?.hint}
+                      value={formdata?.hint || ""}
                       onChange={(e) =>
                         setFormdata({
                           ...formdata,
                           hint: e.target?.value
                         })
                       }
+                      slotProps={{
+                        htmlInput: {
+                          name: "hint",
+                          maxLength: 40,
+                          style: { fontSize: "0.75rem" }
+                        }
+                      }}
                     />
-                  </div>
+                  </Box>
                 </>
               )}
-            </div>
-            <div className="h-[1px] w-full my-[15px] bg-[#9f9f9f]"></div>
-            <button className="op-btn op-btn-primary" type="submit">
+            </Box>
+            <Divider sx={{ my: "15px" }} />
+            <Button variant="contained" type="submit">
               {t("save")}
-            </button>
-            <button
+            </Button>
+            <Button
               type="button"
-              className="op-btn op-btn-ghost text-base-content ml-1"
+              variant="text"
+              color="inherit"
+              sx={{ ml: 1 }}
               onClick={() => handleCloseDateModal()}
             >
               {t("cancel")}
-            </button>
+            </Button>
           </form>
-        </div>
+        </Box>
       </DateWidgetModal>
     </>
   );

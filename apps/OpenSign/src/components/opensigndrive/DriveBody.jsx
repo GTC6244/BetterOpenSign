@@ -3,7 +3,6 @@ import "../../styles/opensigndrive.css";
 import axios from "axios";
 import { ContextMenu } from "radix-ui";
 import { useNavigate } from "react-router";
-import Table from "react-bootstrap/Table";
 import { HoverCard } from "radix-ui";
 import ModalUi from "../../primitives/ModalUi";
 import FolderModal from "../shared/fields/FolderModal";
@@ -11,6 +10,17 @@ import { useTranslation } from "react-i18next";
 import { handleDownloadPdf, isMobile } from "../../constant/Utils";
 import Parse from "parse";
 import { withSessionValidation } from "../../utils";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import TextField from "@mui/material/TextField";
+import Divider from "@mui/material/Divider";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import Paper from "@mui/material/Paper";
 
 function DriveBody(props) {
   const { t } = useTranslation();
@@ -299,6 +309,11 @@ function DriveBody(props) {
     }
   };
 
+  const renameInputSx = {
+    width: 100,
+    "& .MuiInputBase-input": { fontSize: "10px", py: "2px" }
+  };
+
   //component to handle type of document and render according to type
   const handleFolderData = (data, ind, listType) => {
     let createddate, status, isDecline, signerExist, isComplete;
@@ -338,56 +353,71 @@ function DriveBody(props) {
         getSignersName?.length > 0 ? getSignersName?.join(", ") : "";
 
       return (
-        <span className="text-[12px] font-medium w-[90%] break-words">
+        <Box
+          component="span"
+          sx={{ fontSize: "12px", fontWeight: 500, width: "90%", wordBreak: "break-word" }}
+        >
           {signerName && signerName}
-        </span>
+        </Box>
       );
     };
 
     return listType === "table" ? (
       data.Type === "Folder" ? (
-        <tr onClick={() => handleOnclikFolder(data)}>
-          <td className="cursor-pointer flex items-center gap-2">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 512 512"
-              className="w-[26px] h-[26px] fill-current"
-            >
-              <path d="M64 480H448c35.3 0 64-28.7 64-64V160c0-35.3-28.7-64-64-64H288c-10.1 0-19.6-4.7-25.6-12.8L243.2 57.6C231.1 41.5 212.1 32 192 32H64C28.7 32 0 60.7 0 96V416c0 35.3 28.7 64 64 64z" />
-            </svg>
-            <span className="text-[12px] font-medium">{data.Name}</span>
-          </td>
-          <td>_</td>
-          <td>{t("folder")}</td>
-          <td>_</td>
-          <td>_</td>
-        </tr>
+        <TableRow hover onClick={() => handleOnclikFolder(data)}>
+          <TableCell sx={{ cursor: "pointer" }}>
+            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+              <Box
+                component="svg"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 512 512"
+                sx={{ width: 26, height: 26, fill: "currentColor" }}
+              >
+                <path d="M64 480H448c35.3 0 64-28.7 64-64V160c0-35.3-28.7-64-64-64H288c-10.1 0-19.6-4.7-25.6-12.8L243.2 57.6C231.1 41.5 212.1 32 192 32H64C28.7 32 0 60.7 0 96V416c0 35.3 28.7 64 64 64z" />
+              </Box>
+              <Box component="span" sx={{ fontSize: "12px", fontWeight: 500 }}>
+                {data.Name}
+              </Box>
+            </Box>
+          </TableCell>
+          <TableCell>_</TableCell>
+          <TableCell>{t("folder")}</TableCell>
+          <TableCell>_</TableCell>
+          <TableCell>_</TableCell>
+        </TableRow>
       ) : (
-        <tr onClick={() => checkPdfStatus(data)}>
-          <td className="cursor-pointer flex items-center gap-2">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 384 512"
-              className="w-[26px] h-[26px] fill-current op-text-primary"
-            >
-              <path d="M374.629 150.627L233.371 9.373C227.371 3.371 219.23 0 210.746 0H64C28.652 0 0 28.652 0 64V448C0 483.345 28.652 512 64 512H320C355.348 512 384 483.345 384 448V173.254C384 164.767 380.629 156.629 374.629 150.627ZM224 22.629L361.375 160H248C234.781 160 224 149.234 224 136V22.629ZM368 448C368 474.467 346.469 496 320 496H64C37.531 496 16 474.467 16 448V64C16 37.533 37.531 16 64 16H208V136C208 158.062 225.938 176 248 176H368V448ZM96 264C96 268.406 99.594 272 104 272H280C284.406 272 288 268.406 288 264S284.406 256 280 256H104C99.594 256 96 259.594 96 264ZM280 320H104C99.594 320 96 323.594 96 328S99.594 336 104 336H280C284.406 336 288 332.406 288 328S284.406 320 280 320ZM280 384H104C99.594 384 96 387.594 96 392S99.594 400 104 400H280C284.406 400 288 396.406 288 392S284.406 384 280 384Z" />
-            </svg>
-            <span className="text-[12px] font-medium">{data.Name}</span>
-          </td>
-          <td>{createddate}</td>
-          <td>{t("pdf")}</td>
-          <td>{t(`drive-document-status.${status}`)}</td>
-          <td>
-            <i
+        <TableRow hover onClick={() => checkPdfStatus(data)}>
+          <TableCell sx={{ cursor: "pointer" }}>
+            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+              <Box
+                component="svg"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 384 512"
+                sx={{ width: 26, height: 26, fill: "currentColor", color: "primary.main" }}
+              >
+                <path d="M374.629 150.627L233.371 9.373C227.371 3.371 219.23 0 210.746 0H64C28.652 0 0 28.652 0 64V448C0 483.345 28.652 512 64 512H320C355.348 512 384 483.345 384 448V173.254C384 164.767 380.629 156.629 374.629 150.627ZM224 22.629L361.375 160H248C234.781 160 224 149.234 224 136V22.629ZM368 448C368 474.467 346.469 496 320 496H64C37.531 496 16 474.467 16 448V64C16 37.533 37.531 16 64 16H208V136C208 158.062 225.938 176 248 176H368V448ZM96 264C96 268.406 99.594 272 104 272H280C284.406 272 288 268.406 288 264S284.406 256 280 256H104C99.594 256 96 259.594 96 264ZM280 320H104C99.594 320 96 323.594 96 328S99.594 336 104 336H280C284.406 336 288 332.406 288 328S284.406 320 280 320ZM280 384H104C99.594 384 96 387.594 96 392S99.594 400 104 400H280C284.406 400 288 396.406 288 392S284.406 384 280 384Z" />
+              </Box>
+              <Box component="span" sx={{ fontSize: "12px", fontWeight: 500 }}>
+                {data.Name}
+              </Box>
+            </Box>
+          </TableCell>
+          <TableCell>{createddate}</TableCell>
+          <TableCell>{t("pdf")}</TableCell>
+          <TableCell>{t(`drive-document-status.${status}`)}</TableCell>
+          <TableCell>
+            <Box
+              component="i"
               onClick={(e) => {
                 e.stopPropagation();
                 handleMenuItemClick("Download", data);
               }}
-              className="fa-light fa-download mr-[8px] op-text-primary cursor-pointer"
+              className="fa-light fa-download"
+              sx={{ mr: "8px", color: "primary.main", cursor: "pointer" }}
               aria-hidden="true"
-            ></i>
-          </td>
-        </tr>
+            ></Box>
+          </TableCell>
+        </TableRow>
       )
     ) : listType === "list" && data.Type === "Folder" ? (
       <div className="relative w-[100px] h-[100px] mx-2 my-3">
@@ -403,15 +433,18 @@ function DriveBody(props) {
               }}
               className="cursor-pointer"
             >
-              <svg
+              <Box
+                component="svg"
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 512 512"
-                className="w-[100px] h-[100px] fill-current"
+                sx={{ width: 100, height: 100, fill: "currentColor" }}
               >
                 <path d="M64 480H448c35.3 0 64-28.7 64-64V160c0-35.3-28.7-64-64-64H288c-10.1 0-19.6-4.7-25.6-12.8L243.2 57.6C231.1 41.5 212.1 32 192 32H64C28.7 32 0 60.7 0 96V416c0 35.3 28.7 64 64 64z" />
-              </svg>
+              </Box>
               {rename === data.objectId ? (
-                <input
+                <TextField
+                  size="small"
+                  variant="outlined"
                   onFocus={() => {
                     const input = inputRef.current;
                     if (input) {
@@ -422,10 +455,10 @@ function DriveBody(props) {
                   type="text"
                   onBlur={() => handledRenameDoc(data)}
                   onKeyDown={(e) => handleEnterPress(e, data)}
-                  ref={inputRef}
+                  inputRef={inputRef}
                   defaultValue={renameValue}
                   onChange={(e) => setRenameValue(e.target.value)}
-                  className="op-input op-input-bordered op-input-xs w-[100px] focus:outline-none hover:border-base-content text-[10px]"
+                  sx={renameInputSx}
                 />
               ) : (
                 <span className="fileName select-none-cls">{data.Name}</span>
@@ -480,15 +513,18 @@ function DriveBody(props) {
                     }}
                     className="cursor-pointer"
                   >
-                    <svg
+                    <Box
+                      component="svg"
                       xmlns="http://www.w3.org/2000/svg"
                       viewBox="0 0 384 512"
-                      className="w-[100px] h-[100px] fill-current op-text-primary"
+                      sx={{ width: 100, height: 100, fill: "currentColor", color: "primary.main" }}
                     >
                       <path d="M374.629 150.627L233.371 9.373C227.371 3.371 219.23 0 210.746 0H64C28.652 0 0 28.652 0 64V448C0 483.345 28.652 512 64 512H320C355.348 512 384 483.345 384 448V173.254C384 164.767 380.629 156.629 374.629 150.627ZM224 22.629L361.375 160H248C234.781 160 224 149.234 224 136V22.629ZM368 448C368 474.467 346.469 496 320 496H64C37.531 496 16 474.467 16 448V64C16 37.533 37.531 16 64 16H208V136C208 158.062 225.938 176 248 176H368V448ZM96 264C96 268.406 99.594 272 104 272H280C284.406 272 288 268.406 288 264S284.406 256 280 256H104C99.594 256 96 259.594 96 264ZM280 320H104C99.594 320 96 323.594 96 328S99.594 336 104 336H280C284.406 336 288 332.406 288 328S284.406 320 280 320ZM280 384H104C99.594 384 96 387.594 96 392S99.594 400 104 400H280C284.406 400 288 396.406 288 392S284.406 384 280 384Z" />
-                    </svg>
+                    </Box>
                     {rename === data.objectId ? (
-                      <input
+                      <TextField
+                        size="small"
+                        variant="outlined"
                         autoFocus={true}
                         type="text"
                         onFocus={() => {
@@ -499,10 +535,10 @@ function DriveBody(props) {
                         }}
                         onBlur={() => handledRenameDoc(data)}
                         onKeyDown={(e) => handleEnterPress(e, data, data.Type)}
-                        ref={inputRef}
+                        inputRef={inputRef}
                         defaultValue={renameValue}
                         onChange={(e) => setRenameValue(e.target.value)}
-                        className="op-input op-input-bordered op-input-xs w-[100px] focus:outline-none hover:border-base-content text-[10px]"
+                        sx={renameInputSx}
                       />
                     ) : (
                       <span className="fileName select-none-cls">
@@ -598,34 +634,44 @@ function DriveBody(props) {
   return (
     <>
       {props.isList ? (
-        <div className="container" style={{ overflowX: "auto" }}>
-          <Table striped bordered hover>
-            <thead>
-              <tr>
-                <th>{t("report-heading.Name")}</th>
-                <th>{t("report-heading.created-date")}</th>
-                <th>{t("report-heading.Type")}</th>
-                <th>{t("report-heading.Status")}</th>
-                <th>{t("action")}</th>
-              </tr>
-            </thead>
-            <tbody>
+        <TableContainer component={Paper} variant="outlined" sx={{ overflowX: "auto" }}>
+          <Table size="small">
+            <TableHead>
+              <TableRow>
+                <TableCell>{t("report-heading.Name")}</TableCell>
+                <TableCell>{t("report-heading.created-date")}</TableCell>
+                <TableCell>{t("report-heading.Type")}</TableCell>
+                <TableCell>{t("report-heading.Status")}</TableCell>
+                <TableCell>{t("action")}</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
               {props?.pdfData?.map((data, ind) => (
                 <React.Fragment key={ind}>
                   {handleFolderData(data, ind, "table")}
                 </React.Fragment>
               ))}
-            </tbody>
+            </TableBody>
           </Table>
-        </div>
+        </TableContainer>
       ) : (
-        <div className="flex flex-row flex-wrap items-center mt-1 pb-[20px] mx-[5px]">
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "row",
+            flexWrap: "wrap",
+            alignItems: "center",
+            mt: 0.5,
+            pb: "20px",
+            mx: "5px"
+          }}
+        >
           {props?.pdfData?.map((data, ind) => (
             <React.Fragment key={ind}>
               {handleFolderData(data, ind, "list")}
             </React.Fragment>
           ))}
-        </div>
+        </Box>
       )}
 
       {isOpenMoveModal && (
@@ -642,15 +688,15 @@ function DriveBody(props) {
         title={t("delete-document")}
         handleClose={() => setIsDeleteDoc({})}
       >
-        <div className="h-full p-[20px] text-base-content">
+        <Box sx={{ height: "100%", p: "20px", color: "text.primary" }}>
           {isDeleteDoc.deleteType ? (
             <p>{t("delete-folder-alert")}</p>
           ) : (
             <p>{t("delete-document-alert")}</p>
           )}
 
-          <div className="h-[1px] w-full bg-[#9f9f9f] my-[15px]"></div>
-          <button
+          <Divider sx={{ my: "15px" }} />
+          <Button
             onClick={() => {
               if (isDeleteDoc.deleteType) {
                 handleDeleteFolder(selectDoc);
@@ -659,18 +705,20 @@ function DriveBody(props) {
               }
             }}
             type="button"
-            className="op-btn op-btn-primary mr-2"
+            variant="contained"
+            sx={{ mr: 2 }}
           >
             {t("yes")}
-          </button>
-          <button
+          </Button>
+          <Button
             onClick={() => setIsDeleteDoc({})}
             type="button"
-            className="op-btn op-btn-neutral"
+            variant="contained"
+            color="inherit"
           >
             {t("no")}
-          </button>
-        </div>
+          </Button>
+        </Box>
       </ModalUi>
     </>
   );

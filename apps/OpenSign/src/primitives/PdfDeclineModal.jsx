@@ -2,6 +2,12 @@ import React, { useState } from "react";
 import "../styles/signature.css";
 import { useTranslation } from "react-i18next";
 import Loader from "./Loader";
+import Dialog from "@mui/material/Dialog";
+import DialogTitle from "@mui/material/DialogTitle";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import Button from "@mui/material/Button";
+import TextField from "@mui/material/TextField";
 
 function CustomModal(props) {
   const { t } = useTranslation();
@@ -31,111 +37,156 @@ function CustomModal(props) {
 
   return (
     props.show && (
-      <dialog className="op-modal op-modal-open absolute z-[448]">
-        <div className="w-[95%] md:w-[60%] lg:w-[40%] op-modal-box p-0 overflow-y-auto hide-scrollbar text-sm">
-          {props?.isLoader && (
-            <div className="absolute h-full w-full flex flex-col justify-center items-center z-[999] bg-[#e6f2f2]/80">
-              <Loader />
-            </div>
-          )}
-          <h3 className="text-base-content font-bold text-lg pt-[15px] px-[20px]">
-            {props?.headMsg && props?.headMsg}
-          </h3>
-          {!isExtendExpiry && (
-            <div className="p-[10px] px-[20px] text-[15px] text-base-content">
-              {props.bodyMssg && props.bodyMssg}
-            </div>
-          )}
-          {!isExtendExpiry && (
-            <div className="flex flex-row items-center">
-              {isCreator && (
-                <button
-                  className="op-btn op-btn-primary px-6 ml-[20px] mb-3 mt-1"
-                  onClick={() => handleExtendBtn()}
-                >
-                  {t("extend")}
-                </button>
-              )}
-              {props.isDownloadBtn && (
-                <button
-                  className="op-btn op-btn-secondary ml-[10px] mb-3 mt-1"
-                  onClick={() => props.handleDownloadBtn()}
-                >
-                  {t("download")}
-                </button>
-              )}
-            </div>
-          )}
-          {props.footerMessage && (
-            <>
-              <div className="mx-3 text-base-content">
-                <textarea
-                  rows={3}
-                  placeholder="Reason (optional)"
-                  className="px-4 op-textarea op-textarea-bordered focus:outline-none hover:border-base-content w-full text-xs"
-                  value={reason}
-                  onChange={(e) => setReason(e.target.value)}
-                ></textarea>
-              </div>
-              <div className="m-[15px]">
-                <button
-                  className="op-btn op-btn-primary mr-2 px-6"
-                  type="button"
-                  onClick={() => {
-                    props.declineDoc(reason);
-                    setReason("");
-                  }}
-                >
-                  {t("yes")}
-                </button>
-                <button
-                  type="button"
-                  className="op-btn op-btn-secondary"
-                  onClick={() => {
-                    setReason("");
-                    props.setIsDecline({ isDeclined: false });
-                  }}
-                >
-                  {t("close")}
-                </button>
-              </div>
-            </>
-          )}
-          {isExtendExpiry && (
-            <form className="mx-3 mb-3" onSubmit={handleUpdateExpiry}>
-              <label
-                htmlFor="expiryDate"
-                className="ml-2 mt-2 text-base-content"
+      <Dialog
+        open={!!props.show}
+        maxWidth={false}
+        slotProps={{
+          paper: {
+            sx: {
+              position: "relative",
+              overflowY: "auto",
+              scrollbarWidth: "none",
+              "&::-webkit-scrollbar": { display: "none" },
+              fontSize: "0.875rem",
+              width: { xs: "95%", md: "60%", lg: "40%" },
+              maxWidth: "95vw"
+            }
+          }
+        }}
+      >
+        {props?.isLoader && (
+          <Box
+            sx={{
+              position: "absolute",
+              height: "100%",
+              width: "100%",
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              alignItems: "center",
+              zIndex: 999,
+              bgcolor: "rgba(230,242,242,0.8)"
+            }}
+          >
+            <Loader />
+          </Box>
+        )}
+        <DialogTitle
+          sx={{
+            fontWeight: 700,
+            fontSize: "1.125rem",
+            color: "text.primary",
+            pt: "15px",
+            px: "20px"
+          }}
+        >
+          {props?.headMsg && props?.headMsg}
+        </DialogTitle>
+        {!isExtendExpiry && (
+          <Box sx={{ p: "10px", px: "20px", fontSize: "15px", color: "text.primary" }}>
+            {props.bodyMssg && props.bodyMssg}
+          </Box>
+        )}
+        {!isExtendExpiry && (
+          <Box sx={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
+            {isCreator && (
+              <Button
+                variant="contained"
+                color="primary"
+                sx={{ px: 3, ml: "20px", mb: 1.5, mt: 0.5 }}
+                onClick={() => handleExtendBtn()}
               >
-                {t("expiry-date")} {"(dd-mm-yyyy)"}
-              </label>
-              <input
-                id="expiryDate"
-                type="date"
-                onClick={(e) => e?.currentTarget?.showPicker?.()}
-                className="rounded-full w-full px-4 op-input op-input-bordered op-input-md text-base-content focus:outline-none hover:border-base-content"
-                defaultValue={props?.doc?.ExpiryDate?.iso?.split("T")?.[0]}
-                onChange={(e) => setExpiryDate(e.target.value)}
+                {t("extend")}
+              </Button>
+            )}
+            {props.isDownloadBtn && (
+              <Button
+                variant="contained"
+                color="secondary"
+                sx={{ ml: "10px", mb: 1.5, mt: 0.5 }}
+                onClick={() => props.handleDownloadBtn()}
+              >
+                {t("download")}
+              </Button>
+            )}
+          </Box>
+        )}
+        {props.footerMessage && (
+          <>
+            <Box sx={{ mx: 1.5, color: "text.primary" }}>
+              <TextField
+                fullWidth
+                multiline
+                minRows={3}
+                size="small"
+                placeholder="Reason (optional)"
+                value={reason}
+                onChange={(e) => setReason(e.target.value)}
               />
-              <div className="flex flex-row items-center mt-2">
-                <button type="submit" className="op-btn op-btn-primary mr-2">
-                  {t("update")}
-                </button>
-                <button
-                  type="button"
-                  className="op-btn op-btn-secondary"
-                  onClick={() => {
-                    setExpiryDate("");
-                    setIsExtendExpiry(false);
-                  }}
-                >
-                  {t("cancel")}
-                </button>
-              </div>
-            </form>
-          )}
-        </div>
-      </dialog>
+            </Box>
+            <Box sx={{ m: "15px" }}>
+              <Button
+                variant="contained"
+                color="primary"
+                sx={{ mr: 1, px: 3 }}
+                type="button"
+                onClick={() => {
+                  props.declineDoc(reason);
+                  setReason("");
+                }}
+              >
+                {t("yes")}
+              </Button>
+              <Button
+                type="button"
+                variant="contained"
+                color="secondary"
+                onClick={() => {
+                  setReason("");
+                  props.setIsDecline({ isDeclined: false });
+                }}
+              >
+                {t("close")}
+              </Button>
+            </Box>
+          </>
+        )}
+        {isExtendExpiry && (
+          <Box component="form" sx={{ mx: 1.5, mb: 1.5 }} onSubmit={handleUpdateExpiry}>
+            <Typography
+              component="label"
+              htmlFor="expiryDate"
+              sx={{ display: "block", ml: 1, mt: 1, color: "text.primary" }}
+            >
+              {t("expiry-date")} {"(dd-mm-yyyy)"}
+            </Typography>
+            <TextField
+              fullWidth
+              id="expiryDate"
+              type="date"
+              onClick={(e) => e?.currentTarget?.querySelector?.("input")?.showPicker?.()}
+              defaultValue={props?.doc?.ExpiryDate?.iso?.split("T")?.[0]}
+              onChange={(e) => setExpiryDate(e.target.value)}
+            />
+            <Box sx={{ display: "flex", flexDirection: "row", alignItems: "center", mt: 1 }}>
+              <Button type="submit" variant="contained" color="primary" sx={{ mr: 1 }}>
+                {t("update")}
+              </Button>
+              <Button
+                type="button"
+                variant="contained"
+                color="secondary"
+                onClick={() => {
+                  setExpiryDate("");
+                  setIsExtendExpiry(false);
+                }}
+              >
+                {t("cancel")}
+              </Button>
+            </Box>
+          </Box>
+        )}
+      </Dialog>
     )
   );
 }
